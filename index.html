@@ -1,0 +1,168 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+ More info: h5bp.com/b/378 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>metaproject, from Bravado</title>
+    <meta name="description" content="An HTML5 Application Framework">
+    <meta name="author" content="Bravado">
+
+    <!-- Mobile viewport optimized: h5bp.com/viewport -->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+    <link rel="stylesheet" href="http://taitems.github.com/Aristo-jQuery-UI-Theme/css/Aristo/Aristo.css">
+    <link rel="stylesheet" href="metaproject.css">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+
+    <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+    <!-- All JavaScript at the bottom, except this Modernizr build incl. Respond.js
+Respond is a polyfill for min/max-width media queries. Modernizr enables HTML5 elements & feature detects;
+for optimal performance, create your own custom Modernizr build: www.modernizr.com/download/ -->
+    <script src="js/modernizr.js"></script>
+
+
+</head>
+
+<body style="padding-top: 60px;">
+<header class="topbar">
+    <div class="fill">
+        <div class="container">
+            <a class="brand" href="#">metaproject</a>
+            <ul class="nav menu">
+                <li class="active"><a href="#">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Dropdown</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#asdf">Secondary link</a></li>
+                        <li><a href="#fdsa">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#aq1sw2">Another link</a></li>
+                    </ul>
+                </li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<div class="container" role="main">
+
+    <!-- Main hero unit for a primary marketing message or call to action -->
+    <div class="hero-unit">
+        <h1>Welcome</h1>
+
+
+        <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit
+            aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec
+            elit.</p>
+
+        <p><a class="btn primary large">Learn more &raquo;</a></p>
+    </div>
+
+    <!-- Example row of columns -->
+    <div class="row">
+
+
+        <div class="span-one-third">
+            <h2>UI Elements</h2>
+
+            <p>An overview of all the available components.</p>
+
+            <p><a class="btn" href="#ui">View details &raquo;</a></p>
+        </div>
+        <div class="span-one-third">
+
+            <h2>Master/Detail</h2>
+
+            <p>Example showing a list of items</p>
+
+            <p><a class="btn" href="#">View details &raquo;</a></p>
+
+        </div>
+        <div class="span-one-third">
+            <h2>Application Flow</h2>
+
+            <p>Requesting external data.</p>
+
+            <p><a class="btn" href="#flow">View details &raquo;</a></p>
+        </div>
+<button class="btn danger icon-right" data-bind="icon: 'calculator', click: function() { alert('hello'); }">Here's my calendar
+            button
+        </button>
+
+    </div>
+</div>
+<footer class="footer">
+    <p>&copy; My Company 2011</p>
+</footer>
+
+
+<!-- JavaScript at the bottom for fast page loading -->
+
+<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery-ui.min.js"><\/script>')</script>
+
+<!--script src="js/bootstrap-scrollspy.js"></script-->
+<script src="js/bootstrap-twipsy.js"></script>
+<script src="js/bootstrap-popover.js"></script>
+<script src="js/bootstrap-modal.js"></script>
+<script src="js/bootstrap-buttons.js"></script>
+<script src="js/bootstrap-dropdown.js"></script>
+
+<script src="js/bootstrap-tabs.js"></script>
+<script src="js/knockout-latest.js"></script>
+
+
+<script src="js/metaproject.js"></script>
+<script src="script.js"></script>
+<!-- end scripts -->
+
+
+<!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
+mathiasbynens.be/notes/async-analytics-snippet -->
+<script>
+    var _gaq = [
+        ['_setAccount','UA-XXXXX-X'],
+        ['_trackPageview']
+    ];
+    (function(d, t) {
+        var g = d.createElement(t),s = d.getElementsByTagName(t)[0];
+        g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s)
+    }(document, 'script'));
+</script>
+
+<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script defer src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script defer>window.attachEvent('onload', function() {
+    CFInstall.check({mode:'overlay'})
+})</script>
+<![endif]-->
+
+</body>
+</html>

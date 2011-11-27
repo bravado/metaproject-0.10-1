@@ -1,10 +1,28 @@
-TWITTER BOOTSTRAP
-=================
+metaproject
+===========
+Main libraries
+--------------
+http://twitter.github.com/bootstrap - Bootstrap is Twitter's toolkit for kickstarting CSS for websites, apps, and more. It includes base CSS styles for typography, forms, buttons, tables, grids, navigation, alerts, and more.
 
-Bootstrap is Twitter's toolkit for kickstarting CSS for websites, apps, and more. It includes base CSS styles for typography, forms, buttons, tables, grids, navigation, alerts, and more.
+http://jqueryui.com - jQuery UI is the official jQuery user interface library. It provides interactions, widgets, effects, and theming for creating Rich Internet Applications.
 
-To get started -- checkout http://twitter.github.com/bootstrap!
+http://knockoutjs.com - Simplify dynamic JavaScript UIs by applying the Model-View-View Model (MVVM) pattern. 
 
+http://p.yusukekamiyamane.com/ - Fugue icons, provided under a These icons a Creative Commons Attribution 3.0 License. If you can’t or don’t want to provide attribution, please purchase a royalty-free license from the site.
+
+Additional Libraries
+--------------------
+
+These mostly maintain backwards-compatibility with older browsers
+
+http://www.modernizr.com - Modernizr is an open-source JavaScript library that helps you build the next generation of HTML5 and CSS3-powered websites.
+
+json2.js from https://github.com/douglascrockford/JSON-js - This file creates a JSON property in the global object, if there
+isn't already one, setting its value to an object containing a stringify
+method and a parse method. The parse method uses the eval method to do the
+parsing, guarding it with several regular expressions to defend against
+accidental code execution hazards. On current browsers, this file does nothing,
+prefering the built-in JSON object.
 
 Usage
 -----
