@@ -43,7 +43,7 @@ for optimal performance, create your own custom Modernizr build: www.modernizr.c
 
 </head>
 
-<body style="padding-top: 60px;">
+<body class="with-header">
 <header class="topbar">
     <div class="fill">
         <div class="container">
@@ -64,51 +64,59 @@ for optimal performance, create your own custom Modernizr build: www.modernizr.c
         </div>
     </div>
 </header>
-<div class="container" role="main">
+<div class="main-content">
+    <div class="container main-content" role="main">
 
-    <!-- Main hero unit for a primary marketing message or call to action -->
-    <div class="hero-unit">
-        <h1>Welcome</h1>
-
-
-        <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit
-            aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec
-            elit.</p>
-
-        <p><a class="btn primary large">Learn more &raquo;</a></p>
-    </div>
-
-    <!-- Example row of columns -->
-    <div class="row">
+        <!-- Main hero unit for a primary marketing message or call to action -->
+        <div class="hero-unit">
+            <h1>Welcome</h1>
 
 
-        <div class="span-one-third">
-            <h2>UI Elements</h2>
+            <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere
+                velit
+                aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec
+                elit.</p>
 
-            <p>An overview of all the available components.</p>
-
-            <p><a class="btn" href="#ui">View details &raquo;</a></p>
+            <p><a class="btn primary large" href="http://github.com/bravado/metaproject">Fork me on github &raquo;</a>
+            </p>
         </div>
-        <div class="span-one-third">
 
-            <h2>Master/Detail</h2>
+        <!-- Example row of columns -->
+        <div class="row">
 
-            <p>Example showing a list of items</p>
 
-            <p><a class="btn" href="#">View details &raquo;</a></p>
+            <div class="span-one-third">
+                <h2>CSS</h2>
+
+                <p>Our core styles come from Twitter's Bootstrap, a front-end toolkit for rapidly developing web applications which provides stylish
+                    typography, forms, buttons, tables, grids, navigation and everything else you need in a super tiny
+                    (only 6k with gzip) resource.</p>
+
+                <p><a class="btn" href="#bootstrap">View details &raquo;</a></p>
+            </div>
+            <div class="span-one-third">
+
+                <h2>UI Elements</h2>
+
+                <p>An overview of all the available components.</p>
+
+                <p><a class="btn" href="#ui">View details &raquo;</a></p>
+
+
+            </div>
+            <div class="span-one-third">
+                <h2>Application Flow</h2>
+
+                <p>Requesting external data.</p>
+
+                <p><a class="btn" href="#flow">View details &raquo;</a></p>
+            </div>
+            <button class="btn danger icon-right" data-bind="icon: 'calculator', click: function() { alert('hello'); }">
+                Here's my calendar
+                button
+            </button>
 
         </div>
-        <div class="span-one-third">
-            <h2>Application Flow</h2>
-
-            <p>Requesting external data.</p>
-
-            <p><a class="btn" href="#flow">View details &raquo;</a></p>
-        </div>
-<button class="btn danger icon-right" data-bind="icon: 'calculator', click: function() { alert('hello'); }">Here's my calendar
-            button
-        </button>
-
     </div>
 </div>
 <footer class="footer">
@@ -149,7 +157,7 @@ mathiasbynens.be/notes/async-analytics-snippet -->
         ['_trackPageview']
     ];
     (function(d, t) {
-        var g = d.createElement(t),s = d.getElementsByTagName(t)[0];
+        var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
         g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
         s.parentNode.insertBefore(g, s)
     }(document, 'script'));

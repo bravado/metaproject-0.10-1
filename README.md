@@ -2,13 +2,17 @@ metaproject
 ===========
 Main libraries
 --------------
-http://twitter.github.com/bootstrap - Bootstrap is Twitter's toolkit for kickstarting CSS for websites, apps, and more. It includes base CSS styles for typography, forms, buttons, tables, grids, navigation, alerts, and more.
+http://twitter.github.com/bootstrap/ - Bootstrap is Twitter's toolkit for kickstarting CSS for websites, apps, and more. It includes base CSS styles for typography, forms, buttons, tables, grids, navigation, alerts, and more.
 
-http://jqueryui.com - jQuery UI is the official jQuery user interface library. It provides interactions, widgets, effects, and theming for creating Rich Internet Applications.
+http://jqueryui.com/ - jQuery UI is the official jQuery user interface library. It provides interactions, widgets, effects, and theming for creating Rich Internet Applications.
 
-http://knockoutjs.com - Simplify dynamic JavaScript UIs by applying the Model-View-View Model (MVVM) pattern. 
+http://amplifyjs.com/ - AmplifyJS is a set of components designed to solve common web application problems (Request, Store, Pub/Sub) with a simplistic API.
+
+http://knockoutjs.com/ - Simplify dynamic JavaScript UIs by applying the Model-View-View Model (MVVM) pattern.
 
 http://p.yusukekamiyamane.com/ - Fugue icons, provided under a These icons a Creative Commons Attribution 3.0 License. If you can’t or don’t want to provide attribution, please purchase a royalty-free license from the site.
+
+http://www.sitepoint.com/pure-css3-paper-curl/ - Pure CSS3 Paper Curls Without Images, used on the paper class
 
 Additional Libraries
 --------------------
@@ -23,6 +27,8 @@ method and a parse method. The parse method uses the eval method to do the
 parsing, guarding it with several regular expressions to defend against
 accidental code execution hazards. On current browsers, this file does nothing,
 prefering the built-in JSON object.
+
+There are also some snippets from the excellent http://html5boilerplate.com/
 
 Usage
 -----

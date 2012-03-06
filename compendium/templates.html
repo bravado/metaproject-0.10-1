@@ -1,0 +1,14 @@
+<p>Embedded template</p>
+<script type="text/html" id="usertpl">
+    <div>
+        <p>Name</p>
+        <p data-bind="text: name"></p>
+
+        <p>Age</p>
+        <p data-bind="text: age"></p>
+    </div>
+</script>
+
+        <div data-bind="template: 'usertpl'"></div>
+<p>External template</p>
+<div data-bind="template: 'templates-external'"></div>
