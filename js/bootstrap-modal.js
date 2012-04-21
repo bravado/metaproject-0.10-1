@@ -1,5 +1,9 @@
 /* =========================================================
+<<<<<<< HEAD
  * bootstrap-modal.js v2.0.0
+=======
+ * bootstrap-modal.js v2.0.2
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
  * http://twitter.github.com/bootstrap/javascript.html#modals
  * =========================================================
  * Copyright 2012 Twitter, Inc.
@@ -26,7 +30,11 @@
   * ====================== */
 
   var Modal = function ( content, options ) {
+<<<<<<< HEAD
     this.options = $.extend({}, $.fn.modal.defaults, options)
+=======
+    this.options = options
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
     this.$element = $(content)
       .delegate('[data-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this))
   }
@@ -177,16 +185,27 @@
     return this.each(function () {
       var $this = $(this)
         , data = $this.data('modal')
+<<<<<<< HEAD
         , options = typeof option == 'object' && option
       if (!data) $this.data('modal', (data = new Modal(this, options)))
       if (typeof option == 'string') data[option]()
       else data.show()
+=======
+        , options = $.extend({}, $.fn.modal.defaults, $this.data(), typeof option == 'object' && option)
+      if (!data) $this.data('modal', (data = new Modal(this, options)))
+      if (typeof option == 'string') data[option]()
+      else if (options.show) data.show()
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
     })
   }
 
   $.fn.modal.defaults = {
       backdrop: true
     , keyboard: true
+<<<<<<< HEAD
+=======
+    , show: true
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
   }
 
   $.fn.modal.Constructor = Modal
@@ -206,4 +225,8 @@
     })
   })
 
+<<<<<<< HEAD
 }( window.jQuery )
+=======
+}( window.jQuery );
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf

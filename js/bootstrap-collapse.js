@@ -1,5 +1,9 @@
 /* =============================================================
+<<<<<<< HEAD
  * bootstrap-collapse.js v2.0.0
+=======
+ * bootstrap-collapse.js v2.0.2
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
  * http://twitter.github.com/bootstrap/javascript.html#collapse
  * =============================================================
  * Copyright 2012 Twitter, Inc.
@@ -74,7 +78,13 @@
         [dimension](size || 'auto')
         [0].offsetWidth
 
+<<<<<<< HEAD
       this.$element.addClass('collapse')
+=======
+      this.$element[size ? 'addClass' : 'removeClass']('collapse')
+
+      return this
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
     }
 
   , transition: function ( method, startEvent, completeEvent ) {
@@ -133,4 +143,8 @@
     })
   })
 
+<<<<<<< HEAD
 }( window.jQuery )
+=======
+}( window.jQuery );
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf

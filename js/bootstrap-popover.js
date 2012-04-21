@@ -1,5 +1,9 @@
 /* ===========================================================
+<<<<<<< HEAD
  * bootstrap-popover.js v2.0.0
+=======
+ * bootstrap-popover.js v2.0.2
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
  * http://twitter.github.com/bootstrap/javascript.html#popovers
  * ===========================================================
  * Copyright 2012 Twitter, Inc.
@@ -92,4 +96,8 @@
   , template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
   })
 
+<<<<<<< HEAD
 }( window.jQuery )
+=======
+}( window.jQuery );
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf

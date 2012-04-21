@@ -1,5 +1,9 @@
 /* =============================================================
+<<<<<<< HEAD
  * bootstrap-typeahead.js v2.0.0
+=======
+ * bootstrap-typeahead.js v2.0.2
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
  * http://twitter.github.com/bootstrap/javascript.html#typeahead
  * =============================================================
  * Copyright 2012 Twitter, Inc.
@@ -40,6 +44,10 @@
   , select: function () {
       var val = this.$menu.find('.active').attr('data-value')
       this.$element.val(val)
+<<<<<<< HEAD
+=======
+      this.$element.change();
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
       return this.hide()
     }
 
@@ -165,9 +173,12 @@
     }
 
   , keyup: function (e) {
+<<<<<<< HEAD
       e.stopPropagation()
       e.preventDefault()
 
+=======
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
       switch(e.keyCode) {
         case 40: // down arrow
         case 38: // up arrow
@@ -180,6 +191,10 @@
           break
 
         case 27: // escape
+<<<<<<< HEAD
+=======
+          if (!this.shown) return
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
           this.hide()
           break
 
@@ -187,10 +202,18 @@
           this.lookup()
       }
 
+<<<<<<< HEAD
   }
 
   , keypress: function (e) {
       e.stopPropagation()
+=======
+      e.stopPropagation()
+      e.preventDefault()
+  }
+
+  , keypress: function (e) {
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
       if (!this.shown) return
 
       switch(e.keyCode) {
@@ -210,12 +233,20 @@
           this.next()
           break
       }
+<<<<<<< HEAD
+=======
+
+      e.stopPropagation()
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
     }
 
   , blur: function (e) {
       var that = this
+<<<<<<< HEAD
       e.stopPropagation()
       e.preventDefault()
+=======
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
       setTimeout(function () { that.hide() }, 150)
     }
 
@@ -268,4 +299,8 @@
     })
   })
 
+<<<<<<< HEAD
 }( window.jQuery )
+=======
+}( window.jQuery );
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf

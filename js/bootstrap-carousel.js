@@ -1,5 +1,9 @@
 /* ==========================================================
+<<<<<<< HEAD
  * bootstrap-carousel.js v2.0.0
+=======
+ * bootstrap-carousel.js v2.0.2
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
  * http://twitter.github.com/bootstrap/javascript.html#carousel
  * ==========================================================
  * Copyright 2012 Twitter, Inc.
@@ -29,6 +33,12 @@
     this.$element = $(element)
     this.options = $.extend({}, $.fn.carousel.defaults, options)
     this.options.slide && this.slide(this.options.slide)
+<<<<<<< HEAD
+=======
+    this.options.pause == 'hover' && this.$element
+      .on('mouseenter', $.proxy(this.pause, this))
+      .on('mouseleave', $.proxy(this.cycle, this))
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
   }
 
   Carousel.prototype = {
@@ -61,6 +71,10 @@
 
   , pause: function () {
       clearInterval(this.interval)
+<<<<<<< HEAD
+=======
+      this.interval = null
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
       return this
     }
 
@@ -88,6 +102,11 @@
 
       $next = $next.length ? $next : this.$element.find('.item')[fallback]()
 
+<<<<<<< HEAD
+=======
+      if ($next.hasClass('active')) return
+
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
       if (!$.support.transition && this.$element.hasClass('slide')) {
         this.$element.trigger('slide')
         $active.removeClass('active')
@@ -133,6 +152,10 @@
 
   $.fn.carousel.defaults = {
     interval: 5000
+<<<<<<< HEAD
+=======
+  , pause: 'hover'
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
   }
 
   $.fn.carousel.Constructor = Carousel
@@ -151,4 +174,8 @@
     })
   })
 
+<<<<<<< HEAD
 }( window.jQuery )
+=======
+}( window.jQuery );
+>>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
