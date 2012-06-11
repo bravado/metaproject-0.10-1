@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <title>Datepicker Widgets</title>
+    <meta charset="utf-8"/>
+</head>
+
+<body>
+<div id="datepicker">
+    <input type="text" data-bind="datepicker: true"/>
+
+
+    <input type="text" id="with-arrows" data-bind="datepicker: true, rangePicker: true, datepickerOptions: { arrows: true }"/>
+</div>
+<script type="text/javascript">
+
+
+    function DatePickerDemo() {
+
+    }
+
+    // Module initialization
+    jQuery(function($) {
+        $('#datepicker').applyBindings(new DatePickerDemo());
+    });
+</script>
+</body>
+</html>

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 metaproject
 ===========
 Main libraries
@@ -7,21 +6,7 @@ http://twitter.github.com/bootstrap/ - Bootstrap is Twitter's toolkit for kickst
 
 http://jqueryui.com/ - jQuery UI is the official jQuery user interface library. It provides interactions, widgets, effects, and theming for creating Rich Internet Applications.
 
-http://amplifyjs.com/ - AmplifyJS is a set of components designed to solve common web application problems (Request, Store, Pub/Sub) with a simplistic API.
-=======
-[Twitter Bootstrap](http://twitter.github.com/bootstrap)
-=================
-
-Bootstrap provides simple and flexible HTML, CSS, and Javascript for popular user interface components and interactions. In other words, it's a front-end toolkit for faster, more beautiful web development. It's created and maintained by [Mark Otto](http://twitter.com/mdo) and [Jacob Thornton](http://twitter.com/fat) at Twitter.
-
-To get started, checkout http://twitter.github.com/bootstrap!
->>>>>>> 6e7a5cd13303264215554159f1805d81858147cf
-
 http://knockoutjs.com/ - Simplify dynamic JavaScript UIs by applying the Model-View-View Model (MVVM) pattern.
-
-http://p.yusukekamiyamane.com/ - Fugue icons, provided under a These icons a Creative Commons Attribution 3.0 License. If you can’t or don’t want to provide attribution, please purchase a royalty-free license from the site.
-
-http://www.sitepoint.com/pure-css3-paper-curl/ - Pure CSS3 Paper Curls Without Images, used on the paper class
 
 Additional Libraries
 --------------------
@@ -39,18 +24,31 @@ prefering the built-in JSON object.
 
 There are also some snippets from the excellent http://html5boilerplate.com/
 
+Usage
+-----
 
-Quick start
------------
+You can use Twitter Bootstrap in one of two ways: just drop the compiled CSS into any new project and start cranking, or run LESS on your site and compile on the fly like a boss.
 
-Clone the repo, `git clone git@github.com:twitter/bootstrap.git`, or [download the latest release](https://github.com/twitter/bootstrap/zipball/master).
+Here's what the LESS version looks like:
 
+``` html
+<link rel="stylesheet/less" type="text/css" href="lib/bootstrap.less">
+<script src="less.js" type="text/javascript"></script>
+```
+
+Or if you prefer, the standard css way:
+
+``` html
+<link rel="stylesheet" type="text/css" href="bootstrap.css">
+```
+
+For more info, refer to the docs!
 
 
 Versioning
 ----------
 
-For transparency and insight into our release cycle, and for striving to maintain backward compatibility, Bootstrap will be maintained under the Semantic Versioning guidelines as much as possible.
+For transparency and insight into our release cycle, and for striving to maintain backwards compatibility, Bootstrap will be maintained under the Semantic Versioning guidelines as much as possible.
 
 Releases will be numbered with the follow format:
 
@@ -58,12 +56,11 @@ Releases will be numbered with the follow format:
 
 And constructed with the following guidelines:
 
-* Breaking backward compatibility bumps the major
-* New additions without breaking backward compatibility bumps the minor
+* Breaking backwards compatibility bumps the major
+* New additions without breaking backwards compatibility bumps the minor
 * Bug fixes and misc changes bump the patch
 
 For more information on SemVer, please visit http://semver.org/.
-
 
 
 Bug tracker
@@ -74,12 +71,10 @@ Have a bug? Please create an issue here on GitHub!
 https://github.com/twitter/bootstrap/issues
 
 
-
 Twitter account
 ---------------
 
-Keep up to date on announcements and more by following Bootstrap on Twitter, [@TwBootstrap](http://twitter.com/TwBootstrap).
-
+Keep up to date on announcements and more by following Bootstrap on Twitter, <a href="http://twitter.com/TwBootstrap">@TwBootstrap</a>.
 
 
 Mailing list
@@ -92,27 +87,18 @@ twitter-bootstrap@googlegroups.com
 http://groups.google.com/group/twitter-bootstrap
 
 
-
-IRC
----
-
-Server: irc.freenode.net
-
-Channel: ##twitter-bootstrap (the double ## is not a typo)
-
-
-
 Developers
 ----------
 
-We have included a makefile with convenience methods for working with the Bootstrap library.
+We have included a makefile with convenience methods for working with the bootstrap library.
 
-+ **build** - `make`
-Runs the LESS compiler to rebuild the `/less` files and compiles the docs pages. Requires lessc and uglify-js. <a href="http://twitter.github.com/bootstrap/less.html#compiling">Read more in our docs &raquo;</a>
++ **build** - `make build`
+This will run the less compiler on the bootstrap lib and generate a bootstrap.css and bootstrap.min.css file.
+The lessc compiler is required for this command to run.
 
 + **watch** - `make watch`
-This is a convenience method for watching just Less files and automatically building them whenever you save. Requires the Watchr gem.
-
+This is a convenience method for watching your less files and automatically building them whenever you save.
+Watchr is required for this command to run.
 
 
 Authors
@@ -129,20 +115,9 @@ Authors
 + http://github.com/fat
 
 
-
-Copyright and license
+License
 ---------------------
 
-Copyright 2012 Twitter, Inc.
+Copyright 2011 Twitter, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this work except in compliance with the License.
-You may obtain a copy of the License in the LICENSE file, or at:
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0

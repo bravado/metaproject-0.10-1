@@ -1,70 +1,46 @@
 <!doctype html>
 <html>
 <head>
-
     <meta charset="utf-8">
-    <link rel="stylesheet" href="tamviagens.css"/>
-    <link rel="stylesheet" href="../objectiveweb/console/css/metaproject.css"/>
+    <link rel="stylesheet" href="../css/metaproject.css"/>
+    <link rel="stylesheet" href="compendium.css"/>
 
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="../js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/modernizr.js"></script>
-    <script type="text/javascript" src="../js/knockout-2.0.0.js"></script>
+    <script type="text/javascript" src="../js/knockout-2.1.0.js"></script>
     <script type="text/javascript" src="../js/metaproject.js"></script>
+    <script type="text/javascript" src="../js/metaproject.maskinput.js"></script>
+    <script type="text/javascript" src="../js/metaproject.datepicker.js"></script>
 </head>
 
 <body class="light-gray with-header">
 <header class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="#">Examples</a>
-            <ul class="nav menu">
-                <li class="active"><a href="#pacotes">Pacotes</a></li>
-                <li>
-                    <a href="#etam">ETAM</a>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle">Examples <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#master-detail">Master/Detail</a></li>
-                        <!--li><a href="#agencias">Agências</a></li>
-                        <li><a href="#produtos">Produtos</a></li>
-                        <li><a href="#tiposvenda">Comissões</a></li>
-                        <li><a href="#usuarios">Usuários</a></li-->
-                    </ul>
-                </li>
-                <li class="dropdown"><a class="dropdown-toggle">Relatórios</a>
-                    <ul class="dropdown-menu">
-                        <li><a>Tam Viagens</a></li>
-                        <li><a>Etam</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <a class="brand" href="#">Metaproject Compendium</a>
+            <ul class="nav">
+                <li class="active"><a href="#datepicker">Datepicker</a></li>
+                </ul>
         </div>
     </div>
 </header>
 
 <div id="main-content">
-    <div class="main-content" role="main">
-        <div role="page" id="main">
-            <h1>Main content</h1>
-            <input id="teste"/>
-        </div>
-    </div>
-    <!-- dialogs, etc -->
+    <!-- each module will be loaded here -->
 </div>
 
-
+<div class="hide" id="main">
+    This is the default view
+</div>
 
 <script type="text/javascript">
     function init() {
         metaproject.route({
             '/':'#main',
-            'pacotes': 'pacotes.html',
-            'etam': 'etam.html',
-            'clientes': 'cadastro-clientes.html'
-        });
+            'datepicker': 'datepicker.html'
+        }, '#main-content');
     }
 
     function do_login(uid, passwd) {
@@ -105,14 +81,8 @@
         $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
 
 
-        $.ajax({
-            'url':'controller/auth.php',
-            'success':init,
-            'error':function () {
-                $('#login').dialog('open');
-            }
-        });
 
+        init();
         ko.applyBindings({});
 
     });
