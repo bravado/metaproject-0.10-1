@@ -21,8 +21,13 @@
         <div class="container">
             <a class="brand" href="#">Metaproject Compendium</a>
             <ul class="nav">
-                <li class="active"><a href="#datepicker">Datepicker</a></li>
-                </ul>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">UI Components <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#datepicker">Datepicker</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </header>
@@ -36,55 +41,12 @@
 </div>
 
 <script type="text/javascript">
-    function init() {
+    jQuery(function($) {
         metaproject.route({
             '/':'#main',
-            'datepicker': 'datepicker.html'
+            'datepicker':'ui/datepicker.html'
         }, '#main-content');
-    }
-
-    function do_login(uid, passwd) {
-        $.ajax({
-            'url':'controller/auth.php',
-            'type': 'POST',
-            'data': { uid: uid, passwd: passwd },
-            'success': function() {
-                $('#login').dialog('close');
-                init();
-            },
-            'error':function () {
-                alert('Login/senha inválidos');
-            }
-        });
-    }
-
-    jQuery(function ($) {
-
-        $.datepicker.regional['pt-BR'] = {
-            closeText: 'Fechar',
-            prevText: '&#x3c;Anterior',
-            nextText: 'Pr&oacute;ximo&#x3e;',
-            currentText: 'Hoje',
-            monthNames: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho',
-                'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-            monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun',
-                'Jul','Ago','Set','Out','Nov','Dez'],
-            dayNames: ['Domingo','Segunda-feira','Ter&ccedil;a-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sabado'],
-            dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
-            dayNamesMin: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
-            weekHeader: 'Sm',
-            dateFormat: 'dd/mm/yy',
-            firstDay: 0,
-            isRTL: false,
-            showMonthAfterYear: false,
-            yearSuffix: ''};
-        $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
-
-
-
-        init();
         ko.applyBindings({});
-
     });
 </script>
 </body>

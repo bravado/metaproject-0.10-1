@@ -2,7 +2,6 @@
 // Depends on jquery-ui
 
 
-
 /**
  * Version: 1.0 Alpha-1
  * Build Date: 13-Nov-2007
@@ -1783,34 +1782,51 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
             //initialize datepicker with some optional options
             var options = allBindingsAccessor().datepickerOptions || {};
 
-            //handle disposal (if KO removes by the template binding)
-            ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
-                $element.datepicker("destroy");
-            });
 
 
+            var observable = valueAccessor();
 
-            if(rangePicker) {
+            if (rangePicker) {
+
+                options = $.extend(options, {
+                    onChange:function () {
+                        //$element.change();
+                        var value = $element.val();
+
+                        if (typeof(observable) == 'function') {
+                            observable($element.val());
+                        }
+
+                        //console.log($element.data);
+                    }
+                });
+
                 $element.daterangepicker(options);
             }
             else {
                 $element.datepicker(options);
+
+                //handle the field changing
+                // TODO verificar se value é Date ou String e configurar de acordo
+                ko.utils.registerEventHandler(element, "change", function () {
+
+                    if (typeof(observable) == 'function') {
+
+                        if(observable() instanceof Date) {
+                            observable($(element).datepicker("getDate"));
+                        }
+                        else {
+                            observable($.datepicker.formatDate('yy-mm-dd', $(element).datepicker("getDate")));
+                        }
+                    }
+
+                });
+
+                //handle disposal (if KO removes by the template binding)
+                ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                    $element.datepicker("destroy");
+                });
             }
-
-
-            //handle the field changing
-            // TODO verificar se value é Date ou String e configurar de acordo
-            ko.utils.registerEventHandler(element, "change", function () {
-                var observable = valueAccessor();
-
-                if(typeof(observable) == 'function') {
-                    var date = $.datepicker.formatDate('yy-mm-dd', $(element).datepicker("getDate"));
-
-                    observable(date);
-                }
-
-
-            });
 
 
         },
@@ -1824,15 +1840,16 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 
             var date;
 
-            if(typeof(value) == 'string') {
+            if (typeof(value) == 'string') {
                 date = value.split('-');
                 date = new Date(date[0], date[1] - 1, date[2]);
+            }
+            else if(value instanceof Date) {
+                date = value;
             }
             else {
                 return;
             }
-
-
 
 
             $(element).datepicker("setDate", date);
