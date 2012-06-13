@@ -33,7 +33,6 @@ window.log = function () {
 //    nope:'json2.js'
 //});
 
-
 // Initialize metaproject
 (function (window, $) {
     window.metaproject = {
@@ -67,6 +66,7 @@ window.log = function () {
 
                             if(src.length > 0) {
                                 // If its an element, get the relative DOM node
+                                // TODO data('loaded') is an ugly hack
                                 main_content.data('loaded', path).html(src.html());
                             }
                             else {
@@ -74,7 +74,6 @@ window.log = function () {
                                     path = path + '?' + new Date().time;
                                 }
 
-                                console.log(path);
                                 main_content.include(path);
                             }
                         }

@@ -1,3 +1,5 @@
+(Documentation will be updated when we implement require.js or some other dependency management/build system)
+
 ## 2.0 BOOTSTRAP JS PHILOSOPHY
 These are the high-level design rules which guide the development of Bootstrap's plugin apis.
 
