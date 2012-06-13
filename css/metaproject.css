@@ -5,8 +5,6 @@ span.ui-icon { margin: 0 4px; }
 .icon span.ui-icon { float: left; }
 .icon-right span.ui-icon { float: right; }
 
-.loading { background:  url('../img/loading.gif') no-repeat center center; height: 24px;}
-
 .main-content { position: absolute; overflow: auto; width: 100%; top:0; bottom: 0; left: 0; }
 body { overflow: auto;}
 body.with-header { padding-top: 40px; }
