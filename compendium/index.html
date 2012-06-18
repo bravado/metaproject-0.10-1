@@ -27,9 +27,17 @@
             <a class="brand" href="#">Metaproject Compendium</a>
             <ul class="nav">
                 <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">Bootstrap <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#bootstrap-forms">Forms</a></li>
+                        <li><a href="#bootstrap-scrollspy">Scrollspy</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle">UI Components <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#datepicker">Datepicker</a></li>
+                        <li><a href="#ui-datepicker">Datepicker</a></li>
+                        <li><a href="#ui-select">Select</a></li>
                     </ul>
                 </li>
             </ul>
@@ -37,7 +45,7 @@
     </div>
 </header>
 
-<div id="main-content">
+<div class="container page" id="main-content">
     <!-- each module will be loaded here -->
 </div>
 
@@ -49,7 +57,10 @@
     jQuery(function($) {
         metaproject.route({
             '/':'#main',
-            'datepicker':'ui/datepicker.html'
+            'bootstrap-forms': 'bootstrap/forms.html',
+            'bootstrap-scrollspy': 'bootstrap/scrollspy.html',
+            'ui-datepicker':'ui/datepicker.html',
+            'ui-select': 'ui/select.html'
         }, '#main-content');
 
         ko.applyBindings({});
