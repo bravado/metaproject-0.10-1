@@ -62,25 +62,29 @@
 
 <script type="text/javascript">
 
-    function DatePickerDemo() {
-        var self = this;
 
-        self.date1 = ko.observable('2012-05-10');
-        self.date2 = ko.observable(new Date(2012, 4, 10));
-        self.range1 = ko.observable();
-
-        self.model = ko.computed(function () {
-            var me = ko.toJS(this);
-            delete me.model;
-
-            return ko.toJSON(me);
-        }, this);
-
-    }
 
     // Module initialization
     jQuery(function ($) {
-        $('#datepicker').applyBindings(new DatePickerDemo());
+
+        // ViewModel
+        function DatePickerModel() {
+            var self = this;
+
+            self.date1 = ko.observable('2012-05-10');
+            self.date2 = ko.observable(new Date(2012, 4, 10));
+            self.range1 = ko.observable();
+
+            self.model = ko.computed(function () {
+                var me = ko.toJS(this);
+                delete me.model;
+
+                return ko.toJSON(me);
+            }, this);
+
+        }
+
+        $('#datepicker').applyBindings(new DatePickerModel());
     });
 </script>
 </body>

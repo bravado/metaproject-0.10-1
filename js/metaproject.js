@@ -28,62 +28,283 @@ window.log = function () {
 })());
 
 // JSON implementation for browsers that do not support it
-//Modernizr.load({
-//    test:window.JSON,
-//    nope:'json2.js'
-//});
+Modernizr.load({
+    test:window.JSON,
+    nope:'json2.js'
+});
 
-// Initialize metaproject
-(function (window, $) {
-    window.metaproject = {
-        routes:{},
-        debug: 0,
-        init:function (target) {
-            if (typeof(target) == 'string') {
-                target = $(target);
+(function (window, $, ko) {
+    var metaproject = window.metaproject = {};
+    metaproject.Model = function (defaults, mapping) {
+
+        return function (data) {
+
+            data = $.extend({}, defaults, data);
+
+            ko.mapping.fromJS(data, mapping || {}, this);
+        }
+
+    };
+
+    metaproject.DataSource = function (base_url, options) {
+        var self = this;
+
+        options = $.extend({
+            key:'id',
+            model:function (data) {
+                return data;
+            },
+            filter:{}
+        }, options);
+
+        self.save = function (model, callback) {
+            var id = ko.utils.unwrapObservable(model[options.key]);
+            if(id) {
+                self.put(id, ko.mapping.toJSON(model), callback);
             }
-        },
-        route:function (routes, main_content) {
-            this.routes = routes;
-            if(typeof(main_content) == 'string') {
-                main_content = $(main_content);
+            else {
+                self.post(ko.mapping.toJSON(model), callback);
+            }
+        };
+
+        // get(path || {model}, params);
+        // get(path || {model}, params, callback);
+        // get(path || {model}, callback);
+        self.get = function (path, params, callback) {
+
+            // get({model})
+            if (typeof(path) != 'string') {
+                // TODO existe path[key] ?
+                path = '/' + ko.utils.unwrapObservable(path[options.key]);
             }
 
-            $(window).on('hashchange',
-                function (e) {
+            if (typeof(params) == 'function') {
+                callback = params;
+                params = {}
+            }
 
-                    var params = window.location.hash.substr(1).split('/');
-
-                    if (params[0] == '') {
-                        params[0] = '/';
-                    }
-
-                    var path = metaproject.routes[params[0]];
-                    if (undefined != path) {
-                        if (typeof(path) == 'string') {
-
-                            var src = jQuery(path);
-
-                            if(src.length > 0) {
-                                // If its an element, get the relative DOM node
-                                // TODO data('loaded') is an ugly hack
-                                main_content.data('loaded', path).html(src.html());
+            return jQuery.ajax({
+                    url:base_url + path,
+                    data:params || {},
+                    dataType:'json',
+                    type:'GET',
+                    error:self.errorHandler,
+                    success:function (data) {
+                        if (typeof(callback) == 'function') {
+                            if (data instanceof Array) {
+                                callback(jQuery.map(data, function (e, i) {
+                                    return new options.model(e);
+                                }));
                             }
                             else {
-                                if(metaproject.debug) {
-                                    path = path + '?' + new Date().time;
-                                }
-
-                                main_content.include(path);
+                                callback(new options.model(data));
                             }
                         }
                     }
-                    else {
-                        main_content.text('non ecsiste');
+                }
+            );
+        };
+
+        self.post = function (data, callback) {
+            return jQuery.ajax({
+                url:base_url,
+                dataType:'json',
+                type:'POST',
+                data:data,
+                success: callback,
+                error:self.errorHandler
+            });
+        };
+
+        self.put = function (id, data, callback) {
+            return jQuery.ajax({
+                url:base_url + '/' + id,
+                dataType:'json',
+                type:'PUT',
+                data:data,
+                success: callback,
+                error:self.errorHandler
+            });
+        };
+
+        self.del = function (id) {
+            return jQuery.ajax({
+                url:base_url + '/' + id,
+                dataType:'json',
+                type:'DELETE',
+                data:data,
+                error:self.errorHandler
+            });
+        };
+
+        // an observable that retrieves its value when first bound
+        // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
+        self.data = (function (datasource) {
+
+            var _value = ko.observable(),
+                _hash = ko.observable(null);
+
+            var result = ko.computed({
+                read:function () {
+                    var newhash = ko.toJSON(result.filter()) + result.page();
+                    if (_hash() != newhash) {
+                        datasource.get('/', result.filter(), function (newData) {
+                            _hash(newhash);
+                            _value(newData);
+                        });
                     }
-                }).trigger('hashchange');
-        }
+
+                    //always return the current value
+                    return _value();
+                },
+//            write: function(newValue) {
+//                _value(newValue);
+//
+//            },
+                deferEvaluation:true  //do not evaluate immediately when created
+            });
+
+            result.page = ko.observable(0);
+            result.page.total = ko.observable(0);
+            result.page.next = function () {
+                if (result.page.total() > result.page()) {
+                    result.page(result.page() + 1);
+                }
+            };
+            result.page.prev = function () {
+                if (result.page() > 1) {
+                    result.page(result.page() - 1);
+                }
+            };
+
+            result.filter = ko.observable(options.filter);
+            result.filter.set = function (param, value) {
+                result.filter()[param] = value;
+                result.filter.valueHasMutated();
+            };
+
+            result.reload = function () {
+                _hash(null);
+            };
+
+            return result;
+        })(self);
+
+
     };
+
+
+    metaproject.Application = function (params) {
+        var self = this;
+
+        self.debug = 0;
+
+        self.init = function () {
+
+        };
+
+        $.extend(this, params);
+
+        self.run = function () {
+            ko.applyBindings(self);
+            self.init.call(self);
+        };
+
+    };
+
+    metaproject.Loader = function (routes, params) {
+        var options = {
+            default:'/',
+            error:function (e) {
+                alert(e.responseText);
+            }
+        };
+
+        $.extend(options, params);
+
+        var _content = ko.observable(null);
+
+        _content.id = ko.observable(null);
+
+        _content.load = function (id, callback) {
+
+            // default = /
+            if (undefined == id || id == '') {
+                id = '/';
+            }
+
+            if (id == _content.id()) {
+                return;
+            }
+
+            var path = routes[id];
+
+            if (undefined == routes[id]) {
+                _content.id(null);
+                _content('Route ' + id + ' not found');
+                return;
+            }
+
+            if (typeof(path) == 'string') {
+
+                if (path[0] == '#') {
+                    var src = jQuery(path);
+
+                    if (src.length > 0) { // If its an element, get the relative DOM node
+                        _content(null);
+                        _content.id(id);
+                        _content(src.html());
+                        if (typeof(callback) == 'function') {
+                            callback();
+                        }
+
+                    }
+                    else {
+                        _content.id(null);
+                        _content('Element ' + path + ' not found');
+                    }
+                }
+                else {
+                    var params = {};
+
+                    if (metaproject.debug) {
+                        params.ts = new Date().getTime();
+                    }
+
+                    $.ajax({
+                        url:path,
+                        type:'GET',
+                        data:params,
+                        dataType:'html',
+                        success:function (data) {
+                            _content(null);
+                            _content.id(id);
+                            _content(data);
+
+                            if (typeof(callback) == 'function') {
+                                callback();
+                            }
+
+                        },
+                        error:function (e) {
+                            _content.id(null);
+                            _content(null);
+                            options.error(e);
+                        }
+                    });
+                }
+            }
+        };
+
+        _content.load(options.default);
+        return _content;
+    };
+
+
+})(window, jQuery, ko);
+
+// Initialize metaproject
+(function (window, $) {
 
     // Core plugins
 
@@ -93,7 +314,7 @@ window.log = function () {
     /* Includes and initializes another file on the element */
     $.fn.include = function (url, callback) {
         var self = this;
-        if(self.data('loaded') == url) {
+        if (self.data('loaded') == url) {
             return this;
         }
         else {
@@ -151,15 +372,11 @@ window.log = function () {
     };
 
     $.fn.applyBindings = function (viewModel) {
-        this.data('viewModel', viewModel).each(function(idx, element) {
+        this.data('viewModel', viewModel).each(function (idx, element) {
             ko.applyBindings(viewModel, element);
         });
     };
 
-    $(function () {
-        // This initializes all dynamic elements on the main document
-        metaproject.init($(document));
-    });
 })(window, jQuery);
 
 
@@ -213,9 +430,6 @@ ko.bindingHandlers.autocomplete = {
         }
     }
 };
-
-
-
 
 ko.bindingHandlers.dialog = {
     init:function (element, valueAccessor, allBindingsAccessor, viewModel) {

@@ -10,6 +10,7 @@
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/modernizr.js"></script>
     <script type="text/javascript" src="../js/knockout-2.1.0.js"></script>
+    <script type="text/javascript" src="../js/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="../js/knockout-repeat.js"></script>
     <script type="text/javascript" src="../js/koExternalTemplateEngine.js"></script>
     <script type="text/javascript" src="../js/metaproject.js"></script>
@@ -38,6 +39,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="#ui-datepicker">Datepicker</a></li>
                         <li><a href="#ui-select">Select</a></li>
+                        <li><a href="#ui-fileupload">File Upload</a></li>
                     </ul>
                 </li>
             </ul>
@@ -45,7 +47,7 @@
     </div>
 </header>
 
-<div class="container page" id="main-content">
+<div class="container page" id="main-content" data-bind="html: current_module">
     <!-- each module will be loaded here -->
 </div>
 
@@ -54,16 +56,31 @@
 </div>
 
 <script type="text/javascript">
-    jQuery(function($) {
-        metaproject.route({
+    jQuery(function ($) {
+        var routes = {
             '/':'#main',
-            'bootstrap-forms': 'bootstrap/forms.html',
-            'bootstrap-scrollspy': 'bootstrap/scrollspy.html',
+            'bootstrap-forms':'bootstrap/forms.html',
+            'bootstrap-scrollspy':'bootstrap/scrollspy.html',
             'ui-datepicker':'ui/datepicker.html',
-            'ui-select': 'ui/select.html'
-        }, '#main-content');
+            'ui-select':'ui/select.html',
+            'ui-fileupload':'ui/fileupload.html'
+        };
 
-        ko.applyBindings({});
+        var app = window.app = new metaproject.Application(
+                {
+                    init:function () {
+                        // runs on app initialization (check for auth, etc)
+                    },
+                    current_module: metaproject.Loader(routes)
+                }
+        );
+
+        app.run();
+
+        $(window).on('hashchange',function (e) {
+            var params = window.location.hash.substr(1);
+            app.current_module.load(params);
+        }).trigger('hashchange');
     });
 </script>
 </body>
