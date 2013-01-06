@@ -1,3 +1,4 @@
+/*global jQuery:true, ko:true */
 // Mask/money input
 // Provides the .mask and .money binding handlers
 
@@ -683,13 +684,13 @@
         },
         update:function (element, valueAccessor) {
             var value = ko.utils.unwrapObservable(valueAccessor());
-            // TODO verificar se value é Date ou String e configurar de acordo
+
             if (typeof(value) != 'number') {
                 value = parseFloat(value) || 0;
             }
 
             $(element).trigger("money.update", [ value ]);
         }
-    }
+    };
 })(jQuery, ko);
 // - end of mask/money input

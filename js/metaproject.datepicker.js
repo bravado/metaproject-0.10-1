@@ -1,3 +1,4 @@
+/*global jQuery:true, ko:true */
 // Datepicker input
 // Depends on jquery-ui
 
@@ -1856,4 +1857,4 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
         }
     };
 })(jQuery, ko);
-
+// - end of Datepicker

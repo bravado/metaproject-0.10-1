@@ -1,61 +1,87 @@
-BOOTSTRAP = ./docs/assets/css/bootstrap.css
-BOOTSTRAP_LESS = ./less/bootstrap.less
-BOOTSTRAP_RESPONSIVE = ./docs/assets/css/bootstrap-responsive.css
-BOOTSTRAP_RESPONSIVE_LESS = ./less/responsive.less
+# build release
+# based on the elrte build script by Troex Nevelin <troex@fury.scancode.ru>
+
+Q=   @
+CAT= cat
+RM=  rm
+CP=  cp
+SRC= .
+DST= build
+
+# BOOTSTRAP
+#BOOTSTRAP_RESPONSIVE = ./css/bootstrap-responsive.css
+#BOOTSTRAP_RESPONSIVE_LESS = ./less/responsive.less
 LESS_COMPRESSOR ?= `which lessc`
-WATCHR ?= `which watchr`
+UGLIFYJS ?= `which uglifyjs`
+JAVA ?= `which java`
+YUI_COMPRESSOR= ../yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar
 
-#
-# BUILD DOCS
-#
+# define objects
 
-docs: bootstrap
-	rm docs/assets/bootstrap.zip
-	zip -r docs/assets/bootstrap.zip bootstrap
-	rm -r bootstrap
-	lessc ${BOOTSTRAP_LESS} > ${BOOTSTRAP}
-	lessc ${BOOTSTRAP_RESPONSIVE_LESS} > ${BOOTSTRAP_RESPONSIVE}
-	node docs/build
-	cp img/* docs/assets/img/
-	cp js/*.js docs/assets/js/
-	cp js/tests/vendor/jquery.js docs/assets/js/
+# metaproject
+metaproject_less = ./less/metaproject.less
 
-#
-# BUILD SIMPLE BOOTSTRAP DIRECTORY
-# lessc & uglifyjs are required
-#
+metaproject_css=			${SRC}/css/metaproject.css
+metaproject_css_full=       ${DST}/metaproject.full.css
+metaproject_css_min=		${DST}/metaproject.min.css
+metaproject_css_obj=		${SRC}/css/jquery-ui-1.8.16.custom.css \
+			${SRC}/css/metaproject.css
 
-bootstrap:
-	mkdir -p bootstrap/img
-	mkdir -p bootstrap/css
-	mkdir -p bootstrap/js
-	cp img/* bootstrap/img/
-	lessc ${BOOTSTRAP_LESS} > bootstrap/css/bootstrap.css
-	lessc --compress ${BOOTSTRAP_LESS} > bootstrap/css/bootstrap.min.css
-	lessc ${BOOTSTRAP_RESPONSIVE_LESS} > bootstrap/css/bootstrap-responsive.css
-	lessc --compress ${BOOTSTRAP_RESPONSIVE_LESS} > bootstrap/css/bootstrap-responsive.min.css
-	cat js/bootstrap-transition.js js/bootstrap-alert.js js/bootstrap-button.js js/bootstrap-carousel.js js/bootstrap-collapse.js js/bootstrap-dropdown.js js/bootstrap-modal.js js/bootstrap-tooltip.js js/bootstrap-popover.js js/bootstrap-scrollspy.js js/bootstrap-tab.js js/bootstrap-typeahead.js > bootstrap/js/bootstrap.js
-	uglifyjs -nc bootstrap/js/bootstrap.js > bootstrap/js/bootstrap.min.tmp.js
-	echo "/**\n* Bootstrap.js by @fat & @mdo\n* Copyright 2012 Twitter, Inc.\n* http://www.apache.org/licenses/LICENSE-2.0.txt\n*/" > bootstrap/js/copyright.js
-	cat bootstrap/js/copyright.js bootstrap/js/bootstrap.min.tmp.js > bootstrap/js/bootstrap.min.js
-	rm bootstrap/js/copyright.js bootstrap/js/bootstrap.min.tmp.js
-
-#
-# MAKE FOR GH-PAGES 4 FAT & MDO ONLY (O_O  )
-#
-
-gh-pages: docs
-	rm -f ../bootstrap-gh-pages/assets/bootstrap.zip
-	node docs/build production
-	cp -r docs/* ../bootstrap-gh-pages
-
-#
-# WATCH LESS FILES
-#
-
-watch:
-	echo "Watching less files..."; \
-	watchr -e "watch('less/.*\.less') { system 'make' }"
+metaproject_js=			${DST}/metaproject.full.js
+metaproject_js_min=		${DST}/metaproject.min.js
+metaproject_js_obj=		${SRC}/js/metaproject.js \
+			${SRC}/js/metaproject.*.js
 
 
-.PHONY: docs watch gh-pages
+PHONY:     help
+all:       css metaproject
+clean:
+	${RM} -f ${metaproject_css} ${metaproject_css_full} ${metaproject_css_min} \
+	${metaproject_js} ${metaproject_js_min}
+
+help:
+	@echo 'Makefile for release build automation'
+	@echo ' Packages:'
+	@echo '   metaproject   - concatenate and compress metaproject base css and js files'
+	@echo ''
+	@echo ' MAKE targets:'
+	@echo '   all           - build all packages'
+	@echo '   help          - show this message'
+	@echo '   clean     - remove all generated files from DST (${DST})'
+	@echo ''
+	@echo ' Individual package targets are possible. To build single package replace PACKAGE'
+	@echo ' with name from "Packages" section:'
+	@echo '   PACKAGE'
+	@echo '   PACKAGE-clean'
+
+#	${LESS_COMPRESSOR} --compress ${metaproject_less} > ${metaproject_css_min}
+#	${LESS_COMPRESSOR} ${BOOTSTRAP_RESPONSIVE_LESS} > css/bootstrap-responsive.css
+#	${LESS_COMPRESSOR} --compress ${BOOTSTRAP_RESPONSIVE_LESS} > css/bootstrap-responsive.min.css
+
+#bootstrap-clean:
+#    ${RM} -f css/bootstrap.css css/bootstrap.min.css \
+#    css/bootstrap-responsive.css css/bootstrap-responsive.min.css
+
+metaproject: ${metaproject_css} ${metaproject_js}
+
+${metaproject_css}:
+	${LESS_COMPRESSOR} ${metaproject_less} > $@
+	${CAT} ${metaproject_css_obj} > ${metaproject_css_full}
+
+${metaproject_js}:
+	${CAT} ${metaproject_js_obj} > $@
+	uglifyjs -nc $@ > ${metaproject_js_min}
+
+
+metaproject-compress:
+	${JAVA} -jar ${YUI_COMPRESSOR} \
+        --charset utf8 --type css --line-break 1 \
+        -o ${metaproject_css_min} ${metaproject_css}
+
+# compressor
+ifdef YUI_COMPRESSOR
+metaproject: metaproject-compress
+endif
+
+
+

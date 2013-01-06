@@ -2,23 +2,47 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../css/metaproject.css"/>
-    <link rel="stylesheet" href="compendium.css"/>
+    <title>The Metaproject Compendium</title>
 
-    <script type="text/javascript" src="../js/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/modernizr.js"></script>
-    <script type="text/javascript" src="../js/knockout-2.1.0.js"></script>
-    <script type="text/javascript" src="../js/knockout.mapping-latest.js"></script>
-    <script type="text/javascript" src="../js/knockout-repeat.js"></script>
-    <script type="text/javascript" src="../js/koExternalTemplateEngine.js"></script>
+    <!-- base dependencies -->
+    <script type="text/javascript" src="../build/libs/jquery/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="../build/libs/jquery/jquery-ui-1.9.1.custom.min.js"></script>
+    <script type="text/javascript" src="../build/libs/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../build/libs/modernizr.js"></script>
+    <script type="text/javascript" src="../build/libs/knockout/knockout-2.2.0.js"></script>
+    <script type="text/javascript" src="../build/libs/knockout/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src="../build/libs/knockout/knockout-repeat.js"></script>
+    <script type="text/javascript" src="../build/libs/knockout/knockout-postbox.min.js"></script>
+    <script type="text/javascript" src="../build/libs/knockout/koExternalTemplateEngine.js"></script>
+
+    <!-- metaproject -->
+    <link rel="stylesheet" href="../build/metaproject.full.css"/>
+
+    <!-- won't use the cat/minified version for easier debugging -->
     <script type="text/javascript" src="../js/metaproject.js"></script>
-    <script type="text/javascript" src="../js/tiny_mce/tiny_mce.js"></script>
-    <script type="text/javascript" src="../js/metaproject.tinymce.js"></script>
+
+    <!-- additional components -->
     <script type="text/javascript" src="../js/metaproject.fileupload.js"></script>
     <script type="text/javascript" src="../js/metaproject.maskinput.js"></script>
     <script type="text/javascript" src="../js/metaproject.datepicker.js"></script>
+
+    <!-- elRTE/elFinder -->
+    <link rel="stylesheet" href="../build/libs/elrte/css/elrte.min.css"/>
+    <link rel="stylesheet" href="../build/libs/elrte/css/elfinder.min.css"/>
+    <script type="text/javascript" src="../build/libs/elrte/js/elrte.min.js"></script>
+    <script type="text/javascript" src="../build/libs/elrte/js/elfinder.min.js"></script>
+    <script type="text/javascript" src="../js/metaproject.elrte.js"></script>
+
+    <!-- translations (OPTIONAL) -->
+    <script src="../build/libs/elrte/js/i18n/elfinder.pt_BR.js"></script>
+    <script src="../build/libs/elrte/js/i18n/elrte.pt_BR.js"></script>
+
+    <!-- tinyMCE -->
+    <script type="text/javascript" src="../build/libs/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="../js/metaproject.tinymce.js"></script>
+
+    <!-- Application Styles -->
+    <link rel="stylesheet" href="compendium.css"/>
 </head>
 
 <body class="light-gray with-header">
@@ -38,8 +62,9 @@
                     <a data-toggle="dropdown" class="dropdown-toggle">UI Components <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="#ui-datepicker">Datepicker</a></li>
-                        <li><a href="#ui-select">Select</a></li>
+                        <li><a href="#ui-elrte">elRTE and elFinder</a></li>
                         <li><a href="#ui-fileupload">File Upload</a></li>
+                        <li><a href="#ui-select">Select</a></li>
                     </ul>
                 </li>
             </ul>
@@ -63,7 +88,8 @@
             'bootstrap-scrollspy':'bootstrap/scrollspy.html',
             'ui-datepicker':'ui/datepicker.html',
             'ui-select':'ui/select.html',
-            'ui-fileupload':'ui/fileupload.html'
+            'ui-fileupload':'ui/fileupload.html',
+            'ui-elrte': 'ui/elrte.html'
         };
 
         var app = window.app = new metaproject.Application(
@@ -74,6 +100,8 @@
                     current_module: metaproject.Loader(routes)
                 }
         );
+
+        metaproject.debug = true;
 
         app.run();
 

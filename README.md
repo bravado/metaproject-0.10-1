@@ -1,5 +1,24 @@
 metaproject
 ===========
+
+Work in progress... development used to happen on the objectiveweb tree.
+
+Now that the build system is implemented, other projects should use the minimized file.
+
+* TODO
+    * Documentation and Examples (Compendium)
+        * Application and Loader
+        * DataSource (.delete ?)
+        * Model
+        * Data-binding (knockoutjs)
+        * Fileupload
+        * Mask input
+        * Tinymce
+
+* Far future
+    * requirejs module
+    * use bower or some other package management system
+
 Main libraries
 --------------
 http://twitter.github.com/bootstrap/ - Bootstrap is Twitter's toolkit for kickstarting CSS for websites, apps, and more. It includes base CSS styles for typography, forms, buttons, tables, grids, navigation, alerts, and more.

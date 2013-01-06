@@ -1,7 +1,7 @@
 // Rich Text Editor
 // Depends on tinymce, options are passed via the tinymceOptions binding
 // Binding structure taken from http://jsfiddle.net/rniemeyer/BwQ4k/
-(undefined != window.tinymce) && (function ($, ko, tinymce) {
+(undefined !== window.tinymce) && (function ($, ko, tinymce) {
     ko.bindingHandlers.tinymce = {
         init:function (element, valueAccessor, allBindingsAccessor, context) {
             var options = allBindingsAccessor().tinymceOptions || {};
@@ -47,6 +47,7 @@
 //            }
 //        }
         }
-    }
+    };
 })(jQuery, ko, tinymce);
-// - end of rich text editor
+// - end of tinymce
+

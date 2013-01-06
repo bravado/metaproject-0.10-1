@@ -1,3 +1,5 @@
+
+// start fileupload
 /*
  * jQuery Iframe Transport Plugin 1.4
  * https://github.com/blueimp/jQuery-File-Upload
@@ -1076,9 +1078,10 @@
 
 }));
 
-
+/*global jQuery:true, ko:true */
 // Fileupload
 (function ($, ko) {
+    "use strict";
     ko.bindingHandlers.fileupload = {
         init:function (element, valueAccessor) {
             var options = ko.utils.unwrapObservable(valueAccessor());
@@ -1095,6 +1098,6 @@
             $(element).fileupload('option', options);
 
         }
-    }
+    };
 })(jQuery, ko);
 // - end of Fileupload

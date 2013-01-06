@@ -1,4 +1,7 @@
+/*global jQuery: true */
 (function ($) {
+    "use strict";
+
     $.datepicker.regional['pt-BR'] = {
         closeText:'Fechar',
         prevText:'&#x3c;Anterior',
