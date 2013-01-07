@@ -1,4 +1,5 @@
-(function (window, $, ko) {
+/*global alert: true, jQuery: true, ko: true, _: true */
+(function (window, $, ko, _) {
     "use strict";
 
     var metaproject = window.metaproject = {};
@@ -37,7 +38,7 @@
         self.on = $self.on;
 
         self._id = function (model_or_id) {
-            if (typeof(model_or_id) == 'object') {
+            if (typeof(model_or_id) === 'object') {
                 return ko.utils.unwrapObservable(model_or_id[options.key]);
             }
             else {
@@ -85,7 +86,7 @@
                     type: 'GET',
                     error: self.errorHandler,
                     success: function (data) {
-                        if (typeof(callback) == 'function') {
+                        if (typeof(callback) === 'function') {
                             if (data instanceof Array) {
                                 callback($.map(data, function (e, i) {
                                     return new options.model(e);
@@ -134,14 +135,14 @@
             });
         };
 
-        self.delete = function (model, callback) {
+        self.destroy = function (model, callback) {
             return $.ajax({
                 url: base_url + '/' + self._id(model),
                 dataType: 'json',
                 type: 'DELETE',
                 success: function (data) {
-                    $self.trigger('delete', data);
-                    $self.trigger('changed', { action: 'delete', data: data});
+                    $self.trigger('destroy', data);
+                    $self.trigger('changed', { action: 'destroy', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
@@ -167,12 +168,12 @@
                 editor.current(ds.create(values));
             };
 
-            editor.delete = function () {
+            editor.destroy = function () {
 
-                self.delete(editor.current());
+                self.destroy(editor.current());
 
-                if (typeof(callbacks.delete) === 'function') {
-                    callbacks.delete();
+                if (typeof(callbacks.destroy) === 'function') {
+                    callbacks.destroy();
                 }
             };
 
@@ -205,7 +206,7 @@
             var result = ko.computed({
                 read: function () {
                     var newhash = ko.toJSON(result.filter());
-                    if (_hash() != newhash) {
+                    if (_hash() !== newhash) {
                         result.loading(true);
                         self.get('/', result.filter(), function (newData) {
                             _hash(newhash);
@@ -245,7 +246,7 @@
                 var filter = result.filter();
 
                 _.keys(filter).forEach(function(key) {
-                    if(key[0] != '_') {
+                    if(key[0] !== '_') {
                         delete filter[key];
                     }
                 });
@@ -263,12 +264,12 @@
                 me.reload = function () {
                     me.loading(true);
                     var x = _.filter(_.keys(result.filter()), function(value, index, list) {
-                        return value[0] != '_';
+                        return value[0] !== '_';
                     });
                     var local_params = _.extend(_.pick(result.filter(), x), params);
 
                     self.get('/', local_params, function (newData) {
-                        if (typeof(transform) == 'function') {
+                        if (typeof(transform) === 'function') {
                             me(transform(newData));
                         }
                         else {
@@ -327,7 +328,7 @@
 
             var path = routes[id];
 
-            if (undefined == routes[id]) {
+            if (undefined === routes[id]) {
                 _content.id(null);
                 _content('Route ' + id + ' not found');
                 return;
@@ -369,7 +370,7 @@
                             _content.id(id);
                             _content(data);
 
-                            if (typeof(callback) == 'function') {
+                            if (typeof(callback) === 'function') {
                                 callback();
                             }
 
@@ -410,7 +411,7 @@
 
             ko.mapping.fromJS(data, mapping || {}, instance);
 
-        }
+        };
 
     };
 
@@ -456,7 +457,7 @@
         }
     };
 
-})(window, jQuery, ko);
+})(window, jQuery, ko, _);
 
 
 /*global jQuery:true, ko:true */
@@ -2321,7 +2322,7 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 // - end of Datepicker
 /*global jQuery:true, ko:true, elRTE:true */
 // ElRTE / ElFinder
-(function ($, ko, elRTE) {
+(undefined !== window.elRTE) &&(function ($, ko, elRTE) {
     "use strict";
 
     // From underscore, will debounce elrte updates on window.focus
@@ -2333,8 +2334,8 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
                 timeout = null;
                 func.apply(context, args);
             };
-            if (debounce) clearTimeout(timeout);
-            if (debounce || !timeout) timeout = setTimeout(throttler, wait);
+            if (debounce) { clearTimeout(timeout); }
+            if (debounce || !timeout) { timeout = setTimeout(throttler, wait); }
         };
     };
 
@@ -4192,10 +4193,13 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
         }
     };
 })(jQuery, ko);
-// - end of mask/money input// Rich Text Editor
+// - end of mask/money input/*global $: true, ko: true, tinymce: true */
+// Rich Text Editor
 // Depends on tinymce, options are passed via the tinymceOptions binding
 // Binding structure taken from http://jsfiddle.net/rniemeyer/BwQ4k/
 (undefined !== window.tinymce) && (function ($, ko, tinymce) {
+    "use strict";
+
     ko.bindingHandlers.tinymce = {
         init:function (element, valueAccessor, allBindingsAccessor, context) {
             var options = allBindingsAccessor().tinymceOptions || {};
@@ -4212,7 +4216,7 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
             }
 
             if (!element.id) {
-                element.id = 'mp_rte_' + new Date().getTime();
+                element.id = 'mp_tinymce_' + new Date().getTime();
             }
 
             options = $.extend({

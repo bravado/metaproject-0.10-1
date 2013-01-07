@@ -1,7 +1,10 @@
+/*global $: true, ko: true, tinymce: true */
 // Rich Text Editor
 // Depends on tinymce, options are passed via the tinymceOptions binding
 // Binding structure taken from http://jsfiddle.net/rniemeyer/BwQ4k/
 (undefined !== window.tinymce) && (function ($, ko, tinymce) {
+    "use strict";
+
     ko.bindingHandlers.tinymce = {
         init:function (element, valueAccessor, allBindingsAccessor, context) {
             var options = allBindingsAccessor().tinymceOptions || {};
@@ -18,7 +21,7 @@
             }
 
             if (!element.id) {
-                element.id = 'mp_rte_' + new Date().getTime();
+                element.id = 'mp_tinymce_' + new Date().getTime();
             }
 
             options = $.extend({

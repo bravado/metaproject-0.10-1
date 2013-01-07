@@ -1,6 +1,6 @@
 /*global jQuery:true, ko:true, elRTE:true */
 // ElRTE / ElFinder
-(function ($, ko, elRTE) {
+(undefined !== window.elRTE) &&(function ($, ko, elRTE) {
     "use strict";
 
     // From underscore, will debounce elrte updates on window.focus
@@ -12,8 +12,8 @@
                 timeout = null;
                 func.apply(context, args);
             };
-            if (debounce) clearTimeout(timeout);
-            if (debounce || !timeout) timeout = setTimeout(throttler, wait);
+            if (debounce) { clearTimeout(timeout); }
+            if (debounce || !timeout) { timeout = setTimeout(throttler, wait); }
         };
     };
 

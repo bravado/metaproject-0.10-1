@@ -6,9 +6,10 @@ Work in progress... development used to happen on the objectiveweb tree.
 Now that the build system is implemented, other projects should use the minimized file.
 
 * TODO
+	* Remove underscore dependency on metaproject.js
     * Documentation and Examples (Compendium)
         * Application and Loader
-        * DataSource (.delete ?)
+        * DataSource
         * Model
         * Data-binding (knockoutjs)
         * Fileupload
@@ -46,7 +47,15 @@ There are also some snippets from the excellent http://html5boilerplate.com/
 Usage
 -----
 
-You can use Twitter Bootstrap in one of two ways: just drop the compiled CSS into any new project and start cranking, or run LESS on your site and compile on the fly like a boss.
+All library and css dependencies are bundled on the build root. The
+starter template showcases the basic usage.
+
+The Compendium holds documentation and examples for the ui components and
+general application structure.
+
+You can use Twitter Bootstrap in one of two ways: just drop the compiled CSS
+into any new project and start cranking, or run LESS on your site and compile
+on the fly like a boss.
 
 Here's what the LESS version looks like:
 
@@ -87,24 +96,7 @@ Bug tracker
 
 Have a bug? Please create an issue here on GitHub!
 
-https://github.com/twitter/bootstrap/issues
-
-
-Twitter account
----------------
-
-Keep up to date on announcements and more by following Bootstrap on Twitter, <a href="http://twitter.com/TwBootstrap">@TwBootstrap</a>.
-
-
-Mailing list
-------------
-
-Have a question? Ask on our mailing list!
-
-twitter-bootstrap@googlegroups.com
-
-http://groups.google.com/group/twitter-bootstrap
-
+https://github.com/bravado/metaproject/issues
 
 Developers
 ----------
@@ -123,20 +115,15 @@ Watchr is required for this command to run.
 Authors
 -------
 
-**Mark Otto**
+**Guilherme Barile**
 
-+ http://twitter.com/mdo
-+ http://github.com/markdotto
++ http://github.com/guigouz
 
-**Jacob Thornton**
-
-+ http://twitter.com/fat
-+ http://github.com/fat
 
 
 License
 ---------------------
 
-Copyright 2011 Twitter, Inc.
+Copyright 2011 (c) Bravado
 
-Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+Licensed under the MIT License, other components licenses are listed on the LICENSES file.
