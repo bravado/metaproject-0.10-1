@@ -4249,12 +4249,13 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 })(jQuery, ko, tinymce);
 // - end of tinymce
 
-
+/*global jQuery: true, metaproject: true, ko: true */
 
 // metaproject ui components
-(function(window, $, ko) {
-
-    var metaproject = window.metaproject.ui = window.metaproject.ui || {};
+(function(window, $, metaproject, ko) {
+    "use strict";
+    
+    metaproject.ui = metaproject.ui || {};
 
     metaproject.ui.Grid = function(data, params) {
         var self = this;
@@ -4323,7 +4324,7 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
             });
 
             // treat String, callback or Array as source
-            if (typeof(params) == 'string' || typeof(params) == 'function' || params instanceof Array) {
+            if (typeof(params) === 'string' || typeof(params) === 'function' || params instanceof Array) {
                 params = { source: params };
             }
 
@@ -4331,11 +4332,11 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 
             // Custom render callback http://jqueryui.com/demos/autocomplete/#custom-data
             // TODO render as string => ko templates ?
-            if (undefined != params.renderItem) {
+            if (undefined !== params.renderItem) {
                 $autocomplete._renderItem = params.renderItem;
             }
 
-            if (undefined != params.renderMenu) {
+            if (undefined !== params.renderMenu) {
                 $autocomplete._renderMenu = params.renderMenu;
             }
         }
@@ -4366,4 +4367,4 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
             jQuery(element).prepend(icon);
         }
     };
-})(window, jQuery, ko);
+})(window, jQuery, metaproject, ko);
