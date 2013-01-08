@@ -1033,3 +1033,6 @@ body.with-header{padding-top:40px}
 .container.page .page-header{background-color:#f5f5f5;margin:-10px -20px 20px;padding:20px}
 .overlay .container{margin-bottom:60px}
 .overlay{position:fixed;top:0;left:0;bottom:0;right:0;overflow:auto;background:#262b33;background:rgba(0,0,0,0.6)}
+.breadcrumb .btn-toolbar{margin:-2px 0 0 0}
+.breadcrumb.affix{right:20px;left:20px}
+.breadcrumb.affix+div{margin-top:50px}

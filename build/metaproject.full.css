@@ -6609,3 +6609,14 @@ body.with-header {
   background: #262b33;
   background: rgba(0, 0, 0, 0.6);
 }
+/* Top affix breadcrumb */
+.breadcrumb .btn-toolbar {
+  margin: -2px 0 0 0;
+}
+.breadcrumb.affix {
+  right: 20px;
+  left: 20px;
+}
+.breadcrumb.affix + div {
+  margin-top: 50px;
+}

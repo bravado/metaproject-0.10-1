@@ -15,10 +15,15 @@ Now that the build system is implemented, other projects should use the minimize
         * Fileupload
         * Mask input
         * Tinymce
+    * Components (for large scale apps, won't work without requirejs)
+    	* Grid - make the filter configurable (default fields, advanced filter pane)
+    		* Maybe rename this component, it's more than just a grid
 
 * Far future
     * requirejs module
     * use bower or some other package management system
+
+
 
 Main libraries
 --------------

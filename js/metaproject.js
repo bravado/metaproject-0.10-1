@@ -35,7 +35,9 @@
         }, options);
 
         // Events
-        self.on = $self.on;
+        self.on = function() {
+            $self.on.apply($self, arguments);
+        };
 
         self._id = function (model_or_id) {
             if (typeof(model_or_id) === 'object') {

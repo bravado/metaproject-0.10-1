@@ -35,7 +35,9 @@
         }, options);
 
         // Events
-        self.on = $self.on;
+        self.on = function() {
+            $self.on.apply($self, arguments);
+        };
 
         self._id = function (model_or_id) {
             if (typeof(model_or_id) === 'object') {
@@ -4254,14 +4256,14 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 // metaproject ui components
 (function(window, $, metaproject, ko) {
     "use strict";
-    
+
     metaproject.ui = metaproject.ui || {};
 
     metaproject.ui.Grid = function(data, params) {
         var self = this;
 
         params = $.extend({}, { columns: [], actions: []}, params);
-        // TODO if datasource instanceof Array ...
+        // data is an array
         self.data = data;
         self.columns = params.columns;
         self.actions = params.actions;

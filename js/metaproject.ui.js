@@ -3,14 +3,14 @@
 // metaproject ui components
 (function(window, $, metaproject, ko) {
     "use strict";
-    
+
     metaproject.ui = metaproject.ui || {};
 
     metaproject.ui.Grid = function(data, params) {
         var self = this;
 
         params = $.extend({}, { columns: [], actions: []}, params);
-        // TODO if datasource instanceof Array ...
+        // data is an array
         self.data = data;
         self.columns = params.columns;
         self.actions = params.actions;
