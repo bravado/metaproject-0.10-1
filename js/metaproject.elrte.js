@@ -23,12 +23,28 @@
                 elrte = ko.utils.unwrapObservable(valueAccessor()),
                 value = allBindingsAccessor().value;
 
+            if(value && value.subscribe) {
+                $element.val(ko.utils.unwrapObservable(value));
+
+                value.subscribe(function(newValue) {
+                    if(!element._updating) {
+                        $element.elrte('val', $element.val());
+                    }
+                });
+            }
+
             $element.elrte(elrte);
 
             // limit the update rate to every 200ms
             var updater = limit(function () {
-                $element.val($element.elrte('val')).change();
+                element._updating = true;
+                //$element.val($element.elrte('val')).change();
+                $element.elrte('updateSource').change();
+                element._updating = false;
             }, 200, true);
+
+            if(value) {
+            }
 
             // elrte calls window.focus() when the ui is updated
             var _focus = element.elrte.iframe.contentWindow.window.focus;

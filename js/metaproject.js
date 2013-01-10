@@ -1,4 +1,4 @@
-/*global alert: true, jQuery: true, ko: true, _: true */
+/*global alert: true, jQuery: true, ko: true */
 (function (window, $, ko, _) {
     "use strict";
 
@@ -110,7 +110,6 @@
                 type: 'POST',
                 data: data,
                 success: function (data) {
-                    $self.trigger('post', data);
                     $self.trigger('changed', { action: 'post', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -127,7 +126,6 @@
                 type: 'PUT',
                 data: data,
                 success: function (data) {
-                    $self.trigger('put', data);
                     $self.trigger('changed', { action: 'put', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -143,7 +141,6 @@
                 dataType: 'json',
                 type: 'DELETE',
                 success: function (data) {
-                    $self.trigger('destroy', data);
                     $self.trigger('changed', { action: 'destroy', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -247,14 +244,13 @@
                 data._offset = 0;
                 var filter = result.filter();
 
-                _.keys(filter).forEach(function(key) {
+                $.each(filter, function(key, e) {
                     if(key[0] !== '_') {
                         delete filter[key];
                     }
                 });
-
-                _.extend(filter, data);
-
+                $.extend(filter, data);
+                
                 if(notify) {
                     result.filter.valueHasMutated();
                 }
@@ -459,6 +455,6 @@
         }
     };
 
-})(window, jQuery, ko, _);
+})(window, jQuery, ko);
 
 

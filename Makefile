@@ -19,12 +19,13 @@ YUI_COMPRESSOR= ../yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar
 # define objects
 
 # metaproject
-metaproject_less = ./less/metaproject.less
+bootstrap_less = ./less/bootstrap.less
 
-metaproject_css=			${SRC}/css/metaproject.css
-metaproject_css_full=       ${DST}/metaproject.full.css
+bootstrap_css=			${SRC}/css/bootstrap.css
+metaproject_css=		${DST}/metaproject.full.css
 metaproject_css_min=		${DST}/metaproject.min.css
-metaproject_css_obj=		${SRC}/css/jquery-ui-1.8.16.custom.css \
+metaproject_css_obj=		${bootstrap_css} \
+			${SRC}/css/jquery-ui-1.8.16.custom.css \
 			${SRC}/css/metaproject.css
 
 metaproject_js=			${DST}/metaproject.full.js
@@ -34,14 +35,13 @@ metaproject_js_obj=		${SRC}/js/metaproject.js \
 
 
 PHONY:     help
-all:       css metaproject
-clean:
-	${RM} -f ${metaproject_css} ${metaproject_css_full} ${metaproject_css_min} \
-	${metaproject_js} ${metaproject_js_min}
+all:       bootstrap metaproject
+clean:	bootstrap-clean metaproject-clean
 
 help:
 	@echo 'Makefile for release build automation'
 	@echo ' Packages:'
+	@echo '   bootstrap	- compile the bundled bootstrap fork'
 	@echo '   metaproject   - concatenate and compress metaproject base css and js files'
 	@echo ''
 	@echo ' MAKE targets:'
@@ -62,16 +62,24 @@ help:
 #    ${RM} -f css/bootstrap.css css/bootstrap.min.css \
 #    css/bootstrap-responsive.css css/bootstrap-responsive.min.css
 
+${bootstrap_css}:
+	${LESS_COMPRESSOR} ${bootstrap_less} > $@
+
 metaproject: ${metaproject_css} ${metaproject_js}
 
+bootstrap-clean:
+	${RM} -f ${bootstrap_css} 
+
 ${metaproject_css}:
-	${LESS_COMPRESSOR} ${metaproject_less} > $@
-	${CAT} ${metaproject_css_obj} > ${metaproject_css_full}
+	${CAT} ${metaproject_css_obj} > $@
 
 ${metaproject_js}:
 	${CAT} ${metaproject_js_obj} > $@
 	uglifyjs -nc $@ > ${metaproject_js_min}
 
+metaproject-clean:
+	${RM} -f ${metaproject_js} ${metaproject_js_min} \
+	${metaproject_css} ${metaproject_css_min}
 
 metaproject-compress:
 	${JAVA} -jar ${YUI_COMPRESSOR} \
