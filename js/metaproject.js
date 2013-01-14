@@ -1,5 +1,5 @@
 /*global alert: true, jQuery: true, ko: true */
-(function (window, $, ko, _) {
+(function (window, $, ko) {
     "use strict";
 
     var metaproject = window.metaproject = {};
@@ -244,13 +244,14 @@
                 data._offset = 0;
                 var filter = result.filter();
 
-                $.each(filter, function(key, e) {
+                _.keys(filter).forEach(function(key) {
                     if(key[0] !== '_') {
                         delete filter[key];
                     }
                 });
-                $.extend(filter, data);
-                
+
+                _.extend(filter, data);
+
                 if(notify) {
                     result.filter.valueHasMutated();
                 }

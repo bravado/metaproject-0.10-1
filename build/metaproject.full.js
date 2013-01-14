@@ -1,5 +1,5 @@
-/*global alert: true, jQuery: true, ko: true, _: true */
-(function (window, $, ko, _) {
+/*global alert: true, jQuery: true, ko: true */
+(function (window, $, ko) {
     "use strict";
 
     var metaproject = window.metaproject = {};
@@ -21,7 +21,7 @@
         };
 
     };
-
+    
     metaproject.DataSource = function (base_url, options) {
         var self = this,
             $self = $(this),
@@ -110,7 +110,6 @@
                 type: 'POST',
                 data: data,
                 success: function (data) {
-                    $self.trigger('post', data);
                     $self.trigger('changed', { action: 'post', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -127,7 +126,6 @@
                 type: 'PUT',
                 data: data,
                 success: function (data) {
-                    $self.trigger('put', data);
                     $self.trigger('changed', { action: 'put', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -143,7 +141,6 @@
                 dataType: 'json',
                 type: 'DELETE',
                 success: function (data) {
-                    $self.trigger('destroy', data);
                     $self.trigger('changed', { action: 'destroy', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -459,7 +456,7 @@
         }
     };
 
-})(window, jQuery, ko, _);
+})(window, jQuery, ko);
 
 
 /*global jQuery:true, ko:true */
@@ -2347,12 +2344,28 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
                 elrte = ko.utils.unwrapObservable(valueAccessor()),
                 value = allBindingsAccessor().value;
 
+            if(value && value.subscribe) {
+                $element.val(ko.utils.unwrapObservable(value));
+
+                value.subscribe(function(newValue) {
+                    if(!element._updating) {
+                        $element.elrte('val', $element.val());
+                    }
+                });
+            }
+
             $element.elrte(elrte);
 
             // limit the update rate to every 200ms
             var updater = limit(function () {
-                $element.val($element.elrte('val')).change();
+                element._updating = true;
+                //$element.val($element.elrte('val')).change();
+                $element.elrte('updateSource').change();
+                element._updating = false;
             }, 200, true);
+
+            if(value) {
+            }
 
             // elrte calls window.focus() when the ui is updated
             var _focus = element.elrte.iframe.contentWindow.window.focus;

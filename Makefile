@@ -16,16 +16,14 @@ UGLIFYJS ?= `which uglifyjs`
 JAVA ?= `which java`
 YUI_COMPRESSOR= ../yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar
 
-# define objects
+# bootstrap 
+bootstrap_less = ./less/bootstrap.less
+bootstrap_css=			${DST}/bootstrap.css
 
 # metaproject
-bootstrap_less = ./less/bootstrap.less
-
-bootstrap_css=			${SRC}/css/bootstrap.css
 metaproject_css=		${DST}/metaproject.full.css
 metaproject_css_min=		${DST}/metaproject.min.css
-metaproject_css_obj=		${bootstrap_css} \
-			${SRC}/css/jquery-ui-1.8.16.custom.css \
+metaproject_css_obj=		${SRC}/css/jquery-ui-1.8.16.custom.css \
 			${SRC}/css/metaproject.css
 
 metaproject_js=			${DST}/metaproject.full.js
@@ -62,6 +60,8 @@ help:
 #    ${RM} -f css/bootstrap.css css/bootstrap.min.css \
 #    css/bootstrap-responsive.css css/bootstrap-responsive.min.css
 
+bootstrap: ${bootstrap_css}
+
 ${bootstrap_css}:
 	${LESS_COMPRESSOR} ${bootstrap_less} > $@
 
@@ -75,7 +75,7 @@ ${metaproject_css}:
 
 ${metaproject_js}:
 	${CAT} ${metaproject_js_obj} > $@
-	uglifyjs -nc $@ > ${metaproject_js_min}
+	${UGLIFYJS} $@ -o ${metaproject_js_min}
 
 metaproject-clean:
 	${RM} -f ${metaproject_js} ${metaproject_js_min} \

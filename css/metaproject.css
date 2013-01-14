@@ -52,5 +52,5 @@ body.with-header { padding-top: 40px; }
 
 /* Top affix breadcrumb */
 .breadcrumb .btn-toolbar { margin: -2px 0 0 0; }
-.breadcrumb.affix { right: 20px; left: 20px; }
+.breadcrumb.affix { right: 20px; left: 20px; z-index: 1; }
 .breadcrumb.affix + div { margin-top: 50px; }
