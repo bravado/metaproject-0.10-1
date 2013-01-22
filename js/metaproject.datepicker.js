@@ -1774,7 +1774,23 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 
 (function ($, ko) {
 
-    var _updating = false;
+    function strtodate(value) {
+        var datetime = /([0-9]{4}-[0-9]{2}-[0-9]{2}) ?([0-9]{2}:[0-9]{2}:[0-9]{2})?/.exec(value);
+        if(undefined !== datetime[1]) {
+            if(undefined !== datetime[2]) {
+                // datetime
+                return new Date(datetime[1] + 'T' + datetime[2]);
+            }
+            else {
+                // date only
+                return new Date(datetime[1] + 'T00:00:00');
+            }
+        }
+        else {
+            // invalid date
+            return false;
+        }
+    }
 
     ko.bindingHandlers.datepicker = {
         init:function (element, valueAccessor, allBindingsAccessor) {
@@ -1789,8 +1805,8 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
             // set the default date
 
             if (typeof(value) == 'string') {
-                date = value.split('-');
-                date = new Date(date[0], date[1] - 1, date[2]);
+                date = strtodate(value);
+
             }
             else if(value instanceof Date) {
                 date = value;
@@ -1848,7 +1864,6 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 
         },
         update:function (element, valueAccessor) {
-            if(_updating) return;
 
             var value = ko.utils.unwrapObservable(valueAccessor());
             // TODO verificar se value é Date ou String e configurar de acordo
@@ -1860,8 +1875,7 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
             var date;
 
             if (typeof(value) == 'string') {
-                date = value.split('-');
-                date = new Date(date[0], date[1] - 1, date[2]);
+                date = strtodate(value);
             }
             else if(value instanceof Date) {
                 date = value;
