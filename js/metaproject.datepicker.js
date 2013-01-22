@@ -1773,6 +1773,9 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 
 
 (function ($, ko) {
+
+    var _updating = false;
+
     ko.bindingHandlers.datepicker = {
         init:function (element, valueAccessor, allBindingsAccessor) {
 
@@ -1780,17 +1783,32 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 
             var rangePicker = allBindingsAccessor().rangePicker || false;
 
+            var observable = valueAccessor(),
+                value = ko.utils.unwrapObservable(observable),
+                date;
+            // set the default date
+
+            if (typeof(value) == 'string') {
+                date = value.split('-');
+                date = new Date(date[0], date[1] - 1, date[2]);
+            }
+            else if(value instanceof Date) {
+                date = value;
+            }
+            else {
+                date = new Date();
+                date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
+                observable(date);
+            }
+
             //initialize datepicker with some optional options
             var options = allBindingsAccessor().datepickerOptions || {};
 
-
-
-            var observable = valueAccessor();
+            options.defaultDate = date;
 
             if (rangePicker) {
 
-                options = $.extend(options, {
-                    onChange:function () {
+                options.onChange = function () {
                         //$element.change();
                         var value = $element.val();
 
@@ -1799,8 +1817,7 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
                         }
 
                         //console.log($element.data);
-                    }
-                });
+                    };
 
                 $element.daterangepicker(options);
             }
@@ -1812,7 +1829,6 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
                 ko.utils.registerEventHandler(element, "change", function () {
 
                     if (typeof(observable) == 'function') {
-
                         if(observable() instanceof Date) {
                             observable($(element).datepicker("getDate"));
                         }
@@ -1832,6 +1848,8 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
 
         },
         update:function (element, valueAccessor) {
+            if(_updating) return;
+
             var value = ko.utils.unwrapObservable(valueAccessor());
             // TODO verificar se value é Date ou String e configurar de acordo
 
