@@ -9,15 +9,18 @@
 
         self.debug = 0;
 
-        self.init = function () {
+        if(typeof(params) === 'function') {
+            self.init = params;
+        }
+        else {
+            self.init = function () {};
+            $.extend(this, params);
+        }
 
-        };
-
-        $.extend(this, params);
-
-        self.run = function () {
-            ko.applyBindings(self);
+        self.run = function (element) {
+            ko.applyBindings(self, element);
             self.init.call(self);
+            $(window).trigger('hashchange');
         };
 
     };
@@ -198,7 +201,7 @@
         // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
         self.Nav = function (filter) {
 
-            var _value = ko.observable(),
+            var _value = ko.observable(), // current value
                 _observables = [], // list of instantiated observables
                 _hash = ko.observable(null);
 
@@ -226,7 +229,7 @@
                 deferEvaluation: true  //do not evaluate immediately when created
             });
             result.loading = ko.observable(false);
-            result._live = true;
+            result._live = true; // update this navigato
 
             result.filter = ko.observable(filter || {});
             result.filter.set = function (param, value) {
@@ -444,15 +447,54 @@
 
     /* Custom Binding handlers */
 
+    // Includes an external file on the DOM element
     ko.bindingHandlers.include = {
-        init: function (element, valueAccessor) {
-            var params = valueAccessor();
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            var $element = $(element),
+                params = valueAccessor(),
+                url = allBindingsAccessor().url;
+
             if (params instanceof Array) {
-                $(element).include(params[0], params[1]);
+                $element.include(params[0], params[1]);
             }
             else {
-                $(element).include(params);
+                $element.include(params);
             }
+
+            // If there's no url assigned to this node, activate it
+            // (Otherwise it will be activated according to the hash)
+            if(!url) {
+                $element.children().trigger('activate', $element);
+            }
+        }
+    };
+
+    // Attach an url controller to this node
+    // The node will receive activate and deactivate events when the url changes
+    ko.bindingHandlers.url = {
+        init: function(element, valueAccessor, allBindingsAccessor) {
+            var $element = $(element),
+                url = valueAccessor();
+
+            $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' });
+
+            $(window).on('hashchange', function(e) {
+                var hash = window.location.hash.substr(1) || '/';
+
+                if(hash === url) {
+                    if($element.css('visibility') !== 'visible') {
+                        $element.css({ visibility: 'visible', position: 'inherit', height: 'auto', overflow: 'inherit' }).children().trigger('activate', [ element, hash ]);
+                    }
+                }
+                else {
+                    if($element.css('visibility') === 'visible') {
+                        $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' }).children().trigger('deactivate', [$element, hash]);
+                    }
+                }
+            });
+
+
+            // TODO dispose callback
         }
     };
 

@@ -715,7 +715,16 @@
 
 <script type="text/javascript">
     jQuery(function ($) {
-        $('#ui-elrte').applyBindings(new ElRTEViewModel());
+        var active = false;
+
+        //$('#ui-elrte').on('activate', function() {
+
+            if(!active) {
+                $('#ui-elrte').applyBindings(new ElRTEViewModel());
+                active = true;
+            }
+        //});
+
 
         function ElRTEViewModel() {
             var self = this,
