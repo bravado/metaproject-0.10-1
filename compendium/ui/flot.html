@@ -1,41 +1,77 @@
 <!doctype html>
 <div id="flot">
-    <div id="placeholder" style="width: 940px; height: 300px;">
+    <button data-bind="click: addData">Add data</button>
+    <div id="placeholder" style="width: 940px; height: 450px;" data-bind="plot: data">
 
     </div>
-    <div id="footer"></div>
+
 </div>
 <script type="text/javascript">
+
+
+    ko.bindingHandlers.plot = {
+        init:function (element, valueAccessor, allBindingsAccessor) {
+            var data = ko.utils.unwrapObservable(valueAccessor()),
+                    options = allBindingsAccessor().plotOptions;
+
+            console.log('plotting' + data);
+            $.plot($(element), data, options);
+        },
+        update:function (element, valueAccessor, allBindingsAccessor) {
+            var data = ko.utils.unwrapObservable(valueAccessor()),
+                    plot = $(element).data('plot');
+
+            plot.setData(data);
+            plot.draw();
+        }
+    };
+
     jQuery(function ($) {
 
-        var d1 = [];
-        for (var i = 0; i < 14; i += 0.5) {
-            d1.push([i, Math.sin(i)]);
+        $("#flot").applyBindings(new FlotchartsViewModel());
+
+
+
+        function FlotchartsViewModel() {
+            var self = this;
+            // test data
+            var d1 = [];
+            for (var i = 0; i < 14; i += 0.5) {
+                d1.push([i, Math.sin(i)]);
+            }
+
+            var d2 = [
+                [0, 3],
+                [4, 8],
+                [8, 5],
+                [9, 13]
+            ];
+
+            // A null signifies separate line segments
+
+            var d3 = [
+                [0, 12],
+                [7, 12],
+                null,
+                [7, 2.5],
+                [12, 2.5]
+            ];
+
+
+            self.data = ko.observableArray([ d1, d2 ]);
+
+            self.addData = function() {
+                self.data.push(d3);
+            }
         }
 
-        var d2 = [
-            [0, 3],
-            [4, 8],
-            [8, 5],
-            [9, 13]
-        ];
 
-        // A null signifies separate line segments
-
-        var d3 = [
-            [0, 12],
-            [7, 12],
-            null,
-            [7, 2.5],
-            [12, 2.5]
-        ];
-
-
-        $.plot("#placeholder", [ d1, d2, d3 ]);
 
         // Add the Flot version string to the footer
 
         $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
         loaded = true;
     });
+
+
 </script>

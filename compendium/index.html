@@ -99,7 +99,7 @@
 <!-- metaproject -->
 
 <!-- won't use the cat/minified version for easier debugging -->
-<script type="text/javascript" src="../js/metaproject.js"></script>
+<script type="text/javascript" src="../js/metaproject.js?v=20130305"></script>
 
 <!-- additional components -->
 <script type="text/javascript"
@@ -141,6 +141,8 @@
 <script type="text/javascript">
     jQuery(function ($) {
 
+        metaproject.debug = true;
+
         // The application will be our main viewModel
         var params = {
             init: function () {
@@ -150,7 +152,7 @@
 
         var app = new metaproject.Application(params);
 
-        metaproject.debug = true;
+
 
         // .run() binds the viewModel and triggers the first hashchange for the url controller
         app.run();

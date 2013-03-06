@@ -427,12 +427,14 @@
 
     /* Includes and initializes another file on the element */
     $.fn.include = function (url, callback) {
-        var self = this;
+        var self = this,
+            params = metaproject.debug ? '?ts=' + new Date().getTime() : '';
+
         if (self.data('loaded') === url) {
             return this;
         }
         else {
-            return this.addClass('loading').load(url, function () {
+            return this.addClass('loading').load(url + params, function () {
 
                 self.data('loaded', url).removeClass('loading');
                 //metaproject.init(self.removeClass('loading'));
