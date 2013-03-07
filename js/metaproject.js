@@ -25,94 +25,6 @@
 
     };
 
-    metaproject.Loader = function (routes, params) {
-        var options = {
-            'default': '/',
-            error: function (e) {
-                alert(e.responseText);
-            }
-        };
-
-        $.extend(options, params);
-
-        var _content = ko.observable(null);
-
-        _content.id = ko.observable(null);
-
-        _content.load = function (id, callback) {
-
-            // default = /
-            if (undefined === id || id === '') {
-                id = '/';
-            }
-
-            if (id === _content.id()) {
-                return;
-            }
-
-            var path = routes[id];
-
-            if (undefined === routes[id]) {
-                _content.id(null);
-                _content('Route ' + id + ' not found');
-                return;
-            }
-
-            if (typeof(path) === 'string') {
-
-                if (path[0] === '#') {
-                    var src = $(path);
-
-                    if (src.length > 0) { // If its an element, get the relative DOM node
-                        _content(null);
-                        _content.id(id);
-                        _content(src.html());
-                        if (typeof(callback) === 'function') {
-                            callback();
-                        }
-
-                    }
-                    else {
-                        _content.id(null);
-                        _content('Element ' + path + ' not found');
-                    }
-                }
-                else {
-                    var params = {};
-
-                    if (metaproject.debug) {
-                        params.ts = new Date().getTime();
-                    }
-
-                    $.ajax({
-                        url: path,
-                        type: 'GET',
-                        data: params,
-                        dataType: 'html',
-                        success: function (data) {
-                            _content(null);
-                            _content.id(id);
-                            _content(data);
-
-                            if (typeof(callback) === 'function') {
-                                callback();
-                            }
-
-                        },
-                        error: function (e) {
-                            _content.id(null);
-                            _content(null);
-                            options.error(e);
-                        }
-                    });
-                }
-            }
-        };
-
-        _content.load(options['default']);
-        return _content;
-    };
-
     /* jQuery plugs */
 
     $.fn.applyBindings = function (viewModel) {
@@ -197,5 +109,3 @@
     };
 
 })(window, jQuery, ko);
-
-
