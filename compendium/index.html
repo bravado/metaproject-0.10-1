@@ -23,7 +23,8 @@
                     <a data-toggle="dropdown" class="dropdown-toggle">Metaproject
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#metaproject/application">Application Overview</a></li>
+                        <li><a href="#metaproject/application">Application
+                            Overview</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -39,8 +40,10 @@
                         Components <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="#ui/datepicker">Datepicker</a></li>
-                        <li><a href="#ui/elrte">elRTE and elFinder</a></li>
-                        <li><a href="#ui/fileupload">File Upload</a></li>
+                        <li><a href="#ui/elrte">elRTE and elFinder</a>
+                        </li>
+                        <li><a href="#ui/fileupload">File Upload</a>
+                        </li>
                         <li><a href="#ui/flot">Flotcharts</a></li>
                         <li><a href="#ui/select">Select</a></li>
                     </ul>
@@ -50,25 +53,32 @@
     </div>
 </header>
 
-    <!-- hardcoded components with defined urls -->
-    <div class="container page" data-bind="url: '/'">
-        This is the default view
-    </div>
+<!-- hardcoded components with defined urls -->
+<div class="container page" data-bind="url: '/'">
+    This is the default view
+</div>
 
-    <div class="container page" data-bind="url: '/egg'">
-        easter egg =)
-    </div>
+<div class="container page" data-bind="url: '/egg'">
+    easter egg =)
+</div>
 
-    <!-- external components are loaded using the include binding -->
-    <div class="container page" data-bind="include: 'core/application.html', url : 'metaproject/application'"></div>
+<!-- external components are loaded using the include binding -->
+<div class="container page"
+     data-bind="include: 'core/application.html', url : 'metaproject/application'"></div>
 
-    <div class="container page" data-bind="include: 'bootstrap/forms.html', url: 'bootstrap/forms'"></div>
+<div class="container page"
+     data-bind="include: 'bootstrap/forms.html', url: 'bootstrap/forms'"></div>
 
-    <div class="container page" data-bind="include: 'ui/datepicker.html', url: 'ui/datepicker'"></div>
-    <div class="container page" data-bind="include: 'ui/elrte.html', url: 'ui/elrte'"></div>
-    <div class="container page" data-bind="include: 'ui/fileupload.html', url: 'ui/fileupload'"></div>
-    <div class="container page" data-bind="include: 'ui/select.html', url: 'ui/select'"></div>
-    <div class="container page" data-bind="include: 'ui/flot.html', url: 'ui/flot'"></div>
+<div class="container page"
+     data-bind="include: 'ui/datepicker.html', url: 'ui/datepicker'"></div>
+<div class="container page"
+     data-bind="include: 'ui/elrte.html', url: 'ui/elrte'"></div>
+<div class="container page"
+     data-bind="include: 'ui/fileupload.html', url: 'ui/fileupload'"></div>
+<div class="container page"
+     data-bind="include: 'ui/select.html', url: 'ui/select'"></div>
+<div class="container page"
+     data-bind="include: 'ui/flot.html', url: 'ui/flot'"></div>
 
 
 <!-- TODO remove underscore dependency (jquery is enough) -->
@@ -99,7 +109,8 @@
 <!-- metaproject -->
 
 <!-- won't use the cat/minified version for easier debugging -->
-<script type="text/javascript" src="../js/metaproject.js?v=20130305"></script>
+<script type="text/javascript"
+        src="../js/metaproject.js?v=20130305"></script>
 
 <!-- additional components -->
 <script type="text/javascript"
@@ -132,9 +143,14 @@
 
 
 <!-- flot -->
-<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="excanvas.min.js"></script><![endif]-->
+<!--[if lte IE 8]>
+<script language="javascript" type="text/javascript"
+        src="excanvas.min.js"></script>
+<![endif]-->
 <script type="text/javascript"
         src="../build/libs/flot/jquery.flot.js"></script>
+<script type="text/javascript"
+        src="../js/metaproject.flot.js"></script>
 
 
 <!-- Application init -->
@@ -151,7 +167,6 @@
         };
 
         var app = new metaproject.Application(params);
-
 
 
         // .run() binds the viewModel and triggers the first hashchange for the url controller

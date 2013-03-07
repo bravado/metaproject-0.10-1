@@ -9,23 +9,6 @@
 <script type="text/javascript">
 
 
-    ko.bindingHandlers.plot = {
-        init:function (element, valueAccessor, allBindingsAccessor) {
-            var data = ko.utils.unwrapObservable(valueAccessor()),
-                    options = allBindingsAccessor().plotOptions;
-
-            console.log('plotting' + data);
-            $.plot($(element), data, options);
-        },
-        update:function (element, valueAccessor, allBindingsAccessor) {
-            var data = ko.utils.unwrapObservable(valueAccessor()),
-                    plot = $(element).data('plot');
-
-            plot.setData(data);
-            plot.draw();
-        }
-    };
-
     jQuery(function ($) {
 
         $("#flot").applyBindings(new FlotchartsViewModel());

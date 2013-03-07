@@ -9,11 +9,12 @@
 
         self.debug = 0;
 
-        if(typeof(params) === 'function') {
+        if (typeof(params) === 'function') {
             self.init = params;
         }
         else {
-            self.init = function () {};
+            self.init = function () {
+            };
             $.extend(this, params);
         }
 
@@ -27,13 +28,22 @@
 
     /* jQuery plugs */
 
+    /**
+     * Shortcut to ko.applyBindings, save the viewModel on data-viewModel
+     * @param viewModel
+     */
     $.fn.applyBindings = function (viewModel) {
         this.data('viewModel', viewModel).each(function (idx, element) {
             ko.applyBindings(viewModel, element);
         });
     };
 
-    /* Includes and initializes another file on the element */
+    /**
+     * Includes and initializes another file on the element
+     * @param url
+     * @param callback optional, runs after the url is loaded
+     * @return {*}
+     */
     $.fn.include = function (url, callback) {
         var self = this,
             params = metaproject.debug ? '?ts=' + new Date().getTime() : '';
@@ -73,7 +83,7 @@
 
             // If there's no url assigned to this node, activate it
             // (Otherwise it will be activated according to the hash)
-            if(!url) {
+            if (!url) {
                 $element.children().trigger('activate', $element);
             }
         }
@@ -82,22 +92,22 @@
     // Attach an url controller to this node
     // The node will receive activate and deactivate events when the url changes
     ko.bindingHandlers.url = {
-        init: function(element, valueAccessor, allBindingsAccessor) {
+        init: function (element, valueAccessor, allBindingsAccessor) {
             var $element = $(element),
                 url = valueAccessor();
 
             $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' });
 
-            $(window).on('hashchange', function(e) {
+            $(window).on('hashchange', function (e) {
                 var hash = window.location.hash.substr(1) || '/';
 
-                if(hash === url) {
-                    if($element.css('visibility') !== 'visible') {
+                if (hash === url) {
+                    if ($element.css('visibility') !== 'visible') {
                         $element.css({ visibility: 'visible', position: 'inherit', height: 'auto', overflow: 'inherit' }).children().trigger('activate', [ element, hash ]);
                     }
                 }
                 else {
-                    if($element.css('visibility') === 'visible') {
+                    if ($element.css('visibility') === 'visible') {
                         $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' }).children().trigger('deactivate', [$element, hash]);
                     }
                 }
