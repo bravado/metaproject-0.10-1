@@ -207,6 +207,7 @@
         };
 
         self.post = function (data, callback) {
+            // TODO datasource.post(path, data, callback)
             return $.ajax({
                 url: base_url,
                 dataType: 'json',
@@ -223,6 +224,7 @@
         };
 
         self.put = function (id, data, callback) {
+            // TODO datasource.put(model, callback)
             return $.ajax({
                 url: base_url + '/' + id,
                 dataType: 'json',
@@ -272,11 +274,11 @@
 
             editor.destroy = function () {
 
-                self.destroy(editor.current());
-
-                if (typeof(callbacks.destroy) === 'function') {
-                    callbacks.destroy();
-                }
+                self.destroy(editor.current(), function() {
+                    if (typeof(callbacks.destroy) === 'function') {
+                        callbacks.destroy();
+                    }
+                });
             };
 
             editor.load = function (model) {
@@ -302,15 +304,16 @@
         self.Nav = function (filter) {
 
             var _value = ko.observable(), // current value
+                _filter = ko.observable(filter || {}), // the filter
                 _observables = [], // list of instantiated observables
                 _hash = ko.observable(null);
 
             var result = ko.computed({
                 read: function () {
-                    var newhash = ko.toJSON(result.filter());
+                    var newhash = ko.toJSON(_filter());
                     if (_hash() !== newhash) {
                         result.loading(true);
-                        self.get('/', result.filter(), function (newData) {
+                        self.get('/', _filter(), function (newData) {
                             _hash(newhash);
                             _value(newData);
 
@@ -331,7 +334,7 @@
             result.loading = ko.observable(false);
             result._live = true; // update this navigato
 
-            result.filter = ko.observable(filter || {});
+            result.filter = _filter;
             result.filter.set = function (param, value) {
                 result.filter()[param] = value;
                 result.filter.valueHasMutated();

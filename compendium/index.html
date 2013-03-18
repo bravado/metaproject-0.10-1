@@ -23,8 +23,8 @@
                     <a data-toggle="dropdown" class="dropdown-toggle">Metaproject
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#metaproject/application">Application
-                            Overview</a></li>
+                        <li><a href="#metaproject/core">Core</a></li>
+                        <li><a href="#metaproject/data">DataSource and Models</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -64,11 +64,16 @@
 
 <!-- external components are loaded using the include binding -->
 <div class="container page"
-     data-bind="include: 'core/application.html', url : 'metaproject/application'"></div>
+     data-bind="include: 'core/metaproject.html', url : 'metaproject/core'"></div>
 
+<div class="container page"
+     data-bind="include: 'core/data.html', url : 'metaproject/data'"></div>
+
+<!-- bootstrap -->
 <div class="container page"
      data-bind="include: 'bootstrap/forms.html', url: 'bootstrap/forms'"></div>
 
+<!-- ui components -->
 <div class="container page"
      data-bind="include: 'ui/datepicker.html', url: 'ui/datepicker'"></div>
 <div class="container page"
@@ -81,7 +86,7 @@
      data-bind="include: 'ui/flot.html', url: 'ui/flot'"></div>
 
 
-<!-- TODO remove underscore dependency (jquery is enough) -->
+<!-- TODO remove underscore dependency on metaproject.data (jquery is enough) -->
 <script type="text/javascript"
         src="../../objectiveweb/console/libs/underscore/underscore-1.3.3.js"></script>
 
@@ -145,7 +150,7 @@
 <!-- flot -->
 <!--[if lte IE 8]>
 <script language="javascript" type="text/javascript"
-        src="excanvas.min.js"></script>
+        src="../build/libs/flot/excanvas.min.js"></script>
 <![endif]-->
 <script type="text/javascript"
         src="../build/libs/flot/jquery.flot.js"></script>
