@@ -1,18 +1,49 @@
 <!doctype html>
+<head>
+    <!-- dependencies for this module (should be added to your app's index.html) -->
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript"
+            src="../build/libs/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript"
+            src="../build/libs/flot/jquery.flot.js"></script>
+    <script type="text/javascript"
+            src="../build/libs/flot/jquery.flot.categories.js"></script>
+    <script type="text/javascript"
+            src="../js/metaproject.flot.js"></script>
+</head>
+
 <div id="flot">
+    <h2>Simple Series</h2>
     <button data-bind="click: addData">Add data</button>
-    <div id="placeholder" style="width: 940px; height: 450px;" data-bind="plot: data">
+    <div style="width: 940px; height: 450px;" data-bind="plot: data">
 
     </div>
 
+    <h2>Bars</h2>
+
+    <div style="height: 360px;" data-bind="plot: bars, plotOptions: {
+			series: {
+				bars: {
+					show: true,
+					barWidth: 0.6,
+					align: 'center'
+                }
+            },
+            xaxis: {
+                mode: 'categories',
+                tickLength: 0
+            }
+    }"></div>
+
+    <div id="placeholder" style="height: 320px;"></div>
+    <h2>Options</h2>
 </div>
 <script type="text/javascript">
-
 
     jQuery(function ($) {
 
         $("#flot").applyBindings(new FlotchartsViewModel());
-
 
 
         function FlotchartsViewModel() {
@@ -43,17 +74,57 @@
 
             self.data = ko.observableArray([ d1, d2 ]);
 
-            self.addData = function() {
+            self.addData = function () {
                 self.data.push(d3);
-            }
+            };
+
+            var bardata = [
+                [
+                    ["January", 10]
+                ],
+                [
+                    ["February", 8]
+                ],[
+                    ["March", 4]
+                ],[
+                    ["April", 13]
+                ],[
+                    ["May", 17],
+                    ["June", 9]
+                ]
+            ];
+
+            self.bars = ko.observableArray(bardata);
         }
 
 
+        $(function () {
 
-        // Add the Flot version string to the footer
+            var data = [
+                ["January", 10],
+                ["February", 8],
+                ["March", 4],
+                ["April", 13],
+                ["May", 17],
+                ["June", 9]
+            ];
 
-        $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
-        loaded = true;
+            $.plot("#placeholder",  [data] , {
+                series: {
+                    bars: {
+                        show: true,
+                        barWidth: 0.6,
+                        align: "center"
+                    },
+                    xaxis: {
+                        mode: "categories",
+                        tickLenght: 0
+                    }
+                }
+            });
+
+        });
+
     });
 
 
