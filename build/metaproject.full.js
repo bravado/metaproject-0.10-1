@@ -119,7 +119,56 @@
     };
 
 })(window, jQuery, ko);
-/*global alert: true, jQuery: true, ko: true */
+/*global jQuery: true, ko: true, Chart: true */
+(function($, ko, Chart) {
+    "use strict";
+
+    // TODO queue rendering, limit to 1 chart at a time ?
+
+    ko.bindingHandlers.chart = {
+        init:function (element, valueAccessor, allBindingsAccessor) {
+            var
+                ctx = element.getContext('2d'),
+                chart = new Chart(ctx);
+
+            chart._type = element.dataset.chart || 'line';
+
+            $(element).data('chart', chart);
+
+            ko.bindingHandlers.chart.update(element, valueAccessor, allBindingsAccessor);
+        },
+        update:function (element, valueAccessor, allBindingsAccessor) {
+            var data = ko.utils.unwrapObservable(valueAccessor()),
+                options = allBindingsAccessor().chartOptions,
+                chart = $(element).data('chart');
+
+            switch(chart._type) {
+                case 'line':
+                    chart.Line(data,options);
+                    break;
+                case 'bar':
+                    chart.Bar(data,options);
+                    break;
+                case 'radar':
+                    chart.Radar(data, options);
+                    break;
+                case 'polar':
+                    chart.PolarArea(data,options);
+                    break;
+                case 'pie':
+                    chart.Pie(data, options);
+                    break;
+                case 'doughnut':
+                    chart.Doughnut(data, options);
+                    break;
+                default:
+                    throw 'invalid chart type';
+
+            }
+        }
+    };
+
+}(jQuery, ko, Chart));/*global alert: true, jQuery: true, ko: true */
 (function (window, $, ko) {
     "use strict";
 
@@ -3521,26 +3570,7 @@ if (undefined !== window.elRTE) {
     };
 })(jQuery, ko);
 // - end of Fileupload
-/*global jQuery: true, ko: true */
-(function($, ko) {
-    "use strict";
-    ko.bindingHandlers.plot = {
-        init:function (element, valueAccessor, allBindingsAccessor) {
-            var data = ko.utils.unwrapObservable(valueAccessor()),
-                options = allBindingsAccessor().plotOptions;
-
-            $.plot($(element), data, options);
-        },
-        update:function (element, valueAccessor, allBindingsAccessor) {
-            var data = ko.utils.unwrapObservable(valueAccessor()),
-                plot = $(element).data('plot');
-
-            plot.setData(data);
-            plot.draw();
-        }
-    };
-
-}(jQuery, ko));/*global jQuery:true, ko:true */
+/*global jQuery:true, ko:true */
 // Mask/money input
 // Provides the .mask and .money binding handlers
 
