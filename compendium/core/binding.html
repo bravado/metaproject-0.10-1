@@ -1,0 +1,9 @@
+esses dias eu descobri que tem um extender no ko para fazer o  observable triggar a atualização mesmo se o valor novo for idêntico ao anterior
+ko.observable().extend({notify: always}) 05:05:41 PM
+ops 05:05:49 PM
+ko.observable().extend({notify: 'always'}) 05:05:52 PM
+falta documentação disso 05:08:54 PM
+e de um evento que é possível obter o valor anterior no subscribe: 05:09:09 PM
+obs.subscribe(function(previousValue) {
+        doSomething();
+    }, undefined, 'beforeChange');

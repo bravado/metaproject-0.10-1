@@ -540,14 +540,14 @@
         // Bind a single datasource to all instances
         var datasource = null;
 
-        Model.getDatasource = function() {
+        Model.getDataSource = function() {
             if(datasource) {
                 return datasource;
             }
             else {
-                throw "Model not bound to any datasource";
+                throw "Model not bound to any DataSource";
             }
-        }
+        };
 
         /**
          * Binds this model to a datasource on url
@@ -572,7 +572,7 @@
             }
 
             return Model;
-        }
+        };
 
 
         /**
@@ -584,22 +584,24 @@
         Model.publish = function(channel, params) {
             var instance = this;
 
-            return Model.getDatasource().Nav(params).publishOn(channel);
-        }
+            var nav = Model.getDatasource().Nav(params).publishOn(channel);
+
+            return nav;
+        };
 
 
         // For instantiated models
-        
+
         Model.prototype.save = function(callback) {
             var instance = this;
-            Model.getDatasource().save(instance, callback);
+            return Model.getDatasource().save(instance, callback);
         };
 
         Model.prototype.load = function(id, callback) {
             var instance = this;
 
-            Model.getDatasource().get(id, instance).success(callback);
-        }
+            return Model.getDatasource().get(id, instance).success(callback);
+        };
 
         return Model;
 
