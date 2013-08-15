@@ -364,7 +364,7 @@
         Model.publish = function(channel, params) {
             var instance = this;
 
-            var nav = Model.getDatasource().Nav(params).publishOn(channel);
+            var nav = Model.getDataSource().Nav(params).publishOn(channel);
 
             return nav;
         };
@@ -374,13 +374,13 @@
 
         Model.prototype.save = function(callback) {
             var instance = this;
-            return Model.getDatasource().save(instance, callback);
+            return Model.getDataSource().save(instance, callback);
         };
 
         Model.prototype.load = function(id, callback) {
             var instance = this;
 
-            return Model.getDatasource().get(id, instance).success(callback);
+            return Model.getDataSource().get(id, instance).success(callback);
         };
 
         return Model;
