@@ -1,4 +1,84 @@
-<h1>metaproject.data</h1>
+<h2>metaproject.Model</h2>
+
+<p>Models define Classes to interact with your data. Under the hood, it uses the 
+<code>ko.mapping</code> plugin.</p>
+<p>Quoting the <a target="_blank" href="#">Official Documentation</a>,</p>
+
+<blockquote>Most applications need to fetch data from a backend server. Since 
+the server doesn’t have any concept of observables, it will just supply a plain 
+JavaScript object (usually serialized as JSON). The mapping plugin gives you a 
+straightforward way to map that plain JavaScript object into a view model with 
+the appropriate observables. This is an alternative to manually writing your own 
+JavaScript code that constructs a view model based on some data you’ve fetched 
+from the server.</blockquote>
+
+<h3>The Model factory</h3>
+
+<p>Model Classes are defined using the 
+<code>metaproject.Model(defaults, mapping)</code> function. The 
+<code>defaults</code> parameter expects an object with the default values 
+for this entity.</p>
+
+<pre>
+var Calculator = metaproject.Model({
+    val1: 0,
+    val2: 0,
+    sum: function() {
+        return this.val1() + this.val2();
+    }
+});
+</pre>
+
+<p>Functions are mapped to computed observables, scoped to the current instance,
+    this allows the programmer to return complex properties.
+</p>
+<p>Once defined, new objects may be instantiated.</p>
+
+<pre>
+var calc = new Calculator({ val1: 2, val2: 2 });
+
+// Will alert "4"
+alert(calc.sum());
+</pre>
+
+<h3>Model Mappings</h3>
+<p>Sometimes it may be necessary to have more control over how the mapping is 
+    performed. This is accomplished using <code>mapping</code> options. On this
+    more complex example, we'll define a <code>Contact</code> Model, which has a 
+    list of <code>Address</code> instances on the <code>addresses</code> field.
+</p>
+
+<pre>
+var Address = metaproject.Model({
+    street: null,
+    number: null
+});
+
+var Contact = metaproject.Model({
+    first_name: null,
+    last_name: null,
+    name: function() {
+        return this.first_name() + " " + this.last_name();
+    },
+    addresses: []
+}, {
+    addresses: Address.mapper
+});
+</pre>
+
+
+
+<h4>Model methods</h4>
+
+<table class="table table-bordered">
+    <tr>
+        <th><code>bind(url)</code></th>
+        <td>Binds this Model to a DataSource</td>
+    </tr>
+</table>
+
+
+<p>The <code>mapping</code> parameter</p>
 
 <h2>DataSource</h2>
 

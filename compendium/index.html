@@ -24,7 +24,9 @@
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="#metaproject/core">Core</a></li>
-                        <li><a href="#metaproject/data">DataSource and Models</a></li>
+                        <li><a href="#metaproject/mvvm">Knockout and MVVM</a></li>
+                        <li><a href="#metaproject/bindings">Bindings</a></li>
+                        <li><a href="#metaproject/data">DataSources and Models</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -68,7 +70,13 @@
 
 <div class="container page"
      data-bind="include: 'core/data.html', url : 'metaproject/data'"></div>
+     
+<div class="container page"
+     data-bind="include: 'core/mvvm.html', url : 'metaproject/mvvm'"></div>
 
+<div class="container page"
+     data-bind="include: 'core/bindings.html', url : 'metaproject/bindings'"></div>
+     
 <!-- bootstrap -->
 <div class="container page"
      data-bind="include: 'bootstrap/forms.html', url: 'bootstrap/forms'"></div>
@@ -138,7 +146,7 @@
         var app = new metaproject.Application(params);
 
 
-        // .run() binds the viewModel and triggers the first hashchange for the url controller
+        // .run() binds the initial viewModel and triggers the first hashchange for the url controller
         app.run();
 
     });
