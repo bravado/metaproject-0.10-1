@@ -42,8 +42,11 @@ alert(calc.sum());
 </pre>
 
 <h3>Model Mappings</h3>
+
 <p>Sometimes it may be necessary to have more control over how the mapping is 
-    performed. This is accomplished using <code>mapping</code> options. On this
+    performed. This is accomplished using <code>mapping</code> options.</p>
+
+<p>On this
     more complex example, we'll define a <code>Contact</code> Model, which has a 
     list of <code>Address</code> instances on the <code>addresses</code> field.
 </p>
@@ -66,14 +69,38 @@ var Contact = metaproject.Model({
 });
 </pre>
 
+<p><code>Model.mapper</code> returns a static mapper for this Model type.</p>
 
-
-<h4>Model methods</h4>
+<h3>Model methods</h3>
 
 <table class="table table-bordered">
     <tr>
-        <th><code>bind(url)</code></th>
-        <td>Binds this Model to a DataSource</td>
+        <th><code>Model.bind(url)</code></th>
+        <td>Binds this Model to a DataSource at <code>url</code>.
+        </td>
+    </tr>
+    <tr>
+        <th><code>Model.publish(channel, params)</code></th>
+        <td>Instantiates a DataSource Navigator which publishes to <code>channel</code></td>
+    </tr>
+</table>
+
+<h3>Model Instance methods</h3>
+
+<p>When bound to a DataSource, the following method may be used.</p>
+<table class="table table-bordered">
+    <tr>
+        <th><code>save(callback)</code></th>
+        <td>Calls <code>DataSource.save</code> (POSTs or PUTs depending on the 
+        primary key), calls <code>callback</code> on success.
+        </td>
+    </tr>
+    <tr>
+        <th><code>load(id, callback)</code></th>
+        <td>Loads resource <code>id</code> (GET) using the bound DataSource,
+            maps the result to this instance, calls <code>callback</code> on
+            success.
+        </td>
     </tr>
 </table>
 

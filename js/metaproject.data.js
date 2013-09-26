@@ -298,10 +298,10 @@
             var instance = this;
 
             data = data || {};
-
+            var computeds = {};
             $.each(defaults, function (i, e) {
                 if (typeof(e) === 'function') {
-                    instance[i] = ko.computed({ read: e, deferEvaluation: true }, instance);
+                    computeds[i] = ko.computed({ read: e, deferEvaluation: true }, instance);
                 }
                 else {
                     if (undefined === data[i]) {
@@ -310,14 +310,23 @@
                 }
             });
 
-            // data = $.extend({}, defaults, data);
-
             ko.mapping.fromJS(data, mapping || {}, instance);
+
+            // computeds always override other fields
+            $.extend(instance, computeds);
 
         };
 
 
-        // Bind a single datasource to all instances
+        // Predefined mapper for this model
+        Model.mapper = {
+            create: function(options) {
+                return new Model(options.data);
+            }
+        };
+
+
+        // All instances share this DataSource
         var datasource = null;
 
         Model.getDataSource = function() {
@@ -352,6 +361,13 @@
             }
 
             return Model;
+        };
+
+        /**
+         * Factory for this Model
+         */
+        Model.create = function(data) {
+            return new Model(data);
         };
 
 
