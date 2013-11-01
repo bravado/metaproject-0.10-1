@@ -371,6 +371,10 @@
         };
 
 
+        Model.query = function(params, callback) {
+            return Model.getDataSource().get('/', params, callback);
+        };
+        
         /**
          * Instantiates a DataSource Navigator which publishes to channel
          * @param channel The channel string
@@ -378,8 +382,6 @@
          * @see DataSource.Nav
          */
         Model.publish = function(channel, params) {
-            var instance = this;
-
             var nav = Model.getDataSource().Nav(params).publishOn(channel);
 
             return nav;
