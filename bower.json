@@ -24,7 +24,7 @@
     "Makefile"
   ],
   "dependencies": {
-    "jquery": "1.9",
+    "jquery": "1.8",
     "jquery-ui": "1.9",
     "bootstrap": "2.3",
     "modernizr": "~2.7.1",
