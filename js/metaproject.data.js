@@ -4,10 +4,13 @@
 
     var metaproject = window.metaproject || {};
 
+    /**
+     * metaproject.DataSource
+     * 
+     */ 
     metaproject.DataSource = function (base_url, options) {
         var self = this,
-            $self = $('<div/>'),
-            _navs = [];
+            $self = $('<div/>');
 
         options = $.extend({
             key: 'id',
@@ -133,52 +136,6 @@
             });
         };
 
-        // Editor for this DataSource
-        self.Editor = function (callbacks) {
-            var ds = self,
-                editor = this;
-
-            callbacks = $.extend({
-                save: function () {
-                    //ds.data.reload();
-                }
-            }, callbacks);
-
-            editor.current = ko.observable(null);
-
-            editor.create = function (values) {
-                editor.current(ds.create(values));
-            };
-
-            editor.destroy = function () {
-
-                self.destroy(editor.current(), function() {
-                    if (typeof(callbacks.destroy) === 'function') {
-                        callbacks.destroy();
-                    }
-                });
-            };
-
-            editor.load = function (model) {
-                self.get(model, editor.current);
-            };
-
-            editor.close = function () {
-                editor.current(null);
-
-                if (typeof(callbacks.close) === 'function') {
-                    callbacks.close();
-                }
-            };
-
-            editor.save = function () {
-                return self.save(editor.current(), callbacks.save);
-            };
-        };
-
-
-        // an observable that retrieves its value when first bound
-        // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
         self.Nav = function (filter) {
 
             var _value = ko.observable(), // current value
@@ -186,6 +143,8 @@
                 _observables = [], // list of instantiated observables
                 _hash = ko.observable(null);
 
+            // an observable that retrieves its value when first bound
+            // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
             var result = ko.computed({
                 read: function () {
                     var newhash = ko.toJSON(_filter());
@@ -405,4 +364,21 @@
 
     };
 
+
+    /**
+     * The model binding
+     */
+     
+    ko.bindingHandlers.model = {
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            var model = valueAccessor();
+            
+            $(element).find('input[name]', function(i, e) {
+                console.log(e);
+            });
+        },
+        update: function (element, valueAccessor, allBindingsAccessor) {
+            
+        }
+    }
 })(window, jQuery, ko);
