@@ -18,7 +18,7 @@ bootstrap_css=			${DST}/bootstrap.css
 bootstrap_min_css = ${DST}/bootstrap.min.css
 
 # metaproject
-metaproject_css=		${DST}/metaproject.full.css
+metaproject_css=		${DST}/metaproject.css
 metaproject_css_min=		${DST}/metaproject.min.css
 metaproject_css_obj=		${SRC}/css/jquery-ui-1.8.16.custom.css \
 			${SRC}/css/metaproject.css
