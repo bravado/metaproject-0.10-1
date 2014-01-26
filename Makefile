@@ -11,14 +11,11 @@ DST= build
 # BOOTSTRAP
 #BOOTSTRAP_RESPONSIVE = ./css/bootstrap-responsive.css
 #BOOTSTRAP_RESPONSIVE_LESS = ./less/responsive.less
-LESS_COMPRESSOR ?= `which lessc`
-UGLIFYJS ?= `which uglifyjs`
-JAVA ?= `which java`
-YUI_COMPRESSOR= ../yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar
 
 # bootstrap 
 bootstrap_less = ./less/bootstrap.less
 bootstrap_css=			${DST}/bootstrap.css
+bootstrap_min_css = ${DST}/bootstrap.min.css
 
 # metaproject
 metaproject_css=		${DST}/metaproject.full.css
@@ -52,18 +49,11 @@ help:
 	@echo '   PACKAGE'
 	@echo '   PACKAGE-clean'
 
-#	${LESS_COMPRESSOR} --compress ${metaproject_less} > ${metaproject_css_min}
-#	${LESS_COMPRESSOR} ${BOOTSTRAP_RESPONSIVE_LESS} > css/bootstrap-responsive.css
-#	${LESS_COMPRESSOR} --compress ${BOOTSTRAP_RESPONSIVE_LESS} > css/bootstrap-responsive.min.css
-
-#bootstrap-clean:
-#    ${RM} -f css/bootstrap.css css/bootstrap.min.css \
-#    css/bootstrap-responsive.css css/bootstrap-responsive.min.css
-
-bootstrap: ${bootstrap_css}
-
-${bootstrap_css}:
-	${LESS_COMPRESSOR} ${bootstrap_less} > $@
+bootstrap:
+	./node_modules/.bin/recess --compile ${bootstrap_less} > ${bootstrap_css}
+	./node_modules/.bin/recess --compress ${bootstrap_less} > ${DST}/bootstrap.min.css
+#	./node_modules/.bin/recess --compile ${BOOTSTRAP_RESPONSIVE_LESS} > bootstrap/css/bootstrap-responsive.css
+#	./node_modules/.bin/recess --compress ${BOOTSTRAP_RESPONSIVE_LESS} > bootstrap/css/bootstrap-responsive.min.css
 
 metaproject: ${metaproject_css} ${metaproject_js}
 
@@ -75,21 +65,9 @@ ${metaproject_css}:
 
 ${metaproject_js}:
 	${CAT} ${metaproject_js_obj} > $@
-	${UGLIFYJS} $@ -o ${metaproject_js_min}
+	./node_modules/.bin/uglifyjs $@ > ${metaproject_js_min}
 
 metaproject-clean:
 	${RM} -f ${metaproject_js} ${metaproject_js_min} \
 	${metaproject_css} ${metaproject_css_min}
-
-metaproject-compress:
-	${JAVA} -jar ${YUI_COMPRESSOR} \
-        --charset utf8 --type css --line-break 1 \
-        -o ${metaproject_css_min} ${metaproject_css}
-
-# compressor
-ifdef YUI_COMPRESSOR
-metaproject: metaproject-compress
-endif
-
-
 

@@ -4,6 +4,72 @@
 
     var metaproject = window.metaproject = {};
 
+
+    /**
+     * Events
+     * From https://github.com/moot/riotjs
+     */
+     
+    var callbacks = {},
+      slice = [].slice;
+
+    metaproject.on = function(events, fn) {
+
+      if (typeof fn == "function") {
+        events = events.split(/\s+/);
+
+        for (var i = 0, len = events.length, type; i < len; i++) {
+          type = events[i];
+          (callbacks[type] = callbacks[type] || []).push(fn);
+          if (len > 1) fn.typed = true;
+        }
+      }
+      return metaproject;
+    };
+
+    metaproject.off = function(events) {
+      events = events.split(/\s+/);
+
+      for (var i = 0; i < events.length; i++) {
+        callbacks[events[i]] = [];
+      }
+
+      return metaproject;
+    };
+
+    // only single event supported
+    metaproject.one = function(type, fn) {
+      if (fn) fn.one = true;
+      return metaproject.on(type, fn);
+
+    };
+
+    metaproject.trigger = function(type) {
+
+      var args = slice.call(arguments, 1),
+        fns = callbacks[type] || [];
+
+      for (var i = 0, fn; i < fns.length; ++i) {
+        fn = fns[i];
+
+        if (fn.one && fn.done) continue;
+
+        // add event argument when multiple listeners
+        fn.apply(metaproject, fn.typed ? [type].concat(args) : args);
+
+        fn.done = true;
+      }
+
+      return metaproject;
+    };
+
+
+    /**
+     * Main Application Class
+     * 
+     * Application bind itself to the dom, calls init()
+     *  and triggers the first hashchange when run
+     */
     metaproject.Application = function (params) {
         var self = this;
 
@@ -224,10 +290,13 @@
 
     var metaproject = window.metaproject || {};
 
+    /**
+     * metaproject.DataSource
+     * 
+     */ 
     metaproject.DataSource = function (base_url, options) {
         var self = this,
-            $self = $('<div/>'),
-            _navs = [];
+            $self = $('<div/>');
 
         options = $.extend({
             key: 'id',
@@ -353,52 +422,6 @@
             });
         };
 
-        // Editor for this DataSource
-        self.Editor = function (callbacks) {
-            var ds = self,
-                editor = this;
-
-            callbacks = $.extend({
-                save: function () {
-                    //ds.data.reload();
-                }
-            }, callbacks);
-
-            editor.current = ko.observable(null);
-
-            editor.create = function (values) {
-                editor.current(ds.create(values));
-            };
-
-            editor.destroy = function () {
-
-                self.destroy(editor.current(), function() {
-                    if (typeof(callbacks.destroy) === 'function') {
-                        callbacks.destroy();
-                    }
-                });
-            };
-
-            editor.load = function (model) {
-                self.get(model, editor.current);
-            };
-
-            editor.close = function () {
-                editor.current(null);
-
-                if (typeof(callbacks.close) === 'function') {
-                    callbacks.close();
-                }
-            };
-
-            editor.save = function () {
-                return self.save(editor.current(), callbacks.save);
-            };
-        };
-
-
-        // an observable that retrieves its value when first bound
-        // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
         self.Nav = function (filter) {
 
             var _value = ko.observable(), // current value
@@ -406,6 +429,8 @@
                 _observables = [], // list of instantiated observables
                 _hash = ko.observable(null);
 
+            // an observable that retrieves its value when first bound
+            // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
             var result = ko.computed({
                 read: function () {
                     var newhash = ko.toJSON(_filter());
@@ -518,10 +543,10 @@
             var instance = this;
 
             data = data || {};
-
+            var computeds = {};
             $.each(defaults, function (i, e) {
                 if (typeof(e) === 'function') {
-                    instance[i] = ko.computed({ read: e, deferEvaluation: true }, instance);
+                    computeds[i] = ko.computed({ read: e, deferEvaluation: true }, instance);
                 }
                 else {
                     if (undefined === data[i]) {
@@ -530,14 +555,23 @@
                 }
             });
 
-            // data = $.extend({}, defaults, data);
-
             ko.mapping.fromJS(data, mapping || {}, instance);
+
+            // computeds always override other fields
+            $.extend(instance, computeds);
 
         };
 
 
-        // Bind a single datasource to all instances
+        // Predefined mapper for this model
+        Model.mapper = {
+            create: function(options) {
+                return new Model(options.data);
+            }
+        };
+
+
+        // All instances share this DataSource
         var datasource = null;
 
         Model.getDataSource = function() {
@@ -574,7 +608,18 @@
             return Model;
         };
 
+        /**
+         * Factory for this Model
+         */
+        Model.create = function(data) {
+            return new Model(data);
+        };
 
+
+        Model.query = function(params, callback) {
+            return Model.getDataSource().get('/', params, callback);
+        };
+        
         /**
          * Instantiates a DataSource Navigator which publishes to channel
          * @param channel The channel string
@@ -582,9 +627,7 @@
          * @see DataSource.Nav
          */
         Model.publish = function(channel, params) {
-            var instance = this;
-
-            var nav = Model.getDatasource().Nav(params).publishOn(channel);
+            var nav = Model.getDataSource().Nav(params).publishOn(channel);
 
             return nav;
         };
@@ -594,19 +637,36 @@
 
         Model.prototype.save = function(callback) {
             var instance = this;
-            return Model.getDatasource().save(instance, callback);
+            return Model.getDataSource().save(instance, callback);
         };
 
         Model.prototype.load = function(id, callback) {
             var instance = this;
 
-            return Model.getDatasource().get(id, instance).success(callback);
+            return Model.getDataSource().get(id, instance).success(callback);
         };
 
         return Model;
 
     };
 
+
+    /**
+     * The model binding
+     */
+     
+    ko.bindingHandlers.model = {
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            var model = valueAccessor();
+            
+            $(element).find('input[name]', function(i, e) {
+                console.log(e);
+            });
+        },
+        update: function (element, valueAccessor, allBindingsAccessor) {
+            
+        }
+    }
 })(window, jQuery, ko);/*global jQuery:true, ko:true */
 // Datepicker input
 // Depends on jquery-ui
