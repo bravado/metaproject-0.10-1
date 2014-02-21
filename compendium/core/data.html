@@ -1,23 +1,36 @@
+<script type="text/javascript" src="../js/metaproject.data.js"></script>
+<div class="page-header">
+    <h1>Data Sources <small>metaproject.data.js</small></h1>
+</div>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#data-overview" data-toggle="tab">Overview</a></li>
+    <li><a href="#data-example" data-toggle="tab">Example</a></li>
+</ul>
+
+<div class="tab-content">
+<div class="tab-pane active" id="data-overview">
+
 <h2>metaproject.Model</h2>
 
-<p>Models define Classes to interact with your data. Under the hood, it uses the 
-<code>ko.mapping</code> plugin.</p>
+<p>Models define Classes to interact with your data. Under the hood, it uses the
+    <code>ko.mapping</code> plugin.</p>
 <p>Quoting the <a target="_blank" href="#">Official Documentation</a>,</p>
 
-<blockquote>Most applications need to fetch data from a backend server. Since 
-the server doesn’t have any concept of observables, it will just supply a plain 
-JavaScript object (usually serialized as JSON). The mapping plugin gives you a 
-straightforward way to map that plain JavaScript object into a view model with 
-the appropriate observables. This is an alternative to manually writing your own 
-JavaScript code that constructs a view model based on some data you’ve fetched 
-from the server.</blockquote>
+<blockquote>Most applications need to fetch data from a backend server. Since
+    the server doesn’t have any concept of observables, it will just supply a plain
+    JavaScript object (usually serialized as JSON). The mapping plugin gives you a
+    straightforward way to map that plain JavaScript object into a view model with
+    the appropriate observables. This is an alternative to manually writing your own
+    JavaScript code that constructs a view model based on some data you’ve fetched
+    from the server.
+</blockquote>
 
 <h3>The Model factory</h3>
 
-<p>Model Classes are defined using the 
-<code>metaproject.Model(defaults, mapping)</code> function. The 
-<code>defaults</code> parameter expects an object with the default values 
-for this entity.</p>
+<p>Model Classes are defined using the
+    <code>metaproject.Model(defaults, mapping)</code> function. The
+    <code>defaults</code> parameter expects an object with the default values
+    for this entity.</p>
 
 <pre>
 var Calculator = metaproject.Model({
@@ -43,11 +56,11 @@ alert(calc.sum());
 
 <h3>Model Mappings</h3>
 
-<p>Sometimes it may be necessary to have more control over how the mapping is 
+<p>Sometimes it may be necessary to have more control over how the mapping is
     performed. This is accomplished using <code>mapping</code> options.</p>
 
 <p>On this
-    more complex example, we'll define a <code>Contact</code> Model, which has a 
+    more complex example, we'll define a <code>Contact</code> Model, which has a
     list of <code>Address</code> instances on the <code>addresses</code> field.
 </p>
 
@@ -71,7 +84,10 @@ var Contact = metaproject.Model({
 
 <p><code>Model.mapper</code> returns a static mapper for this Model type.</p>
 
+
 <h3>Model methods</h3>
+
+<p>The following methods may be used to define and interact with a REST datasource.</p>
 
 <table class="table table-bordered">
     <tr>
@@ -80,19 +96,48 @@ var Contact = metaproject.Model({
         </td>
     </tr>
     <tr>
+        <th><code>Model.query(filter)</code></th>
+        <td>Instantiates a Query using the provided <code>filter</code>
+        </td>
+    </tr>
+    <tr>
         <th><code>Model.publish(channel, params)</code></th>
-        <td>Instantiates a DataSource Navigator which publishes to <code>channel</code></td>
+        <td>Queries this model ahd publishes results to <code>channel</code>,
+         returns the Query object.</td>
     </tr>
 </table>
 
+<pre>
+var User = metaproject.Model({
+    id: null,
+    name: null,
+    age: null
+}).bind('/users');
+
+// Publish all users to the users channel
+User.publish('users', {});
+
+// Publish the kids listing to the kids channel
+User.publish('kids', { age: '<12' });
+
+// Listen to this channel on your viewmodels
+// true populates the field which the last known value for the channel
+// otherwise it updates only when the query is updated
+viewmodel.users = ko.observableArray().subscribeTo('users', true);
+
+// on another module
+otherviewmodel.kids = ko.observableArray().subscribeTo('kids', true);
+</pre>
+
 <h3>Model Instance methods</h3>
 
-<p>When bound to a DataSource, the following method may be used.</p>
+<p>When bound to a DataSource, the following methods may be used.</p>
+
 <table class="table table-bordered">
     <tr>
         <th><code>save(callback)</code></th>
-        <td>Calls <code>DataSource.save</code> (POSTs or PUTs depending on the 
-        primary key), calls <code>callback</code> on success.
+        <td>POSTs or PUTs to the DataSource depending on the
+            primary key, calls <code>callback</code> on success.
         </td>
     </tr>
     <tr>
@@ -104,10 +149,55 @@ var Contact = metaproject.Model({
     </tr>
 </table>
 
+<h3>Model Queries</h3>
 
-<p>The <code>mapping</code> parameter</p>
+<p>A Query object is an observable array which updates itself
+    automatically when its filter changes</p>
 
-<h2>DataSource</h2>
+<code>var query = Model.query(filter);</code>
+
+<p>Data is also reloaded automatically when the underlying datasource
+    emits a <code>changed</code> event (every delete, post, put), to
+    change this behavior, set <code>query._live = false;</code> after
+    instantiating the Query
+</p>
+
+<h4>Properties</h4>
+<table class="table table-bordered">
+    <tr>
+        <th><code>query.loading</code></th>
+        <td>Observable, <code>true</code> if data is being loaded
+        </td>
+    </tr>
+    <tr>
+        <th><code>query.filter</code></th>
+        <td><p>Observable, object with the query parameters</p>
+            <p>To set a new filter, use <code>nav.filter({ param1: 'value1', param2:
+                'value2' });</code></p>
+            <p>To set a specific field use <code>nav.filter.set('field',
+                'value');</code></p>
+
+        </td>
+    </tr>
+</table>
+
+<h4>Query observables</h4>
+<p>A query.observable is a dependent query that is updated then the filter
+    changes</p>
+<h5>Usage</h5>
+<code>var observable = query.observable(params, transform)</code>
+<p>The observable <code>params</code> are merged with the navigator's
+    filter and sent
+    to the server whenever the filter changes</p>
+<p>The optional <code>transform</code> callback, if specified, is used
+    to transform the datasource response.</p>
+<h5>Properties</h5>
+<code>query.observable.loading</code>
+<p>Observable, true if data is being loaded</p>
+
+
+
+<h2>metaproject.DataSource</h2>
 
 <h3>Usage</h3>
 <code>var datasource = new metaproject.DataSource(base_url,
@@ -159,79 +249,81 @@ POSTs data to <code>base_url</code>
 <h4>datasource.put(id, data, callback)</h4>
 PUTs data on /id
 
-<h4>datasource.save(model, callback)</h4>
-<p>Calls <code>datasource.put</code> if the key defined in <code>options.key</code>
-    is set, or post if it is a new entry
-</p>
 <code>datasource.destroy(id or model, callback)</code>
 DELETEs /id (or model[options.key])
 
-
-<h3>datasource.Editor = function(callbacks)</h3>
-<p>An Editor is a specialized controller that handles loading and saving
-    data to this datasource</p>
-<h4>Usage</h4>
-<code>var editor = new datasource.Editor(callbacks);</code>
-<h5>callbacks</h5>
-{ close: when the editor is closed, after unloading the data,
-destroy: when the loaded resource is deleted,
-save: when data is saved }
-<h4>methods</h4>
-<h5>editor.create(data)</h5>
-<p>Creates a new resource, with initial <code>data</code></p>
-<code>editor.destroy()</code>
-<p>Deletes de current resource</p>
-
-<h5>editor.load(model or id)</h5>
-
-<p>Loads a resource</p>
-
-<h5>editor.close()</h5>
-<p>Closes the current resource</p>
-
-<h5>editor.save()</h5>
-<p>Commits changes to the datasource</p>
-
-<h3>datasource.Nav</h3>
-<p>Used to navigate the datasource</p>
-<h4>Usage</h4>
-
-
-<code>var nav = new datasource.Nav(filter);</code>
-
-<p>A Navigator object is an observable array which updates itself
-    automatically when the filter changes</p>
-<p>Data is also reloaded automatically when the underlying datasource
-    emits a <code>changed</code> event (every delete, post, put), to
-    change this behavior, set <code>nav._live = false;</code> after
-    instantiating the Navigator
-</p>
-
-<h4>Properties</h4>
-
-<h5>nav.loading()</h5>
-<p>Observable, true if data is being loaded</p>
-
-<h5>nav.filter()</h5>
-<p>Observable, object with the query parameters</p>
-<p>To set a new filter, use <code>nav.filter({ param1: 'value1', param2:
-    'value2' });</code></p>
-<p>To set a specific field use <code>nav.filter.set('field',
-    'value');</code></p>
-
-<h4>Nav observables</h4>
-<p>A nav.observable is a dependent query that is updated then the filter
-    changes</p>
-<h5>Usage</h5>
-<code>var observable = nav.observable(params, transform)</code>
-<p>The observable <code>params</code> are merged with the navigator's
-    filter and sent
-    to the server whenever the filter changes</p>
-<p>The optional <code>transform</code> callback, if specified, is used
-    to transform the datasource response.</p>
-<h5>Properties</h5>
-<code>nav.observable.loading</code>
-<p>Observable, true if data is being loaded</p>
-
-
 <h2>metaproject.Model = function (defaults, mapping) {</h2>
+</div>
+<div class="tab-pane" id="data-example">
+<article id="model-example">
+
+    <table class="table table-striped">
+        <head>
+            <tr>
+                <td data-bind="text: count() + ' items'">999</td>
+                <td>First</td>
+                <td>Last</td>
+                <td>Full</td>
+            </tr>
+        </head>
+        <tbody data-bind="foreach: data">
+        <tr>
+            <td data-bind="text: id"></td>
+            <td data-bind="text: firstName"></td>
+            <td data-bind="text: lastName"></td>
+            <td data-bind="text: name"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form data-bind="submit: addUser">
+        First Name: <input type="text" name="firstName"/><br/>
+        Last Name: <input type="text" name="lastName"/><br/>
+        <input type="submit" class="btn btn-primary"/>
+        <a href="#" data-bind="click: reset" class="btn btn-danger">Reset storage</a>
+    </form>
+</article>
+</div>
+</div>
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        /**
+         * Create a User model and bind it to the php/data.php controller
+         */
+        var User = metaproject.Model({
+            id: null,
+            firstName: null,
+            lastName: null,
+            name: function () {
+                return this.firstName() + " " + this.lastName();
+            }
+        }).bind('php/data.php');
+
+        var data = User.query({});
+
+        // Viewmodel for this demo
+        var vm = {
+            data: data,
+            addUser: function (form) {
+                var user = new User();
+
+                user.firstName(form.firstName.value);
+                user.lastName(form.lastName.value);
+
+                user.save();
+            },
+            reset: function() {
+                // trigger a change event when the data is reset (see data.php)
+                User.get('reset', User.changed);
+
+            },
+            count: data.observable({ "count": 1}, function(data) {
+                return data.count();
+            })
+        };
+
+        $('#model-example').applyBindings(vm);
+    });
+
+</script>

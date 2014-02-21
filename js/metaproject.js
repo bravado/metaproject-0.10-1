@@ -171,6 +171,8 @@
                     if ($element.css('visibility') !== 'visible') {
                         $element.css({ visibility: 'visible', position: 'inherit', height: 'auto', overflow: 'inherit' }).children().trigger('activate', [ element, hash ]);
                     }
+
+                    $(window).scrollTop(0);
                 }
                 else {
                     if ($element.css('visibility') === 'visible') {

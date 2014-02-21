@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <title>The Metaproject Compendium</title>
 
-    <link rel="stylesheet" href="../bower_components/bootstrap/docs/assets/css/bootstrap.css"/>
-    <link rel="stylesheet" href="../build/metaproject.full.css"/>
-
+    <link rel="stylesheet" href="../build/bootstrap.css"/>
+    <link rel="stylesheet" href="../build/metaproject.css"/>
 
     <!-- Application Styles -->
     <link rel="stylesheet" href="compendium.css"/>
@@ -24,9 +23,9 @@
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="#core/metaproject">Metaproject</a></li>
+                        <li><a href="#core/data">Data Sources</a></li>
                         <li><a href="#core/mvvm">Knockout and MVVM</a></li>
                         <li><a href="#core/bindings">Bindings</a></li>
-                        <li><a href="#core/data">DataSources and Models</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -34,6 +33,8 @@
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="#bootstrap/forms">Forms</a>
+                        </li>
+                        <li><a href="#bootstrap/tabs">Tabs</a>
                         </li>
                     </ul>
                 </li>
@@ -81,6 +82,9 @@
 <div class="container page"
      data-bind="include: 'bootstrap/forms.html', url: 'bootstrap/forms'"></div>
 
+<div class="container page"
+     data-bind="include: 'bootstrap/tabs.html', url: 'bootstrap/tabs'"></div>
+
 <!-- ui components -->
 <div class="container page"
      data-bind="include: 'ui/datepicker.html', url: 'ui/datepicker'"></div>
@@ -107,7 +111,7 @@
 <script type="text/javascript"
         src="../bower_components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
 <script type="text/javascript"
-        src="../bower_components/bootstrap/docs/assets/js/bootstrap.min.js"></script>
+        src="../build/libs/bootstrap.min.js"></script>
 <script type="text/javascript"
         src="../bower_components/modernizr/modernizr.js"></script>
 <script type="text/javascript"

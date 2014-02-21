@@ -2,7 +2,7 @@
 /**
  * Metaproject Compendium
  *
- * Datasource mock
+ * Datasource mock which stores data on a session variable
  *
  *
  *
@@ -16,9 +16,10 @@ if (!isset($_SESSION['DATA'])) {
 }
 
 
-function DATA_idx($id) {
-    for($i = count($_SESSION['DATA']) - 1; $i >= 0; $i--) {
-        if($_SESSION['DATA'][$i]['id'] == $id) {
+function DATA_idx($id)
+{
+    for ($i = count($_SESSION['DATA']) - 1; $i >= 0; $i--) {
+        if ($_SESSION['DATA'][$i]['id'] == $id) {
             return $i;
         }
     }
@@ -26,26 +27,105 @@ function DATA_idx($id) {
     return -1;
 }
 
+function parse_post_body($decoded = true) {
 
-switch ($_SERVER['REQUEST_METHOD']) {
+    switch($_SERVER['REQUEST_METHOD']) {
 
-    case 'POST':
-        $data['id'] = count($_SESSION['DATA']);
-        $_SESSION['DATA'][] = $data;
+        case 'POST':
+            if (!empty($_POST)) {
+                return $_POST;
+            };
+        case 'PUT':
+            $post_body = file_get_contents('php://input');
+            if(strlen($post_body) > 0 && $decoded) {
+                if($post_body[0] == '{' || $post_body[0] == '[') {
+                    return json_decode($post_body, true);
+                }
+                else {
+                    parse_str($post_body, $return);
+                    return $return;
+                }
+            }
+            else {
+                return $post_body;
+            }
+    }
+}
 
-        $ret = array('id' => $data['id']);
-        break;
-    case 'PUT':
-        $idx = DATA_idx($_SERVER['PATH_INFO']);
-        array_merge($_SESSION['DATA'][$idx], $_POST)
+// handle the request
+try {
+    $id = isset($_SERVER['PATH_INFO']) ? substr($_SERVER['PATH_INFO'], 1) : null;
 
-    case 'DELETE':
+    if($id == 'reset') {
+        $_SESSION['DATA'] = array();
+        exit('{ "ok" : "1" }');
+    }
 
-    case 'GET':
+    $ret = array();
+
+    switch ($_SERVER['REQUEST_METHOD']) {
+
+        case 'POST':
+            $data = parse_post_body();
+
+            $data['id'] = count($_SESSION['DATA']) + 1;
+            $_SESSION['DATA'][] = $data;
+
+            $ret = array('id' => $data['id']);
+            break;
+        case 'PUT':
+            $data = parse_post_body();
+            $idx = DATA_idx($_SERVER['PATH_INFO']);
+            if($idx > 0) {
+                $_SESSION['DATA'][$idx] = array_merge($_SESSION['DATA'][$idx], $data);
+            }
+            else {
+                throw new Exception("Invalid resource", 404);
+            }
+            break;
+        case 'DELETE':
+            $idx = DATA_idx($_SERVER['PATH_INFO']);
+            if ($idx >= 0) {
+                unset($_SESSION['DATA'][$idx]);
+                $ret = array("ok" => 1);
+            }
+            else {
+                throw new Exception("Invalid resource", 404);
+            }
+
+            break;
+        case 'GET':
 
 
-    default:
-        throw new Exception("Invalid method");
-        break;
 
+            if (!empty($id)) {
+                $idx = DATA_idx($_SERVER['PATH_INFO']);
+
+
+                if ($idx > 0) {
+                    $ret = $_SESSION['DATA'][$idx];
+                } else {
+                    throw new Exception("Not found", 404);
+                }
+            } else {
+
+                if(isset($_GET['count'])) {
+                    $ret = array(
+                        'count' => count($_SESSION['DATA']));
+                }
+                else {
+                    $ret = $_SESSION['DATA'];
+                }
+            }
+            break;
+        default:
+            throw new Exception("Invalid method");
+            break;
+
+    }
+
+    echo json_encode($ret);
+} catch (Exception $ex) {
+    header('HTTP/1.0 ' + $ex->getCode());
+    exit($ex->getMessage());
 }
