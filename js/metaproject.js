@@ -4,6 +4,8 @@
 
     var metaproject = window.metaproject = {};
 
+	// Enable enhanced bindings
+	ko.punches.enableAll();
 
     /**
      * Events
