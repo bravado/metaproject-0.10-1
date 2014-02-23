@@ -75,8 +75,8 @@ try {
             break;
         case 'PUT':
             $data = parse_post_body();
-            $idx = DATA_idx($_SERVER['PATH_INFO']);
-            if($idx > 0) {
+            $idx = DATA_idx($id);
+            if($idx >= 0) {
                 $_SESSION['DATA'][$idx] = array_merge($_SESSION['DATA'][$idx], $data);
             }
             else {
@@ -84,7 +84,7 @@ try {
             }
             break;
         case 'DELETE':
-            $idx = DATA_idx($_SERVER['PATH_INFO']);
+            $idx = DATA_idx($id);
             if ($idx >= 0) {
                 unset($_SESSION['DATA'][$idx]);
                 $ret = array("ok" => 1);
@@ -95,14 +95,10 @@ try {
 
             break;
         case 'GET':
-
-
-
             if (!empty($id)) {
-                $idx = DATA_idx($_SERVER['PATH_INFO']);
+                $idx = DATA_idx($id);
 
-
-                if ($idx > 0) {
+                if ($idx >= 0) {
                     $ret = $_SESSION['DATA'][$idx];
                 } else {
                     throw new Exception("Not found", 404);

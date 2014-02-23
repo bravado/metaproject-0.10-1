@@ -417,12 +417,6 @@
 
         };
 
-        Model.prototype.load = function (id, callback) {
-            var instance = this;
-
-            return Model.getDataSource().get(id, instance).success(callback);
-        };
-
         return Model;
 
     };
