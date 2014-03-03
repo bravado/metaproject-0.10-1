@@ -26,7 +26,9 @@ metaproject_css_obj=		${SRC}/css/jquery-ui-1.8.16.custom.css \
 metaproject_js=			${DST}/metaproject.full.js
 metaproject_js_min=		${DST}/metaproject.min.js
 metaproject_js_obj=		${SRC}/js/metaproject.js \
-			${SRC}/js/metaproject.*.js
+			${SRC}/js/metaproject.*.js \
+			${SRC}/js/metaproject-ui.js \
+			${SRC}/js/metaproject-ui.*.js
 
 
 PHONY:     help
