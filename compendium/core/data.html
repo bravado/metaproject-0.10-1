@@ -264,6 +264,7 @@ DELETEs /id (or model[options.key])
                 <td>First</td>
                 <td>Last</td>
                 <td>Full</td>
+                <td></td>
             </tr>
         </head>
         <tbody data-bind="foreach: data">
@@ -272,6 +273,7 @@ DELETEs /id (or model[options.key])
             <td>{{ firstName }}</td>
             <td>{{ lastName }}</td>
             <td>{{ name }}</td>
+            <td><a class="btn btn-mini btn-danger" data-bind="click: destroy">Delete</a></td>
         </tr>
         </tbody>
     </table>
@@ -318,6 +320,9 @@ DELETEs /id (or model[options.key])
                 user.lastName(form.lastName.value);
 
                 user.save();
+            },
+            destroy: function(user) {
+                user.destroy();
             },
             reset: function() {
                 // trigger a change event when the data is reset (see data.php)

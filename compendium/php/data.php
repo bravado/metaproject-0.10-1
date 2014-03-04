@@ -58,6 +58,7 @@ try {
 
     if($id == 'reset') {
         $_SESSION['DATA'] = array();
+        $_SESSION['SEQ'] = 1;
         exit('{ "ok" : "1" }');
     }
 
@@ -68,7 +69,7 @@ try {
         case 'POST':
             $data = parse_post_body();
 
-            $data['id'] = count($_SESSION['DATA']) + 1;
+            $data['id'] = $_SESSION['SEQ']++;
             $_SESSION['DATA'][] = $data;
 
             $ret = array('id' => $data['id']);
@@ -110,7 +111,7 @@ try {
                         'count' => count($_SESSION['DATA']));
                 }
                 else {
-                    $ret = $_SESSION['DATA'];
+                    $ret = array_values($_SESSION['DATA']);
                 }
             }
             break;
