@@ -438,7 +438,7 @@
 
     ko.bindingHandlers.model = {
         init: function (element, valueAccessor, allBindingsAccessor) {
-            var model = valueAccessor();
+            var model = ko.unwrap(valueAccessor());
 
             $(element).find('input[name]', function (i, e) {
                 console.log(e);
