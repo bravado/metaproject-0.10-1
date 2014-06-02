@@ -239,24 +239,33 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
             }
         };
 
+        // get(callback) - fetch all
+        // get(callback, params) - with params
         // get(path || {model}, params);
         // get(path || {model}, params, callback);
         // get(path || {model}, callback);
         self.get = function (path, params, callback) {
 
-
-            if(undefined === path || path === '' || path === '/') {
+            if(path === undefined || path === null) {
                 path = '';
             }
-            else {
-                // get({model})
-                if (typeof(path) !== 'string') {
-                    // TODO existe path[key] ?
+
+            switch(typeof(path)) {
+                // get(callback)
+                case 'function':
+                    callback = path;
+                    path = '';
+                    break;
+                case 'string':
+                    if(path === '/') {
+                        path = '';
+                    }
+                    else if (path.length > 0 && path[0] !== '/') {
+                        path = '/' + path;
+                    }
+                    break;
+                default: // object
                     path = '/' + self._id(path);
-                }
-                else if (path[0] !== '/') {
-                    path = '/' + path;
-                }
             }
 
 
