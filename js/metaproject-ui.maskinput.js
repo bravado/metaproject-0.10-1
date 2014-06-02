@@ -9,6 +9,15 @@
  Version: @version
  */
 (function ($) {
+
+    if($.browser === undefined) {
+        $.browser = {
+            msie: window.navigator.userAgent.indexOf("MSIE ") > 0,
+            mozilla: window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+        }
+    }
+
+
     var pasteEventName = ($.browser.msie ? 'paste' : 'input') + ".mask";
     var iPhone = (window.orientation != undefined);
 
