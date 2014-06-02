@@ -44,14 +44,21 @@
         // get(path || {model}, callback);
         self.get = function (path, params, callback) {
 
-            // get({model})
-            if (typeof(path) !== 'string') {
-                // TODO existe path[key] ?
-                path = '/' + self._id(path);
+
+            if(undefined === path || path === '' || path === '/') {
+                path = '';
             }
-            else if (path[0] !== '/') {
-                path = '/' + path;
+            else {
+                // get({model})
+                if (typeof(path) !== 'string') {
+                    // TODO existe path[key] ?
+                    path = '/' + self._id(path);
+                }
+                else if (path[0] !== '/') {
+                    path = '/' + path;
+                }
             }
+
 
             if (typeof(params) === 'function') {
                 callback = params;
