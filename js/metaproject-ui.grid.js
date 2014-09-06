@@ -11,8 +11,39 @@
         // data is an array
         self.data = data;
 
-        // TODO if columns.length = 0, fill values with properties from data
-        self.columns = params.columns;
+        if(params.columns.length == 0) {
+
+            if(ko.unwrap(self.data).length == 0) {
+                if(self.data instanceof ko.observable) {
+                    // may update
+                    self.columns = ko.computed(function() {
+                        var data = ko.unwrap(self.data);
+                        var columns = [];
+
+                        if(data.length > 0) {
+                            $.each(data[0], function(i, e) {
+
+                            });
+
+
+                        }
+
+
+                    }, self);
+
+
+                }
+                else {
+
+                }
+            }
+            // TODO if columns.length = 0, fill values with properties from data
+
+        }
+        else {
+            self.columns = params.columns;
+        }
+
 
         self.actions = params.actions;
 
