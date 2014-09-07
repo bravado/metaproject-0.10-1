@@ -73,10 +73,32 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
       return metaproject;
     };
 
+    /* jQuery plugs */
+
+    /**
+     * Shortcut to ko.applyBindings, save the viewModel on data-viewModel
+     * @param viewModel
+     */
+    $.fn.applyBindings = function (viewModel) {
+        this.data('viewModel', viewModel).each(function (idx, element) {
+            ko.applyBindings(viewModel, element);
+        });
+    };
+
+
+})(window, jQuery, ko);
+
+/**
+ * These functions handle single page applications
+ */
+(function(window) {
+    "use strict";
+
+    var metaproject = window.metaproject || {};
 
     /**
      * Main Application Class
-     * 
+     *
      * Application bind itself to the dom, calls init()
      *  and triggers the first hashchange when run
      */
@@ -102,17 +124,6 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 
     };
 
-    /* jQuery plugs */
-
-    /**
-     * Shortcut to ko.applyBindings, save the viewModel on data-viewModel
-     * @param viewModel
-     */
-    $.fn.applyBindings = function (viewModel) {
-        this.data('viewModel', viewModel).each(function (idx, element) {
-            ko.applyBindings(viewModel, element);
-        });
-    };
 
     /**
      * Includes and initializes another file on the element
@@ -195,8 +206,8 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
             // TODO dispose callback
         }
     };
+})(window);
 
-})(window, jQuery, ko);
 
 /*global alert: true, jQuery: true, ko: true */
 (function (window, $, ko) {
@@ -207,28 +218,28 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
     /**
      * metaproject.DataSource
      *
+     * Default REST datasource
      */
     metaproject.DataSource = function (base_url, options) {
         var self = this,
             $self = $('<div/>');
 
         options = $.extend({
-            key: 'id',
-            model: function (data) {
-                $.extend(this, data);
-            }
+            key: 'id'
         }, options);
 
         // Events
         self.on = $self.on.bind($self);
         self.trigger = $self.trigger.bind($self);
 
-        self.errorHandler = undefined;
+        self.errorHandler = function(xhr, status, error) {
+            self.trigger('error', xhr.responseText);
+        };
 
         self._id = function (model_or_id) {
             if (typeof(model_or_id) === 'object') {
                 if(model_or_id.hasOwnProperty(options.key)) {
-                    return ko.utils.unwrapObservable(model_or_id[options.key]);
+                    return ko.unwrap(model_or_id[options.key]);
                 }
                 else {
                     throw "Model key " + options.key + " not set!";
@@ -266,6 +277,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                     break;
                 default: // object
                     path = '/' + self._id(path);
+                    break;
             }
 
 
@@ -282,14 +294,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                     error: self.errorHandler,
                     success: function (data) {
                         if (typeof(callback) === 'function') {
-                            if (data instanceof Array) {
-                                callback($.map(data, function (e, i) {
-                                    return new options.model(e);
-                                }));
-                            }
-                            else {
-                                callback(new options.model(data));
-                            }
+                            callback(data);
                         }
                     }
                 }
@@ -315,6 +320,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 
         self.put = function (id, data, callback) {
 
+            // datasource.put(model, callback)
             if(typeof(id) == "object") {
                 if(typeof(data) == "function") {
                     callback = data;
@@ -322,11 +328,8 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 
                 data = id;
                 id = self._id(data);
-
-
             }
 
-            // TODO datasource.put(model, callback)
             return $.ajax({
                 url: base_url + '/' + self._id(id),
                 dataType: 'json',
@@ -349,6 +352,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                 type: 'DELETE',
                 success: function (data) {
                     $self.trigger('changed', { action: 'destroy', data: data});
+
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
@@ -425,8 +429,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
          */
         Model.bind = function (base_url, options) {
 
-            // TODO accept custom datasource implementation
-            // { get: fn(..), post: fn(..), put: fn(..), delete: fn(..) }
+
             if (typeof(base_url) === 'string') {
                 // When using the bind() method, always set the Model option
                 if (undefined === options) {
@@ -437,6 +440,11 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                 }
 
                 _datasource = new metaproject.DataSource(base_url, options);
+            }
+            else {
+                // custom datasource implementation
+                // { _id: fn(..), get: fn(..), post: fn(..), put: fn(..), delete: fn(..) }
+                _datasource = base_url;
             }
 
             return Model;
@@ -450,7 +458,17 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
         };
 
         Model.get = function(id, callback) {
-            return Model.getDataSource().get(id, callback);
+
+            return Model.getDataSource().get(id, function(data) {
+                if (data instanceof Array) {
+                    callback($.map(data, function (e, i) {
+                        return new Model(e);
+                    }));
+                }
+                else {
+                    callback(new Model(data));
+                }
+            });
         };
 
         Model.on = function(event, callback) {
@@ -469,30 +487,35 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
          * Queries this model's datasource
          * Results are fetched when the returned observable is first bound
          *
-         * @param filter
+         * @param params query parameters
          * @param live boolean If true (default), update this query results when the datasource changes
          * @returns ko.observable The Query results
          */
-        Model.query = function (filter, live) {
+        Model.query = function (params, live) {
+            params = params || {};
 
             var datasource = Model.getDataSource(),
                 _value = ko.observable([]), // current value
-                _filter = ko.observable(filter || {}), // the filter
+                _params = ko.observable(params), // query parameters
+                _filter = ko.observable({}), // the filter
                 _hash = ko.observable(null);
 
             // an observable that retrieves its value when first bound
             // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
             var result = ko.computed({
                 read: function () {
-                    var newhash = ko.toJSON(_filter());
+
+                    var params = $.extend({}, _params(), _filter());
+
+                    var newhash = ko.toJSON(params);
                     if (_hash() !== newhash) {
                         result.loading(true);
-                        datasource.get('/', _filter(), function (newData) {
+                        datasource.get('/', params, function (newData) {
                             _hash(newhash);
-                            _value(newData);
+                            _value($.map(newData, Model.create));
 
                             result.loading(false);
-                        }); // TODO .error(...)
+                        });
                     }
 
                     //always return the current value
@@ -508,6 +531,9 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
             // update when datasource changes (default true)
             result._live = (typeof(live) == "boolean" ? live : true);
 
+            // observable
+            // base query parameters
+            result.params = _params;
 
             /**
              * results filter
@@ -520,36 +546,40 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 
             /**
              * Set the filter parameter
-             * @param param
+             * @param param - object or string
              * @param value
              */
             result.filter.set = function (param, value) {
-                result.filter()[param] = value;
+
+                if(typeof(param) == "object") {
+                    var filter = result.filter();
+                    for(var p in param) {
+                        filter[p] = param[p];
+                    }
+                }
+                else {
+                    result.filter()[param] = value;
+                }
+
                 result.filter.valueHasMutated();
             };
 
             /**
              * Resets filter, leaving _* parameters unchanged
-             * @param data The filter data
              * @param notify Notify the change (default false)
              */
-            result.filter.reset = function (data, notify) {
-                data = data || {};
+            result.filter.reset = function (notify) {
 
-                data._offset = 0;
-                var filter = result.filter();
-
-                _.keys(filter).forEach(function (key) {
-                    if (key[0] !== '_') {
-                        delete filter[key];
-                    }
-                });
-
-                _.extend(filter, data);
-
-                if (notify) {
-                    result.filter.valueHasMutated();
+                if(notify) {
+                    result.filter({});
                 }
+                else {
+                    var f = result.filter();
+
+                    for (var member in f) delete f[member];
+
+                }
+
             };
 
             /**
@@ -569,12 +599,8 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                 // Reload this observable
                 me.reload = function () {
                     me.loading(true);
-                    var x = _.filter(_.keys(result.filter()), function (value, index, list) {
-                        return value[0] !== '_';
-                    });
-                    var local_params = _.extend(_.pick(result.filter(), x), params);
 
-                    datasource.get('/', local_params, function (newData) {
+                    datasource.get('/', params, function (newData) {
                         if (typeof(transform) === 'function') {
                             me(transform(newData));
                         }
