@@ -39,7 +39,12 @@
 
         self._id = function (model_or_id) {
             if (typeof(model_or_id) === 'object') {
-
+                if(model_or_id.hasOwnProperty(options.key)) {
+                    return ko.unwrap(model_or_id[options.key]);
+                }
+                else {
+                    throw "Model key " + options.key + " not set!";
+                }
             }
             else {
                 return model_or_id;
@@ -72,12 +77,8 @@
                     }
                     break;
                 default: // object
-                    if(path.hasOwnProperty(options.key)) {
-                        path = '/' + ko.unwrap(path[options.key]);
-                    }
-                    else {
-                        throw "Model key " + options.key + " not set!";
-                    }
+                    path = '/' + self._id(path);
+                    break;
             }
 
 
@@ -152,6 +153,7 @@
                 type: 'DELETE',
                 success: function (data) {
                     $self.trigger('changed', { action: 'destroy', data: data});
+
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }

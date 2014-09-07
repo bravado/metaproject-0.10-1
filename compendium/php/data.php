@@ -18,9 +18,9 @@ if (!isset($_SESSION['DATA'])) {
 
 function DATA_idx($id)
 {
-    for ($i = count($_SESSION['DATA']) - 1; $i >= 0; $i--) {
-        if ($_SESSION['DATA'][$i]['id'] == $id) {
-            return $i;
+    foreach ($_SESSION['DATA'] as $key => $val) {
+        if ($val['id'] == $id) {
+            return $key;
         }
     }
 
