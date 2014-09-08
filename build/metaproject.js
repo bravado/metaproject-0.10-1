@@ -16,62 +16,61 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 	ko.punches.enableAll();
 
     /**
-     * Events
-     * From https://github.com/moot/riotjs
+     * EventEmitter
+     * Based on https://github.com/moot/riotjs
      */
-     
-    var callbacks = {},
-      slice = [].slice;
+    metaproject.EventEmitter = function() {
+        this.callbacks = {};
+    };
 
-    metaproject.on = function(events, fn) {
+    metaproject.EventEmitter.prototype = {
+        on: function(events, fn) {
+            if (typeof fn == "function") {
+                events = events.split(/\s+/);
 
-      if (typeof fn == "function") {
-        events = events.split(/\s+/);
+                for (var i = 0, len = events.length, type; i < len; i++) {
+                    type = events[i];
+                    (this.callbacks[type] = this.callbacks[type] || []).push(fn);
+                    if (len > 1) fn.typed = true;
+                }
+            }
+            return this;
+        },
+        one: function(type, fn) {
+            if (fn) fn.one = true;
+            return this.on(type, fn);
 
-        for (var i = 0, len = events.length, type; i < len; i++) {
-          type = events[i];
-          (callbacks[type] = callbacks[type] || []).push(fn);
-          if (len > 1) fn.typed = true;
+        },
+        off: function(events) {
+            events = events.split(/\s+/);
+
+            for (var i = 0; i < events.length; i++) {
+                this.callbacks[events[i]] = [];
+            }
+
+            return this;
+        },
+        trigger: function(type) {
+
+            var slice = [].slice,
+                args = slice.call(arguments, 1),
+                fns = this.callbacks[type] || [];
+
+            for (var i = 0, fn; i < fns.length; ++i) {
+                fn = fns[i];
+
+                if (fn.one && fn.done) continue;
+
+                // add event argument when multiple listeners
+                fn.apply(this, fn.typed ? [type].concat(args) : args);
+
+                fn.done = true;
+            }
+
+            return this;
         }
-      }
-      return metaproject;
     };
 
-    metaproject.off = function(events) {
-      events = events.split(/\s+/);
-
-      for (var i = 0; i < events.length; i++) {
-        callbacks[events[i]] = [];
-      }
-
-      return metaproject;
-    };
-
-    // only single event supported
-    metaproject.one = function(type, fn) {
-      if (fn) fn.one = true;
-      return metaproject.on(type, fn);
-
-    };
-
-    metaproject.trigger = function(type) {
-
-      var args = slice.call(arguments, 1),
-        fns = callbacks[type] || [];
-
-      for (var i = 0, fn; i < fns.length; ++i) {
-        fn = fns[i];
-
-        if (fn.one && fn.done) continue;
-
-        // add event argument when multiple listeners
-        fn.apply(metaproject, fn.typed ? [type].concat(args) : args);
-
-        fn.done = true;
-      }
-
-      return metaproject;
-    };
 
     /* jQuery plugs */
 
@@ -221,25 +220,20 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
      * Default REST datasource
      */
     metaproject.DataSource = function (base_url, options) {
-        var self = this,
-            $self = $('<div/>');
+        var self = this;
 
         options = $.extend({
             key: 'id'
         }, options);
 
-        // Events
-        self.on = $self.on.bind($self);
-        self.trigger = $self.trigger.bind($self);
-
         self.errorHandler = function(xhr, status, error) {
-            self.trigger('error', xhr.responseText);
+            self.trigger('error', { message: xhr.responseText, code: xhr.status });
         };
 
         self._id = function (model_or_id) {
             if (typeof(model_or_id) === 'object') {
                 if(model_or_id.hasOwnProperty(options.key)) {
-                    return ko.unwrap(model_or_id[options.key]);
+                    return model_or_id[options.key];
                 }
                 else {
                     throw "Model key " + options.key + " not set!";
@@ -251,10 +245,9 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
         };
 
         // get(callback) - fetch all
-        // get(callback, params) - with params
-        // get(path || {model}, params);
-        // get(path || {model}, params, callback);
-        // get(path || {model}, callback);
+        // get(params, callback) - with params
+        // get(id, callback); - fetch single
+        // get(id, params, callback); - with params
         self.get = function (path, params, callback) {
 
             if(path === undefined || path === null) {
@@ -267,7 +260,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                     callback = path;
                     path = '';
                     break;
-                case 'string':
+                case 'string': // get(id, callback)
                     if(path === '/') {
                         path = '';
                     }
@@ -275,8 +268,13 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                         path = '/' + path;
                     }
                     break;
-                default: // object
-                    path = '/' + self._id(path);
+                case 'number':
+                    path = '/' + path;
+                    break;
+                default: // get (object, callback)
+                    callback = params;
+                    params = path;
+                    path = '';
                     break;
             }
 
@@ -309,7 +307,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                 type: 'POST',
                 data: data,
                 success: function (data) {
-                    $self.trigger('changed', { action: 'post', data: data});
+                    self.trigger('changed', { action: 'post', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
@@ -336,7 +334,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                 type: 'PUT',
                 data: data,
                 success: function (data) {
-                    $self.trigger('changed', { action: 'put', data: data});
+                    self.trigger('changed', { action: 'put', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
@@ -351,7 +349,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                 dataType: 'json',
                 type: 'DELETE',
                 success: function (data) {
-                    $self.trigger('changed', { action: 'destroy', data: data});
+                    self.trigger('changed', { action: 'destroy', data: data});
 
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -362,6 +360,8 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
         };
 
     };
+
+    metaproject.DataSource.prototype = new metaproject.EventEmitter();
 
     /**
      * Model factory
@@ -650,22 +650,22 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 
         // For instantiated models
         Model.prototype.destroy = function(callback) {
-            var instance = this,
+            var data = ko.mapping.toJS(this),
                 datasource = Model.getDataSource();
 
-            return datasource.destroy(instance, callback);
+            return datasource.destroy(datasource._id(data), callback);
         };
 
         Model.prototype.save = function (callback) {
-            var instance = this,
+            var data = ko.mapping.toJS(this),
                 datasource = Model.getDataSource(),
-                id = datasource._id(instance);
+                id = datasource._id(data);
 
             if (id) {
-                return datasource.put(id, ko.mapping.toJSON(instance), callback);
+                return datasource.put(id, data, callback);
             }
             else {
-                return datasource.post(ko.mapping.toJSON(instance), callback);
+                return datasource.post(data, callback);
             }
         };
 
