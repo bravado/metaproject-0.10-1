@@ -1,0 +1,71 @@
+describe("metaproject.Model", function() {
+    var datasource = new MockDataSource(), //new metaproject.DataSource("../lib/data.php"),
+        Test = metaproject.Model({
+            id: null,
+            name: null,
+            custom: 'default'
+        }).bind(datasource);
+
+    it('creates new instances with the default parameters', function() {
+        var test = new Test();
+
+        expect(test.id()).toBe(null);
+        expect(test.name()).toBe(null);
+        expect(test.custom()).toBe('default');
+    });
+
+    it('creates new instances with custom parameters', function() {
+        var test = new Test({ id: 3, custom: 'custom' });
+
+        expect(test.id()).toBe(3);
+        expect(test.custom()).toBe('custom');
+    });
+
+    // persistence specs
+
+    var test_id = null;
+    it('persists new entities to the datasource', function(done) {
+        var test = new Test({ name: 'Testing' });
+
+        test.save(function(response) {
+            expect(response.id).not.toBe(undefined);
+            expect(response.id).not.toBeNull();
+            console.log(response);
+            test_id = response.id;
+            done();
+        });
+    });
+
+    var test_cache = null;
+    it('retrieves entities', function(done) {
+        Test.get(test_id, function(test) {
+            console.log(test);
+            expect(test.name()).toBe('Testing');
+            test_cache = test;
+            done();
+        });
+    });
+
+    it('updates entities', function(done) {
+        test_cache.name('Update Testing');
+
+        test_cache.save(function(response) {
+            expect(response.id).toBe(test_id);
+            Test.get(test_id, function(test) {
+                expect(test.name()).toBe('Update Testing');
+                done();
+            });
+        });
+    });
+
+    it('deletes entities', function(done) {
+        datasource.one('error', function(err) {
+            expect(err.code).toBe(404);
+            done();
+        });
+
+        test_cache.destroy(function() {
+            Test.get(test_id);
+        });
+    });
+});

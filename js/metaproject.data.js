@@ -35,10 +35,9 @@
         };
 
         // get(callback) - fetch all
-        // get(callback, params) - with params
-        // get(path || {model}, params);
-        // get(path || {model}, params, callback);
-        // get(path || {model}, callback);
+        // get(params, callback) - with params
+        // get(id, callback); - fetch single
+        // get(id, params, callback); - with params
         self.get = function (path, params, callback) {
 
             if(path === undefined || path === null) {
@@ -51,7 +50,7 @@
                     callback = path;
                     path = '';
                     break;
-                case 'string':
+                case 'string': // get(id, callback)
                     if(path === '/') {
                         path = '';
                     }
@@ -59,8 +58,13 @@
                         path = '/' + path;
                     }
                     break;
-                default: // object
-                    path = '/' + self._id(path);
+                case 'number':
+                    path = '/' + path;
+                    break;
+                default: // get (object, callback)
+                    callback = params;
+                    params = path;
+                    path = '';
                     break;
             }
 
@@ -436,14 +440,14 @@
 
         // For instantiated models
         Model.prototype.destroy = function(callback) {
-            var data = ko.mapping.toJSON(this),
+            var data = ko.mapping.toJS(this),
                 datasource = Model.getDataSource();
 
             return datasource.destroy(datasource._id(data), callback);
         };
 
         Model.prototype.save = function (callback) {
-            var data = ko.mapping.toJSON(this),
+            var data = ko.mapping.toJS(this),
                 datasource = Model.getDataSource(),
                 id = datasource._id(data);
 

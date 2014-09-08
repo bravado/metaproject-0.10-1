@@ -33,6 +33,8 @@ function MockDataSource() {
                 break;
         }
 
+        console.log('[MockDataSource] get ' + id);
+
         if(undefined === id) {
             // TODO support params
             typeof(cb) == 'function' && cb.call(self,
@@ -53,28 +55,36 @@ function MockDataSource() {
     };
 
     self.post = function (data, cb) {
-        // id check
-        if (undefined !== data.id) {
-            if (undefined !== data[data.id]) {
-                throw "[post] ID already exists!";
-            }
-            else {
-                if (typeof data.id === 'number' && isFinite(data.id) && data.id >= seq) {
-                    seq = data.id + 1;
+
+        console.log('[MockDataSource] post');
+
+        setTimeout(function() {
+
+            // id check
+            if (undefined !== data.id && null !== data.id) {
+                if (undefined !== _data[data.id]) {
+                    throw "[post] ID already exists!";
+                }
+                else {
+                    if (typeof data.id === 'number' && isFinite(data.id) && data.id >= seq) {
+                        seq = data.id + 1;
+                    }
                 }
             }
-        }
-        else {
-            data.id = seq++;
-        }
+            else {
+                data.id = seq++;
+            }
 
-        // create data
-        _data[data.id] = data;
+            // create data
+            _data[data.id] = data;
 
-        typeof(cb) == 'function' && cb.call(self, { id: data.id });
+            typeof(cb) == 'function' && cb.call(self, { id: data.id });
+        }, 1);
+
     };
 
     self.put = function (id, data, cb) {
+        console.log('[MockDataSource] put ' + id);
         self.get(id, function(original_data) {
             for(k in data) {
                 original_data[k] = data[k];
@@ -85,13 +95,17 @@ function MockDataSource() {
     };
 
     self.destroy = function (id, cb) {
-        if(_data.hasOwnProperty(id)) {
-            delete _data[id];
-            cb.call(self);
-        }
-        else {
-            self.trigger('error', { code: 404, message: 'Resource not found'});
-        }
+        console.log('[MockDataSource] destroy ' + id);
+
+        setTimeout(function() {
+            if(_data.hasOwnProperty(id)) {
+                delete _data[id];
+                cb.call(self);
+            }
+            else {
+                self.trigger('error', { code: 404, message: 'Resource not found'});
+            }
+        },1);
     };
 
     self.reset = function () {

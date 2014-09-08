@@ -1,3 +1,21 @@
+
+
+describe("MockDataSource", DataSourceSpec(new MockDataSource()));
+
+
+describe("metaproject.DataSource", function() {
+    // data.php stores data on the http session
+    var ds = new metaproject.DataSource('../lib/data.php');
+
+    // data.php specific - reset session data
+    ds.get('reset');
+
+    return DataSourceSpec(ds).call(this);
+});
+
+
+
+
 function DataSourceSpec(datasource) {
 
 
@@ -34,10 +52,11 @@ function DataSourceSpec(datasource) {
                 // test without id
                 datasource.post({ name: 'test 2'}, function(response) {
                     expect(response.id).not.toBe(undefined);
+                    expect(response.id).not.toBeNull();
 
                     datasource.post({ name: 'test 3'}, function(response) {
                         expect(response.id).not.toBe(undefined);
-
+                        expect(response.id).not.toBeNull();
                         done();
                     });
                 });
@@ -116,10 +135,3 @@ function DataSourceSpec(datasource) {
     }
 }
 
-
-describe("MockDataSource", DataSourceSpec(new MockDataSource()));
-
-var ds = new metaproject.DataSource('lib/data.php');
-ds.get('reset');
-
-describe("MetaprojectDatasource", DataSourceSpec(ds));
