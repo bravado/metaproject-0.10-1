@@ -10,19 +10,14 @@
      * Default REST datasource
      */
     metaproject.DataSource = function (base_url, options) {
-        var self = this,
-            $self = $('<div/>');
+        var self = this;
 
         options = $.extend({
             key: 'id'
         }, options);
 
-        // Events
-        self.on = $self.on.bind($self);
-        self.trigger = $self.trigger.bind($self);
-
         self.errorHandler = function(xhr, status, error) {
-            self.trigger('error', xhr.responseText);
+            self.trigger('error', { message: xhr.responseText, code: xhr.status });
         };
 
         self._id = function (model_or_id) {
@@ -98,7 +93,7 @@
                 type: 'POST',
                 data: data,
                 success: function (data) {
-                    $self.trigger('changed', { action: 'post', data: data});
+                    self.trigger('changed', { action: 'post', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
@@ -125,7 +120,7 @@
                 type: 'PUT',
                 data: data,
                 success: function (data) {
-                    $self.trigger('changed', { action: 'put', data: data});
+                    self.trigger('changed', { action: 'put', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
@@ -140,7 +135,7 @@
                 dataType: 'json',
                 type: 'DELETE',
                 success: function (data) {
-                    $self.trigger('changed', { action: 'destroy', data: data});
+                    self.trigger('changed', { action: 'destroy', data: data});
 
                     if (typeof(callback) === 'function') {
                         callback(data);
@@ -151,6 +146,8 @@
         };
 
     };
+
+    metaproject.DataSource.prototype = new metaproject.EventEmitter();
 
     /**
      * Model factory

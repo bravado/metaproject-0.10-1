@@ -35,13 +35,14 @@ function DataSourceSpec(datasource) {
                 datasource.post({ name: 'test 2'}, function(response) {
                     expect(response.id).not.toBe(undefined);
 
+                    datasource.post({ name: 'test 3'}, function(response) {
+                        expect(response.id).not.toBe(undefined);
+
+                        done();
+                    });
                 });
 
-                datasource.post({ name: 'test 3'}, function(response) {
-                    expect(response.id).not.toBe(undefined);
 
-                    done();
-                });
 
             })
         });
@@ -75,12 +76,12 @@ function DataSourceSpec(datasource) {
         });
 
         it('updates data', function(done) {
-            datasource.put('something', { age: 34 }, function(response) {
+            datasource.put('something', { age: '34' }, function(response) {
                 expect(response.id).toBe('something');
 
                 datasource.get('something', function(response) {
                     expect(response.name).toBe('test 1');
-                    expect(response.age).toBe(34);
+                    expect(response.age).toBe('34');
                     done();
                 })
             });
@@ -117,3 +118,8 @@ function DataSourceSpec(datasource) {
 
 
 describe("MockDataSource", DataSourceSpec(new MockDataSource()));
+
+var ds = new metaproject.DataSource('lib/data.php');
+ds.get('reset');
+
+describe("MetaprojectDatasource", DataSourceSpec(ds));
