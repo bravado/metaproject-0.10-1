@@ -90,12 +90,13 @@
     // The node will receive activate and deactivate events when the url changes
     ko.bindingHandlers.url = {
         init: function (element, valueAccessor, allBindingsAccessor) {
-            var $element = $(element),
+            var $window = $(window),
+                $element = $(element),
                 url = valueAccessor();
 
             $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' });
 
-            $(window).on('hashchange', function (e) {
+            $window.on('hashchange', function (e) {
                 var hash = window.location.hash.substr(1) || '/',
                     match = new RegExp('^' + url + '$').exec(hash);
 
@@ -105,18 +106,24 @@
                             visibility: 'visible',
                             position: 'inherit',
                             height: 'auto',
-                            overflow: 'inherit' }).children().trigger('activate', [ element, match ]);
+                            overflow: 'inherit' }).children().trigger({
+                                type: 'activate',
+                                url: match.shift(),
+                                params: match });
                     }
 
-                    $(window).scrollTop(0);
+                    $window.scrollTop($element.data('scroll-top') || 0);
                 }
                 else {
                     if ($element.css('visibility') === 'visible') {
+                        $element.data('scroll-top', $window.scrollTop());
+
                         $element.css({
                             visibility: 'hidden',
                             position: 'absolute',
                             height: 0,
-                            overflow: 'hidden' }).children().trigger('deactivate', [element, match ]);
+                            overflow: 'hidden' }).children().trigger({ type: 'deactivate' });
+
                     }
                 }
             });
