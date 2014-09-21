@@ -186,7 +186,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 
             $(window).on('hashchange', function (e) {
                 var hash = window.location.hash.substr(1) || '/',
-                    match = new RegExp('^' + hash + '$').exec(url);
+                    match = new RegExp('^' + url + '$').exec(hash);
 
                 if (match !== null) {
                     if ($element.css('visibility') !== 'visible') {

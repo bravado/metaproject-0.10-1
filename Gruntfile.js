@@ -73,6 +73,24 @@ module.exports = function (grunt) {
                     '<%= concat.metaproject_ui.dest %>'
                 ],
                 dest: 'build/<%= pkg.name %>.min.js'
+            },
+            metaproject_full: {
+                options: {
+                    banner: '<%= banner %>'
+                },
+                src: [
+                    'bower_components/jquery/jquery.js',
+                    'bower_components/jquery-ui/ui/jquery-ui.js',
+                    'bower_components/modernizr/modernizr.js',
+                    'bower_components/knockout/dist/knockout.js',
+                    'bower_components/knockout-mapping/knockout.mapping.js',
+                    'bower_components/knockout.punches/knockout.punches.js',
+                    'bower_components/knockout-postbox/build/knockout-postbox.js',
+                    'lib/bootstrap.js',
+                    '<%= concat.metaproject.dest %>',
+                    '<%= concat.metaproject_ui.dest %>'
+                ],
+                dest: 'build/metaproject.full.js'
             }
         },
 
