@@ -30,7 +30,6 @@ describe("metaproject.Model", function() {
         test.save(function(response) {
             expect(response.id).not.toBe(undefined);
             expect(response.id).not.toBeNull();
-            console.log(response);
             test_id = response.id;
             done();
         });
@@ -39,7 +38,6 @@ describe("metaproject.Model", function() {
     var test_cache = null;
     it('retrieves entities', function(done) {
         Test.get(test_id, function(test) {
-            console.log(test);
             expect(test.name()).toBe('Testing');
             test_cache = test;
             done();
@@ -67,5 +65,12 @@ describe("metaproject.Model", function() {
         test_cache.destroy(function() {
             Test.get(test_id);
         });
+    });
+
+    it('queries entities', function(done) {
+        var query = Test.query();
+
+        query();
+
     });
 });
