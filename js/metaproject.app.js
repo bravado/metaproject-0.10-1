@@ -96,18 +96,27 @@
             $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' });
 
             $(window).on('hashchange', function (e) {
-                var hash = window.location.hash.substr(1) || '/';
+                var hash = window.location.hash.substr(1) || '/',
+                    match = new RegExp('^' + hash + '$').exec(url);
 
-                if (hash === url) {
+                if (match !== null) {
                     if ($element.css('visibility') !== 'visible') {
-                        $element.css({ visibility: 'visible', position: 'inherit', height: 'auto', overflow: 'inherit' }).children().trigger('activate', [ element, hash ]);
+                        $element.css({
+                            visibility: 'visible',
+                            position: 'inherit',
+                            height: 'auto',
+                            overflow: 'inherit' }).children().trigger('activate', [ element, match ]);
                     }
 
                     $(window).scrollTop(0);
                 }
                 else {
                     if ($element.css('visibility') === 'visible') {
-                        $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' }).children().trigger('deactivate', [$element, hash]);
+                        $element.css({
+                            visibility: 'hidden',
+                            position: 'absolute',
+                            height: 0,
+                            overflow: 'hidden' }).children().trigger('deactivate', [element, match ]);
                     }
                 }
             });
