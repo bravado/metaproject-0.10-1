@@ -1,5 +1,5 @@
 /*!
- * Metaproject v0.9.2 (http://bravado.github.io/metaproject/)
+ * Metaproject v0.9.5 (http://bravado.github.io/metaproject/)
  * Copyright 2011-2014 Bravado
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */

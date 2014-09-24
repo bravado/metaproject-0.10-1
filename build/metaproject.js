@@ -1,5 +1,5 @@
 /*!
- * Metaproject v0.9.2 (http://bravado.github.io/metaproject/)
+ * Metaproject v0.9.5 (http://bravado.github.io/metaproject/)
  * Copyright 2011-2014 Bravado
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
@@ -179,12 +179,13 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
     // The node will receive activate and deactivate events when the url changes
     ko.bindingHandlers.url = {
         init: function (element, valueAccessor, allBindingsAccessor) {
-            var $element = $(element),
+            var $window = $(window),
+                $element = $(element),
                 url = valueAccessor();
 
             $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' });
 
-            $(window).on('hashchange', function (e) {
+            $window.on('hashchange', function (e) {
                 var hash = window.location.hash.substr(1) || '/',
                     match = new RegExp('^' + url + '$').exec(hash);
 
@@ -194,18 +195,24 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
                             visibility: 'visible',
                             position: 'inherit',
                             height: 'auto',
-                            overflow: 'inherit' }).children().trigger('activate', [ element, match ]);
+                            overflow: 'inherit' }).children().trigger({
+                                type: 'activate',
+                                url: match.shift(),
+                                params: match });
                     }
 
-                    $(window).scrollTop(0);
+                    $window.scrollTop($element.data('scroll-top') || 0);
                 }
                 else {
                     if ($element.css('visibility') === 'visible') {
+                        $element.data('scroll-top', $window.scrollTop());
+
                         $element.css({
                             visibility: 'hidden',
                             position: 'absolute',
                             height: 0,
-                            overflow: 'hidden' }).children().trigger('deactivate', [element, match ]);
+                            overflow: 'hidden' }).children().trigger({ type: 'deactivate' });
+
                     }
                 }
             });
@@ -596,10 +603,11 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
              * @param params filter params, passed as GET variables
              * @param transform optional transform function
              *                      which receives the backend response and returns the observable value
+             * @param value initial observable value
              * @returns ko.observable
              */
-            result.observable = function (params, transform) {
-                var me = ko.observable(null),
+            result.observable = function (params, transform, value) {
+                var me = ko.observable(value),
                     datasource = Model.getDataSource();
 
                 // Loading flag, triggered when the request starts
@@ -644,8 +652,6 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
             return result;
         };
 
-
-
         /**
          * Query this Model and publish results to channel
          * @param channel The channel string
@@ -655,7 +661,6 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
         Model.publish = function (channel, params) {
             return Model.query(params).publishOn(channel);
         };
-
 
         // For instantiated models
         Model.prototype.destroy = function(callback) {
@@ -682,21 +687,4 @@ if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuer
 
     };
 
-
-    /**
-     * The model binding
-     */
-
-    ko.bindingHandlers.model = {
-        init: function (element, valueAccessor, allBindingsAccessor) {
-            var model = ko.unwrap(valueAccessor());
-
-            $(element).find('input[name]', function (i, e) {
-                console.log(e);
-            });
-        },
-        update: function (element, valueAccessor, allBindingsAccessor) {
-
-        }
-    }
 })(window, jQuery, ko);

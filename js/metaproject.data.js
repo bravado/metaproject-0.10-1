@@ -377,10 +377,11 @@
              * @param params filter params, passed as GET variables
              * @param transform optional transform function
              *                      which receives the backend response and returns the observable value
+             * @param value initial observable value
              * @returns ko.observable
              */
-            result.observable = function (params, transform) {
-                var me = ko.observable(null),
+            result.observable = function (params, transform, value) {
+                var me = ko.observable(value),
                     datasource = Model.getDataSource();
 
                 // Loading flag, triggered when the request starts
@@ -425,8 +426,6 @@
             return result;
         };
 
-
-
         /**
          * Query this Model and publish results to channel
          * @param channel The channel string
@@ -436,7 +435,6 @@
         Model.publish = function (channel, params) {
             return Model.query(params).publishOn(channel);
         };
-
 
         // For instantiated models
         Model.prototype.destroy = function(callback) {
@@ -463,21 +461,4 @@
 
     };
 
-
-    /**
-     * The model binding
-     */
-
-    ko.bindingHandlers.model = {
-        init: function (element, valueAccessor, allBindingsAccessor) {
-            var model = ko.unwrap(valueAccessor());
-
-            $(element).find('input[name]', function (i, e) {
-                console.log(e);
-            });
-        },
-        update: function (element, valueAccessor, allBindingsAccessor) {
-
-        }
-    }
 })(window, jQuery, ko);

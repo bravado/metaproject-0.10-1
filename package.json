@@ -1,7 +1,7 @@
 {
     "name": "metaproject",
     "description": "Reference component library for javascript interfaces.",
-    "version": "0.9.2",
+    "version": "0.9.5",
     "keywords": ["bootstrap", "css", "mvvm"],
     "homepage": "http://bravado.github.io/metaproject/",
     "author": "Bravado",
