@@ -1,11 +1,3 @@
-/*!
- * Metaproject v0.9.5 (http://bravado.github.io/metaproject/)
- * Copyright 2011-2014 Bravado
- * Licensed under MIT (http://opensource.org/licenses/MIT)
- */
-
-if (typeof jQuery === 'undefined') { throw new Error('Metaproject requires jQuery') }
-
 /*global jQuery: true, metaproject: true, ko: true */
 
 // metaproject ui components

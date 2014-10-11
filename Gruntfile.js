@@ -22,23 +22,18 @@ module.exports = function (grunt) {
 
         // Metadata.
         pkg: grunt.file.readJSON('package.json'),
-        banner: '/*!\n' +
+        banner:
             ' * Metaproject v<%= pkg.version %> (<%= pkg.homepage %>)\n' +
             ' * Copyright 2011-<%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
-            ' * Licensed under <%= pkg.license.type %> (<%= pkg.license.url %>)\n' +
-            ' */\n',
-        jqueryCheck: 'if (typeof jQuery === \'undefined\') { throw new Error(\'Metaproject requires jQuery\') }\n\n',
-
+            ' * Licensed under <%= pkg.license.type %> (<%= pkg.license.url %>)',
+        cssBanner: ' * Contains code from twitter bootstrap, font-awesome and jquery-ui',
+        jsBanner: ' * Contains code from the dependencies listed on the README file',
         // Task configuration.
         clean: {
-            dist: ['build/bootstrap.*', 'build/metaproject.*']
+            dist: ['build/*' ]
         },
 
         concat: {
-            options: {
-                banner: '<%= banner %>\n<%= jqueryCheck %>',
-                stripBanners: false
-            },
             metaproject: {
                 src: [
                     'js/metaproject.js',
@@ -66,7 +61,7 @@ module.exports = function (grunt) {
         uglify: {
             metaproject: {
                 options: {
-                    banner: '<%= banner %>'
+                    banner: '/*!\n<%= banner %>\n*/\n'
                 },
                 src: [
                     '<%= concat.metaproject.dest %>',
@@ -76,7 +71,7 @@ module.exports = function (grunt) {
             },
             metaproject_full: {
                 options: {
-                    banner: '<%= banner %>'
+                    banner: '/*!\n<%= banner %>\n<%= jsBanner %>\n */\n'
                 },
                 src: [
                     'bower_components/jquery/jquery.js',
@@ -86,128 +81,56 @@ module.exports = function (grunt) {
                     'bower_components/knockout-mapping/knockout.mapping.js',
                     'bower_components/knockout.punches/knockout.punches.js',
                     'bower_components/knockout-postbox/build/knockout-postbox.js',
-                    'lib/bootstrap.js',
+                    'bower_components/bootstrap/dist/js/bootstrap.js',
                     '<%= concat.metaproject.dest %>',
                     '<%= concat.metaproject_ui.dest %>'
                 ],
-                dest: 'build/metaproject.full.js'
+                dest: 'build/metaproject.js'
             }
-        },
-
-        less: {
-            compileCore: {
-                options: {
-                    strictMath: true,
-                    sourceMap: true,
-                    outputSourceFiles: true,
-                    sourceMapURL: 'bootstrap.css.map',
-                    sourceMapFilename: 'build/bootstrap.css.map'
-                },
-                files: {
-                    'build/bootstrap.css': 'less/bootstrap.less'
-                }
-            },
-            compileTheme: {
-                options: {
-                    strictMath: true,
-                    sourceMap: true,
-                    outputSourceFiles: true,
-                    sourceMapURL: 'bootstrap-theme.css.map',
-                    sourceMapFilename: 'build/bootstrap-theme.css.map'
-                },
-                files: {
-                    'build/bootstrap-theme.css': 'less/theme.less'
-                }
-            },
-            minify: {
-                options: {
-                    cleancss: true
-                },
-                files: {
-                    'build/bootstrap.min.css': 'build/bootstrap.css',
-                    'build/bootstrap-theme.min.css': 'build/bootstrap-theme.css'
-                }
-            }
-        },
-
-        autoprefixer: {
-            options: {
-                browsers: ['last 2 versions', 'ie 8', 'ie 9', 'android 2.3', 'android 4', 'opera 12']
-            },
-            core: {
-                options: {
-                    map: true
-                },
-                src: 'build/bootstrap.css'
-            },
-            theme: {
-                options: {
-                    map: true
-                },
-                src: 'build/bootstrap-theme.css'
-            }
-        },
-
-        csslint: {
-            options: {
-                csslintrc: 'less/.csslintrc'
-            },
-            src: [
-                'build/bootstrap.css',
-                'build/bootstrap-theme.css'
-            ]
         },
 
         cssmin: {
             options: {
+                banner: '/*\n<%= banner %>\n<%= cssBanner %>\n */\n',
                 compatibility: 'ie8',
-                keepSpecialComments: '*'
+                keepSpecialComments: 0
             },
             metaproject: {
                 src: [
-                    'css/jquery-ui-1.8.16.custom.css',
-                    'css/metaproject.css'
+                    'bower_components/bootstrap/dist/css/bootstrap.css',
+                    'bower_components/font-awesome/css/font-awesome.css',
+                    'css/jquery-ui-1.8.16.custom.css'
                 ],
-                dest: 'build/metaproject.min.css'
+                dest: 'build/metaproject.css'
             }
         },
 
-        usebanner: {
-            options: {
-                position: 'top',
-                banner: '<%= banner %>'
-            },
-            files: {
-                src: 'build/*.css'
-            }
-        },
-
-        csscomb: {
-            options: {
-                config: 'less/.csscomb.json'
-            },
-            dist: {
-                expand: true,
-                cwd: 'build/',
-                src: ['*.css', '!*.min.css'],
-                dest: 'build/'
+        replace: {
+            font_path: {
+                src: ['build/metaproject.css'],
+                overwrite: true,                 // overwrite matched source files
+                replacements: [{
+                    from: '../fonts',
+                    to: "fonts"
+                }]
             }
         },
 
         copy: {
-            fonts: {
-                expand: true,
-                src: 'fonts/*',
-                dest: 'dist/'
-            }
-        },
 
-        exec: {
-            npmUpdate: {
-                command: 'npm update'
+            images: {
+                cwd: 'css/images',
+                src: '**/*',
+                dest: 'build/images',
+                expand: true
             },
-            npmShrinkWrap: {
-                command: 'npm shrinkwrap --dev'
+
+            fonts: {
+
+                cwd: 'bower_components/font-awesome/fonts',
+                src: '**/*',
+                dest: 'build/fonts',
+                expand: true
             }
         }
     });
@@ -219,17 +142,15 @@ module.exports = function (grunt) {
 
 
     // JS distribution task.
-    grunt.registerTask('dist-js', ['concat', 'uglify']);
+    grunt.registerTask('dist-js', ['concat', 'uglify' ]);
 
-    // CSS distribution task.
-    grunt.registerTask('less-compile', ['less:compileCore', 'less:compileTheme']);
-    grunt.registerTask('dist-css', ['less-compile', 'autoprefixer', 'usebanner', 'csscomb', 'less:minify', 'cssmin']);
+    grunt.registerTask('dist-css', ['cssmin', 'replace', 'copy']);
 
     // Docs distribution task.
-    grunt.registerTask('dist-docs', 'copy:docs');
+    //grunt.registerTask('dist-docs', 'copy:docs');
 
     // Full distribution task.
-    grunt.registerTask('dist', ['clean', 'dist-css', 'dist-js']);
+    grunt.registerTask('dist', ['clean', 'dist-js', 'dist-css']);
 
     // Default task.
     grunt.registerTask('default', ['dist']);

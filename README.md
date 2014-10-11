@@ -1,27 +1,18 @@
 metaproject
 ===========
 
-Work in progress... development used to happen on the objectiveweb tree.
+Reference component library for javascript applications
 
-Now that the build system is implemented, other projects should use the minimized file.
+Usage
+-----
 
-* TODO
-	* Remove underscore dependency on metaproject.js
-    * Documentation and Examples (Compendium)
-        * Application and Loader
-        * DataSource
-        * Model
-        * Data-binding (knockoutjs)
-        * Fileupload
-        * Mask input
-        * Tinymce
-    * Components (for large scale apps, won't work without requirejs)
-    	* Grid - make the filter configurable (default fields, advanced filter pane)
-    		* Maybe rename this component, it's more than just a grid
+All library and css dependencies are bundled on the build root. Include metaproject.css/js and you're good to go.
 
-* Far future
-    * requirejs module
-    * use bower or some other package management system
+      <link rel="stylesheet" href="metaproject/build/metaproject.css></script>
+      <script type="text/javascript" src="metaproject/build/metaproject.js"></script>
+
+The [Compendium](http://www.bravado.com.br/metaproject/compendium) holds documentation and examples for the ui components and
+general application structure.
 
 
 
@@ -49,39 +40,13 @@ prefering the built-in JSON object.
 
 There are also some snippets from the excellent http://html5boilerplate.com/
 
-Usage
------
-
-All library and css dependencies are bundled on the build root. The
-starter template showcases the basic usage.
-
-The Compendium holds documentation and examples for the ui components and
-general application structure.
-
-You can use Twitter Bootstrap in one of two ways: just drop the compiled CSS
-into any new project and start cranking, or run LESS on your site and compile
-on the fly like a boss.
-
-Here's what the LESS version looks like:
-
-``` html
-<link rel="stylesheet/less" type="text/css" href="lib/bootstrap.less">
-<script src="less.js" type="text/javascript"></script>
-```
-
-Or if you prefer, the standard css way:
-
-``` html
-<link rel="stylesheet" type="text/css" href="bootstrap.css">
-```
-
-For more info, refer to the docs!
-
+Non-bower dependencies are located in the `lib/` folder
 
 Versioning
 ----------
 
-For transparency and insight into our release cycle, and for striving to maintain backwards compatibility, Bootstrap will be maintained under the Semantic Versioning guidelines as much as possible.
+For transparency and insight into our release cycle, and for striving to maintain backwards compatibility,
+Metaproject will be maintained under the Semantic Versioning guidelines as much as possible.
 
 Releases will be numbered with the follow format:
 
@@ -106,28 +71,22 @@ https://github.com/bravado/metaproject/issues
 Developers
 ----------
 
-We have included a makefile with convenience methods for working with the bootstrap library.
+Dependencies are listed on `package.json` and `bower.json`. After cloning this repo, run
 
-+ **build** - `make build`
-This will run the less compiler on the bootstrap lib and generate a bootstrap.css and bootstrap.min.css file.
-The lessc compiler is required for this command to run.
+        npm install
+        bower install
 
-+ **watch** - `make watch`
-This is a convenience method for watching your less files and automatically building them whenever you save.
-Watchr is required for this command to run.
-
+We have included a Gruntfile with convenience methods for building metaproject.
 
 Authors
 -------
 
 **Guilherme Barile**
 
-+ http://github.com/guigouz
-
-
++ [http://github.com/guigouz](http://github.com/guigouz)
 
 License
----------------------
+-------
 
 Copyright 2011 (c) Bravado
 
