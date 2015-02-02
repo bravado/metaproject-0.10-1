@@ -33,7 +33,7 @@ function MockDataSource() {
                 break;
         }
 
-        console.log('[MockDataSource] get ' + id);
+
 
         if(undefined === id) {
             // TODO support params
@@ -43,6 +43,7 @@ function MockDataSource() {
                 }));
         }
         else {
+            console.log('[MockDataSource] get ' + id);
             if (_data.hasOwnProperty(id)) {
                 typeof(cb) == 'function' && cb.call(self, _data[id])
             }
@@ -77,7 +78,7 @@ function MockDataSource() {
 
             // create data
             _data[data.id] = data;
-
+            self.trigger('changed', { action: 'post', data: data});
             typeof(cb) == 'function' && cb.call(self, { id: data.id });
         }, 1);
 
@@ -89,7 +90,7 @@ function MockDataSource() {
             for(k in data) {
                 original_data[k] = data[k];
             }
-
+            self.trigger('changed', { action: 'put', data: data});
             typeof(cb) == 'function' && cb.call(self, { id: original_data.id })
         });
     };
@@ -100,6 +101,7 @@ function MockDataSource() {
         setTimeout(function() {
             if(_data.hasOwnProperty(id)) {
                 delete _data[id];
+                self.trigger('changed', { action: 'destroy', data: id});
                 cb.call(self);
             }
             else {

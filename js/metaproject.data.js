@@ -300,7 +300,7 @@
                     var newhash = ko.toJSON(params);
                     if (_hash() !== newhash) {
                         result.loading(true);
-                        datasource.get('/', params, function (newData) {
+                        datasource.get(params, function (newData) {
                             _hash(newhash);
                             _value($.map(newData, Model.create));
 

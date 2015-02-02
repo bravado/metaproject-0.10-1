@@ -56,6 +56,17 @@ describe("metaproject.Model", function() {
         });
     });
 
+    // create a new query (lists all Test objects)
+    var query = Test.query();
+
+    // retrieve data (queries are executed when first bound)
+    query();
+
+    it('queries entities', function() {
+        var q = query();
+        expect(q.length).toBe(1);
+    });
+
     it('deletes entities', function(done) {
         datasource.one('error', function(err) {
             expect(err.code).toBe(404);
@@ -67,10 +78,12 @@ describe("metaproject.Model", function() {
         });
     });
 
-    it('queries entities', function(done) {
-        var query = Test.query();
 
-        query();
+    it('updates queries when the datasource changes', function() {
+
+        var q = query();
+        expect(q.length).toBe(0);
+
 
     });
 });
