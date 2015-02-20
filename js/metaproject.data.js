@@ -95,7 +95,7 @@
                 url: base_url,
                 dataType: 'json',
                 type: 'POST',
-                data: data,
+                data: ko.toJSON(data),
                 success: function (data) {
                     self.trigger('changed', { action: 'post', data: data});
                     if (typeof(callback) === 'function') {
@@ -122,7 +122,7 @@
                 url: base_url + '/' + self._id(id),
                 dataType: 'json',
                 type: 'PUT',
-                data: data,
+                data: ko.toJSON(data),
                 success: function (data) {
                     self.trigger('changed', { action: 'put', data: data});
                     if (typeof(callback) === 'function') {
