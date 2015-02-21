@@ -30,7 +30,7 @@ module.exports = function (grunt) {
         jsBanner: ' * Contains code from the dependencies listed on the README file',
         // Task configuration.
         clean: {
-            dist: ['build/*' ]
+            dist: ['dist/*' ]
         },
 
         concat: {
@@ -40,7 +40,7 @@ module.exports = function (grunt) {
                     'js/metaproject.app.js',
                     'js/metaproject.data.js'
                 ],
-                dest: 'build/metaproject.js'
+                dest: 'dist/metaproject.js'
             },
             metaproject_ui: {
                 src: [
@@ -54,7 +54,7 @@ module.exports = function (grunt) {
                     'js/metaproject-ui.maskinput.js',
                     'js/metaproject-ui.tinymce.js'
                 ],
-                dest: 'build/metaproject-ui.js'
+                dest: 'dist/metaproject-ui.js'
             }
         },
 
@@ -67,7 +67,7 @@ module.exports = function (grunt) {
                     '<%= concat.metaproject.dest %>',
                     '<%= concat.metaproject_ui.dest %>'
                 ],
-                dest: 'build/<%= pkg.name %>.min.js'
+                dest: 'dist/<%= pkg.name %>.min.js'
             },
             metaproject_full: {
                 options: {
@@ -85,7 +85,7 @@ module.exports = function (grunt) {
                     '<%= concat.metaproject.dest %>',
                     '<%= concat.metaproject_ui.dest %>'
                 ],
-                dest: 'build/metaproject.js'
+                dest: 'dist/metaproject.js'
             }
         },
 
@@ -99,15 +99,16 @@ module.exports = function (grunt) {
                 src: [
                     'bower_components/bootstrap/dist/css/bootstrap.css',
                     'bower_components/font-awesome/css/font-awesome.css',
-                    'css/jquery-ui-1.8.16.custom.css'
+                    'css/jquery-ui-1.8.16.custom.css',
+                    'bower_components/AdminLTE/AdminLTE.css'
                 ],
-                dest: 'build/metaproject.css'
+                dest: 'dist/metaproject.css'
             }
         },
 
         replace: {
             font_path: {
-                src: ['build/metaproject.css'],
+                src: ['dist/metaproject.css'],
                 overwrite: true,                 // overwrite matched source files
                 replacements: [{
                     from: '../fonts',
@@ -121,7 +122,7 @@ module.exports = function (grunt) {
             images: {
                 cwd: 'css/images',
                 src: '**/*',
-                dest: 'build/images',
+                dest: 'dist/images',
                 expand: true
             },
 
@@ -129,7 +130,7 @@ module.exports = function (grunt) {
 
                 cwd: 'bower_components/font-awesome/fonts',
                 src: '**/*',
-                dest: 'build/fonts',
+                dest: 'dist/fonts',
                 expand: true
             }
         }

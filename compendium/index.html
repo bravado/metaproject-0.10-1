@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <title>The Metaproject Compendium</title>
 
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <!-- metaproject dependencies -->
+    <link rel="stylesheet" href="../bower_components/AdminLTE/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="../bower_components/AdminLTE/css/AdminLTE.css"/>
     <link rel="stylesheet" href="../css/jquery-ui-1.8.16.custom.css"/>
 
     <!-- Application Styles -->
@@ -13,11 +16,20 @@
 </head>
 
 <body class="light-gray with-header">
-<header class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="brand" href="#">Metaproject Compendium</a>
-            <ul class="nav">
+
+<nav class="navbar navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/">Compendium</a>
+        </div>
+        <div id="main-menu" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
 
                 <li class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle">Core
@@ -75,9 +87,10 @@
                     </ul>
                 </li>
             </ul>
-        </div>
-    </div>
-</header>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
+
 
 <!-- hardcoded components with defined urls -->
 <div class="container page" data-bind="url: '/'">
@@ -167,7 +180,7 @@
 <script type="text/javascript"
         src="../bower_components/modernizr/modernizr.js"></script>
 <script type="text/javascript"
-        src="../bower_components/knockout.js/knockout.js"></script>
+        src="../bower_components/knockout/dist/knockout.js"></script>
 <script type="text/javascript"
         src="../bower_components/knockout-mapping/knockout.mapping.js"></script>
 <script type="text/javascript"

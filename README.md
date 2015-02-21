@@ -24,6 +24,13 @@ http://jqueryui.com/ - jQuery UI is the official jQuery user interface library. 
 
 http://knockoutjs.com/ - Simplify dynamic JavaScript UIs by applying the Model-View-View Model (MVVM) pattern.
 
+CSS
+---
+http://fortawesome.github.io/Font-Awesome/ - The iconic font and CSS toolkit
+
+https://github.com/almasaeed2010/AdminLTE - Free Premium Admin control Panel Theme That Is Based On Bootstrap 3.x
+
+
 Additional Libraries
 --------------------
 
