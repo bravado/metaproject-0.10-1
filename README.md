@@ -6,23 +6,30 @@ Reference component library for javascript applications
 Usage
 -----
 
-All library and css dependencies are bundled on the build root. Include metaproject.css/js and you're good to go.
+All library and css dependencies are bundled on the build root. Include
+metaproject.css/js and you're good to go.
 
-      <link rel="stylesheet" href="metaproject/build/metaproject.css></script>
-      <script type="text/javascript" src="metaproject/build/metaproject.js"></script>
+      <link rel="stylesheet" href="metaproject/dist/metaproject.css></script>
+      <script type="text/javascript" src="metaproject/dist/metaproject.js"></script>
 
-The [Compendium](http://www.bravado.com.br/metaproject/compendium) holds documentation and examples for the ui components and
-general application structure.
+The [Compendium](http://www.bravado.com.br/metaproject/compendium) holds
+documentation and examples for the ui components and general application structure.
 
 
 
 Main libraries
 --------------
-http://twitter.github.com/bootstrap/ - Bootstrap is Twitter's toolkit for kickstarting CSS for websites, apps, and more. It includes base CSS styles for typography, forms, buttons, tables, grids, navigation, alerts, and more.
+http://twitter.github.com/bootstrap/ - Bootstrap is Twitter's toolkit
+for kickstarting CSS for websites, apps, and more. It includes base CSS
+styles for typography, forms, buttons, tables, grids, navigation,
+alerts, and more.
 
-http://jqueryui.com/ - jQuery UI is the official jQuery user interface library. It provides interactions, widgets, effects, and theming for creating Rich Internet Applications.
+http://jqueryui.com/ - jQuery UI is the official jQuery user interface
+library. It provides interactions, widgets, effects, and theming for
+creating Rich Internet Applications.
 
-http://knockoutjs.com/ - Simplify dynamic JavaScript UIs by applying the Model-View-View Model (MVVM) pattern.
+http://knockoutjs.com/ - Simplify dynamic JavaScript UIs by applying the
+Model-View-View Model (MVVM) pattern.
 
 CSS
 ---
