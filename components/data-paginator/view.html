@@ -1,0 +1,38 @@
+<nav>
+    <select data-bind="value: rows_per_page">
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="40">40</option>
+        <option value="60">60</option>
+        <option value="100">100</option>
+    </select>
+    <ul class="pagination">
+        <!-- ko if: page() > 1 -->
+        <li><a href="#" title="First Page" data-bind="click: page.first"><i class="fa fa-fast-backward"></i></a></li>
+        <li><a href="#" title="Previous Page" data-bind="click: page.prev"><i class="fa fa-caret-left"></i></a></li>
+
+        <!-- /ko -->
+        <li><a>{{ page }} / {{ pages }} ({{ count }} results)</a></li>
+
+        <!-- ko if: page() < pages() -->
+        <li><a href="#" title="Next Page" data-bind="click: page.next"><i class="fa fa-caret-right"></i></a></li>
+        <!-- ko if: pages() > 1  -->
+        <li><a href="#" title="Last Page" data-bind="click: page.last"><i class="fa fa-fast-forward"></i></a></li>
+        <!-- /ko -->
+        <!-- /ko -->
+
+
+    </ul>
+</nav>
+
+
+    <!--<div class="navbar-inner" data-bind="with: paginator">-->
+        <!--<div class="container" style="width: auto; padding: 0 20px;">-->
+            <!--<form class="navbar-search pull-left">-->
+                <!--<input type="text" data-bind="value: query, valueUpdate: 'afterkeydown'" class="search-query span4" placeholder="Filter">-->
+            <!--</form>-->
+            <!--<ul class="nav pull-right">-->
+
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->

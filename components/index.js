@@ -17,8 +17,9 @@
  */
 define(function() {
 
-    ko.components.register('data-view', { require: 'metaproject/data-view/component' });
-
+    ko.components.register('data-table', { require: 'metaproject/data-table/component' });
+    ko.components.register('data-paginator', { require: 'metaproject/data-paginator/component' });
+    ko.components.register('data-filter', { require: 'metaproject/data-filter/component' });
     //var dataView = require();
     //console.log(dataView);
 
