@@ -391,7 +391,7 @@
                 me.reload = function () {
                     me.loading(true);
 
-                    datasource.get('/', $.extend({}, result._filter(), params), function (newData) {
+                    datasource.get('/', $.extend({}, result.filter(), params), function (newData) {
                         if (typeof(transform) === 'function') {
                             me(transform(newData));
                         }
