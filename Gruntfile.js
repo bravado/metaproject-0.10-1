@@ -100,7 +100,7 @@ module.exports = function (grunt) {
                     'bower_components/bootstrap/dist/css/bootstrap.css',
                     'bower_components/font-awesome/css/font-awesome.css',
                     'css/jquery-ui-1.8.16.custom.css',
-                    'bower_components/AdminLTE/AdminLTE.css'
+                    'bower_components/AdminLTE/css/AdminLTE.css'
                 ],
                 dest: 'dist/metaproject.css'
             }
