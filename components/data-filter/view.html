@@ -1,11 +1,20 @@
-<div class="input-group">
+<!-- ko if: field -->
+<input name="q" class="form-control" data-bind="value: filter, valueUpdate: 'afterkeydown'"
+       placeholder="{{ placeholder }}"
+       type="text">
+<!-- /ko -->
 
-    <input name="q" class="form-control" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search..."
-           type="text">
+<!-- ko ifnot: field -->
+
+<form data-bind="submit: function (form) {$data.filter(form.q.value); }">
+    <div class="input-group">
+        <input name="q" class="form-control" placeholder="{{ placeholder }}"
+               type="text">
     <span class="input-group-btn">
-        <button type="submit" class="btn btn-flat"><i class="fa fa-search"></i></button>
+        <button type="submit" class="btn btn-flat">
+            <i class="fa fa-search"></i></button>
        </span>
-
-</div>
-
+    </div>
+</form>
+<!-- /ko -->
 

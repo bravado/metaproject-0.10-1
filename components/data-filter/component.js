@@ -5,9 +5,13 @@ define(['text!./view.html'], function (template) {
     var ViewModel = function (params) {
         var self = this;
 
-        params = $.extend({}, {query: null, filter: '', field: 'q'}, params);
+        params = $.extend({}, {query: null, filter: '', field: null, placeholder: 'Search...'}, params);
 
         var _query = params.query;
+
+        self.placeholder = params.placeholder;
+
+        self.field = params.field;
 
         self.filter = ko.observable(params.filter);
 

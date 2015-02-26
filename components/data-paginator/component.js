@@ -36,18 +36,22 @@ define(['text!./view.html'], function (template) {
         });
 
         self.page.next = function () {
-            self.page(self.page() + 1);
+            if(self.page() < self.pages())
+                self.page(self.page() + 1);
         };
         self.page.prev = function () {
-            self.page(self.page() - 1);
+            if(self.page() > 1)
+                self.page(self.page() - 1);
         };
 
         self.page.first = function() {
-            self.page(1);
+            if(self.page() > 1)
+                self.page(1);
         };
 
         self.page.last = function () {
-            self.page(self.pages());
+            if(self.page() < self.pages())
+                self.page(self.pages());
         };
 
         //
