@@ -26,7 +26,7 @@ module.exports = function (grunt) {
             ' * Metaproject v<%= pkg.version %> (<%= pkg.homepage %>)\n' +
             ' * Copyright 2011-<%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
             ' * Licensed under <%= pkg.license.type %> (<%= pkg.license.url %>)',
-        cssBanner: ' * Contains code from twitter bootstrap, font-awesome and jquery-ui',
+        cssBanner: ' * Contains code from twitter bootstrap, font-awesome, AdminLTE and jquery-ui',
         jsBanner: ' * Contains code from the dependencies listed on the README file',
         // Task configuration.
         clean: {
@@ -100,7 +100,8 @@ module.exports = function (grunt) {
                     'bower_components/bootstrap/dist/css/bootstrap.css',
                     'bower_components/font-awesome/css/font-awesome.css',
                     'css/jquery-ui-1.8.16.custom.css',
-                    'bower_components/AdminLTE/css/AdminLTE.css'
+                    'bower_components/AdminLTE/dist/css/AdminLTE.css',
+                    'bower_components/AdminLTE/dist/css/skins/_all-skins.css'
                 ],
                 dest: 'dist/metaproject.css'
             }
