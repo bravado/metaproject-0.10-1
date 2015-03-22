@@ -74,6 +74,8 @@
         this.data('viewModel', viewModel).each(function (idx, element) {
             ko.applyBindings(viewModel, element);
         });
+
+        return this;
     };
 
 
