@@ -10,7 +10,7 @@ define(['text!./view.html'], function (template) {
         // TODO header: support templates like http://jsfiddle.net/rniemeyer/VZmsy/
 
         var query = params.query;
-
+        self.css = params.class || 'pagination';
         //if (undefined === params.query.filter()._limit) {
         //    params.query.filter.set('_limit', undefined === params.limit ? 50 : params.limit );
         //}

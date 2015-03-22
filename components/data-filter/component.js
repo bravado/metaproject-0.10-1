@@ -9,6 +9,8 @@ define(['text!./view.html'], function (template) {
 
         var _query = params.query;
 
+        self.css = params.class || 'form-control';
+
         self.placeholder = params.placeholder;
 
         self.field = params.field;
