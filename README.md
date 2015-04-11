@@ -15,8 +15,6 @@ metaproject.css/js and you're good to go.
 The [Compendium](http://www.bravado.com.br/metaproject/compendium) holds
 documentation and examples for the ui components and general application structure.
 
-
-
 Main libraries
 --------------
 http://twitter.github.com/bootstrap/ - Bootstrap is Twitter's toolkit
@@ -31,12 +29,7 @@ creating Rich Internet Applications.
 http://knockoutjs.com/ - Simplify dynamic JavaScript UIs by applying the
 Model-View-View Model (MVVM) pattern.
 
-CSS
----
 http://fortawesome.github.io/Font-Awesome/ - The iconic font and CSS toolkit
-
-https://github.com/almasaeed2010/AdminLTE - Free Premium Admin control Panel Theme That Is Based On Bootstrap 3.x
-
 
 Additional Libraries
 --------------------
@@ -90,7 +83,38 @@ Dependencies are listed on `package.json` and `bower.json`. After cloning this r
         npm install
         bower install
 
-We have included a Gruntfile with convenience methods for building metaproject.
+We have included a Gruntfile with convenience methods for building 
+metaproject, which generates the following files
+
+### metaproject.js
+
+Full distribution. Includes the Metaproject core libraries and its dependencies
+
+  * jQuery
+  * jQuery UI
+  * Modernizr
+  * Knockout.js
+  * Knockout Mapping Plugin
+  * Knockout Punches
+  * Knockout Postbox
+  * Bootstrap Javascript
+
+### metaproject.css
+
+Full css distribution. Includes
+
+  * Bootstrap
+  * Font-Awesome
+  * jQuery UI + Bootstrap theme
+
+### metaproject.min.js
+
+Minimal metaproject funcionality, no additional libraries.
+Bundles  `metaproject`, `metaproject.app.js` and `metaproject.data.js`
+
+### metaproject-ui.min.js
+
+Additional UI Components, no additional libraries.
 
 Authors
 -------
