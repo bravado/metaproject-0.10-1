@@ -16,6 +16,8 @@
             key: 'id'
         }, options);
 
+        $.extend(this, new metaproject.EventEmitter());
+
         self.errorHandler = function(xhr, status, error) {
             self.trigger('error', { message: xhr.responseText, code: xhr.status });
         };
@@ -150,8 +152,6 @@
         };
 
     };
-
-    metaproject.DataSource.prototype = new metaproject.EventEmitter();
 
     /**
      * Model factory

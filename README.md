@@ -114,7 +114,7 @@ Bundles  `metaproject`, `metaproject.app.js` and `metaproject.data.js`
 
 ### metaproject-ui.min.js
 
-Additional UI Components, no additional libraries.
+All UI Components, no additional libraries.
 
 Authors
 -------

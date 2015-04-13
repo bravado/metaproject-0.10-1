@@ -4,6 +4,8 @@ function MockDataSource() {
         seq = 1,
         _data = {};
 
+    $.extend(this, new metaproject.EventEmitter());
+
     self._id = function (model_or_id) {
         if (typeof(model_or_id) == 'object') {
             return model_or_id.id;
@@ -115,5 +117,3 @@ function MockDataSource() {
         _data = {};
     }
 }
-
-MockDataSource.prototype = new metaproject.EventEmitter();
