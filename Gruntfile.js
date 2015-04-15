@@ -125,9 +125,17 @@ module.exports = function (grunt) {
                 expand: true
             },
 
-            fonts: {
+            fontawesome: {
 
                 cwd: 'bower_components/font-awesome/fonts',
+                src: '**/*',
+                dest: 'dist/fonts',
+                expand: true
+            },
+
+            glyphicons: {
+
+                cwd: 'bower_components/bootstrap/dist/fonts',
                 src: '**/*',
                 dest: 'dist/fonts',
                 expand: true
