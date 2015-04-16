@@ -17,7 +17,7 @@
     <li><a href="#data-example" data-toggle="tab">Example</a></li>
 </ul>
 
-<div class="tab-content">
+<div class="tab-content" id="data-content">
 <div class="tab-pane active" id="data-overview">
 
 <h2>metaproject.Model</h2>
@@ -264,87 +264,15 @@ DELETEs /id (or model[options.key])
 
 <h2>metaproject.Model = function (defaults, mapping) {</h2>
 </div>
-<div class="tab-pane" id="data-example">
-<article id="model-example">
+<div class="tab-pane" id="data-example" data-bind="include: 'core/data-example.html'">
 
-    <table class="table table-striped">
-        <head>
-            <tr>
-                <td data-bind="text: count() + ' items'">999</td>
-                <td>First</td>
-                <td>Last</td>
-                <td>Full</td>
-                <td></td>
-            </tr>
-        </head>
-        <tbody data-bind="foreach: data">
-        <tr>
-            <td><a href="#" data-bind="click: $root.model">{{ id }}</a></td>
-            <td>{{ firstName }}</td>
-            <td>{{ lastName }}</td>
-            <td>{{ name }}</td>
-            <td><a class="btn btn-mini btn-danger" data-bind="click: function() { $data.destroy() }">Delete</a></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div data-bind="with: model">
-        <input type="text" data-bind="value: firstName"/> <input type="text" data-bind="value: lastName"/>
-        <button class="btn btn-success btn-mini" data-bind="click: save">Save</button>
-    </div>
-
-    <form data-bind="submit: addUser">
-        First Name: <input type="text" name="firstName"/><br/>
-        Last Name: <input type="text" name="lastName"/><br/>
-        <input type="submit" class="btn btn-primary"/>
-        <a href="#" data-bind="click: reset" class="btn btn-danger">Reset storage</a>
-    </form>
-</article>
 </div>
 </div>
 <script type="text/javascript">
     jQuery(function ($) {
 
-        /**
-         * Create a User model and bind it to the php/data.php controller
-         */
-        var User = metaproject.Model({
-            id: null,
-            firstName: null,
-            lastName: null,
-            name: function () {
-                return this.firstName() + " " + this.lastName();
-            }
-        }).bind('php/data.php');
-
-        var data = User.query({});
-
-        // Viewmodel for this demo
-        var vm = {
-            data: data,
-            model: ko.observable(),
-            addUser: function (form) {
-                var user = new User();
-
-                user.firstName(form.firstName.value);
-                user.lastName(form.lastName.value);
-
-                user.save();
-            },
-            destroy: function(user) {
-                user.destroy();
-            },
-            reset: function() {
-                // trigger a change event when the data is reset (see data.php)
-                User.get('reset', User.changed);
-
-            },
-            count: data.observable({ "count": 1}, function(data) {
-                return data.count;
-            })
-        };
-
-        $('#model-example').applyBindings(vm);
+        // bind so the include is processed
+        $('#data-content').applyBindings({});
     });
 
 </script>

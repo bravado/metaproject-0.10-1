@@ -13,6 +13,7 @@ session_start();
 // Initialize structures
 if (!isset($_SESSION['DATA'])) {
     $_SESSION['DATA'] = array();
+    $_SESSION['SEQ'] = 1;
 }
 
 
