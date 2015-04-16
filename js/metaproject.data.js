@@ -25,7 +25,7 @@
         self._id = function (model_or_id) {
             if (typeof(model_or_id) === 'object') {
                 if(model_or_id.hasOwnProperty(options.key)) {
-                    return model_or_id[options.key];
+                    return ko.unwrap(model_or_id[options.key]);
                 }
                 else {
                     throw "Model key " + options.key + " not set!";
@@ -429,7 +429,7 @@
         /**
          * Query this Model and publish results to channel
          * @param channel The channel string
-         * @param params Navigator params
+         * @param params The Query parameters
          * @see Model.query
          */
         Model.publish = function (channel, params) {
