@@ -63,11 +63,8 @@
 
                 user.save();
             },
-            destroy: function(user) {
-                user.destroy();
-            },
             reset: function() {
-                // trigger a change event when the data is reset (see data.php)
+                // GET /reset and then trigger a change event (see data.php)
                 User.get('reset', User.changed);
 
             },
