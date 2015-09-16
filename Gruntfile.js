@@ -74,8 +74,6 @@ module.exports = function (grunt) {
                     banner: '/*!\n<%= banner %>\n<%= jsBanner %>\n */\n'
                 },
                 src: [
-                    'bower_components/jquery/jquery.js',
-                    'bower_components/jquery-ui/ui/jquery-ui.js',
                     'bower_components/modernizr/modernizr.js',
                     'bower_components/knockout/dist/knockout.js',
                     'bower_components/knockout-mapping/knockout.mapping.js',

@@ -22,11 +22,13 @@
     "less",
     "Makefile"
   ],
+  "dependencies" : {
+    "jquery": "~1.8",
+    "jquery-ui": "~1.10"
+  },
   "devDependencies": {
     "bootstrap": "~3.2",
     "font-awesome": ">=4.0.0",
-    "jquery": "~1.8",
-    "jquery-ui": "~1.10",
     "modernizr": "~2.7",
     "knockout-mapping": "~2.4",
     "knockout-postbox": "~0.4",
