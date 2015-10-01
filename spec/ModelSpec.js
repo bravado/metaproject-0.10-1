@@ -1,11 +1,13 @@
 describe("metaproject.Model", function() {
-    var datasource = new MockDataSource(), //new metaproject.DataSource("../lib/data.php"),
+    var datasource = window.datasource = new MockDataSource(), //new metaproject.DataSource("../lib/data.php"),
         Test = metaproject.Model({
             id: null,
             name: null,
             custom: 'default'
         }).bind(datasource);
 
+	Test.on('error', function(e) { console.error(e); });
+	
     it('creates new instances with the default parameters', function() {
         var test = new Test();
 
@@ -28,8 +30,7 @@ describe("metaproject.Model", function() {
         var test = new Test({ name: 'Testing' });
 
         test.save(function(response) {
-            expect(response.id).not.toBe(undefined);
-            expect(response.id).not.toBeNull();
+            expect(response.id).toBe(1);
             test_id = response.id;
             done();
         });
@@ -37,11 +38,13 @@ describe("metaproject.Model", function() {
 
     var test_cache = null;
     it('retrieves entities', function(done) {
-        Test.get(test_id, function(test) {
+		var f = function(test) {
             expect(test.name()).toBe('Testing');
             test_cache = test;
             done();
-        });
+        };
+		
+        Test.get(test_id, f);
     });
 
     it('updates entities', function(done) {

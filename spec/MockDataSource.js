@@ -2,7 +2,7 @@
 function MockDataSource() {
     var self = this,
         seq = 1,
-        _data = {};
+        _data = self._data = {};
 
     $.extend(this, new metaproject.EventEmitter());
 
@@ -39,15 +39,15 @@ function MockDataSource() {
 
         if(undefined === id) {
             // TODO support params
-            typeof(cb) == 'function' && cb.call(self,
-                Object.keys(_data).map(function(k) {
+            if(typeof(cb) == 'function') 
+				cb.call(self, Object.keys(_data).map(function(k) {
                     return _data[k];
                 }));
         }
         else {
             console.log('[MockDataSource] get ' + id);
-            if (_data.hasOwnProperty(id)) {
-                typeof(cb) == 'function' && cb.call(self, _data[id])
+            if (undefined !== _data[id]) {
+                if(typeof(cb) == 'function') cb.call(self, _data[id]);
             }
             else {
                 self.trigger('error', { id: id, code: 404, message: 'Not found' });
