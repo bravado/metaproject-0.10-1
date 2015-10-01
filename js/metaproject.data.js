@@ -5,10 +5,10 @@
     var metaproject = window.metaproject || {};
 
     /**
-     * metaproject.DataSource
-     *
-     * Default REST datasource
-     */
+	 * metaproject.DataSource
+	 * 
+	 * Default REST datasource
+	 */
     metaproject.DataSource = function (base_url, options) {
         var self = this;
 
@@ -87,8 +87,7 @@
                             callback(data);
                         }
                     }
-                }
-            );
+                });
         };
 
         self.post = function (data, callback) {
@@ -96,6 +95,7 @@
             return $.ajax({
                 url: base_url,
                 dataType: 'json',
+                contentType: 'application/json',
                 type: 'POST',
                 data: ko.toJSON(data),
                 success: function (data) {
@@ -124,6 +124,7 @@
                 url: base_url + '/' + self._id(id),
                 dataType: 'json',
                 type: 'PUT',
+                contentType: 'application/json',
                 data: ko.toJSON(data),
                 success: function (data) {
                     self.trigger('changed', { action: 'put', data: data});
@@ -154,23 +155,47 @@
     };
 
     /**
-     * Model factory
-     * Returns a Model class with default values and computed observables
-     * @param defaults - default fields for a new model
-     * @param mapping - ko.mapping parameters
-     * @returns {Function}
-     * @constructor
-     */
+	 * Model factory Returns a Model class with default values and computed
+	 * observables
+	 * 
+	 * @param defaults -
+	 *            default fields for a new model
+	 * @param mapping -
+	 *            ko.mapping parameters
+	 * @returns {Function}
+	 * @constructor
+	 */
     metaproject.Model = function (defaults, mapping) {
 
         var Model = function (data) {
-            var instance = this;
+            var instance = this,
+            	computeds = {};
 
+            // prepare mapping
+            mapping = mapping || {}
+            mapping.include = mapping.include || [];
+            mapping.ignore = mapping.ignore || [];
+            mapping.ignore.push('_links');
+            
+            // prepare data
             data = data || {};
-            var computeds = {};
+            
             $.each(defaults, function (i, e) {
                 if (typeof(e) === 'function') {
-                    computeds[i] = ko.computed({ read: e, deferEvaluation: true }, instance);
+                	switch(e) {
+                	case Date:
+                		if(undefined !== data[i]) {
+                			data[i] = new Date(data[i]);
+                		}
+                		else {
+                			data[i] = null;
+                		}
+                	
+                		break;
+                	default:
+                		computeds[i] = ko.computed({ read: e, deferEvaluation: true }, instance);                		
+                	}
+                	
                 }
                 else {
                     if (undefined === data[i]) {
@@ -178,12 +203,126 @@
                     }
                 }
             });
-
-            ko.mapping.fromJS(data, mapping || {}, instance);
+            
+            
+            
+            
+            /**
+             * _links mapper
+             * 
+             * instance._links.relation_name() returns the relation entity (full content will be loaded asynchronously)
+             * instance.relation_name() returns the relation entity's url
+             * instance.relation_name('http://server/new_url') relates another entity to the current instance
+             *  instance.links will be updated automatically
+             */
+            if(data._links) {
+            	instance._links = {};
+            	instance._links.self = data._links.self || { href: null };
+            	
+	            $.each(data._links, function(i, e) {    					
+					
+	            	if(i !== 'self' && undefined === data[i]) {
+	            		var _value = ko.observable(null),
+	            			href, link;
+	            		   
+	            		// include the rel when serializing the model
+	            		mapping.include.push(i);
+	            		
+	            		// this is the url to the related entity
+	            		href = computeds[i] = ko.computed({
+	            			read: function() {
+	            				if(_value()) {
+	            					return _value()._links.self.href;
+	            				}
+	            				else {
+	            					return null;
+	            				}
+	            			},
+	            			write: function(url) {
+	            				
+	            				if(url === '') {
+	            					_value(null);
+	            					return;
+	            				}
+	            				
+	            				// check if entity is already loaded
+	                			if(url && (!_value() || url !== _value()._links.self.href)) {
+	                				$.ajax({
+	                                    url: url,
+	                                    dataType: 'json',
+	                                    type: 'GET',
+	                                    global: false,
+	                                    success: function(data) {
+	                                    	link(data);
+	                                    },
+	    	                    		error: function() {
+	    	                    			link(null);
+	    	                    		}
+	                                });
+	                			}
+	            			},
+	                        deferEvaluation: true
+	            			
+	            		}).extend({ rateLimit: 500 });
+	            		
+	            		// entity contents
+	            		link = instance._links[i] = ko.computed({
+	            			read: _value,
+	                		write: function(data) {
+	                			if(data) {
+	                				
+	                				if(defaults._links && typeof(defaults._links[i]) === 'function') {
+	                					_value(new defaults._links[i](data));
+	                				}
+	                				else {
+	                					_value(ko.mapping.fromJS(data, { copy: [ '_links' ] }));
+	                				}
+	                				
+	                				href(data._links.self.href);	                    				
+	                			}
+	                			else {
+	                				_value(null);
+	                				href(null);
+	                			}
+	                		},
+	                        deferEvaluation: true
+	            		});
+	            		           
+	            		// load initial data
+	            		if(e) { href(e.href) };
+	                }
+	            });
+        	}
+                        
+            // http://knockoutjs.com/documentation/plugins-mapping.html
+            ko.mapping.fromJS(data, mapping, instance);
 
             // computeds always override other fields
             $.extend(instance, computeds);
 
+
+            // track changes
+            instance._changes = ko.computed({
+            	read: function() {
+            		var me = ko.toJS(this);
+            		
+            		return $.map(data, function(val, key) {
+            			if(key != '_links' && val != me[key]) {
+            				console.log(val);
+            				console.log(me[key]);
+            				return key;
+            			}
+            		});
+            	}
+            }, instance);
+            
+            // returns true when the model has changed
+            instance._changed = ko.computed({
+            	read: function() {
+	            	return this._changes().length > 0;
+	            }
+            }, instance);
+            
         };
 
 
@@ -194,14 +333,13 @@
             }
         };
 
-
         // Model instances will share this DataSource
         var _datasource = null;
 
         /**
-         *
-         * @returns {metaproject.DataSource}
-         */
+		 * 
+		 * @returns {metaproject.DataSource}
+		 */
         Model.getDataSource = function () {
             if (_datasource) {
                 return _datasource;
@@ -212,11 +350,12 @@
         };
 
         /**
-         * Binds this model to a datasource on url
-         * @param base_url
-         * @param options
-         * @returns {Function}
-         */
+		 * Binds this model to a datasource on url
+		 * 
+		 * @param base_url
+		 * @param options
+		 * @returns {Function}
+		 */
         Model.bind = function (base_url, options) {
 
 
@@ -233,7 +372,8 @@
             }
             else {
                 // custom datasource implementation
-                // { _id: fn(..), get: fn(..), post: fn(..), put: fn(..), delete: fn(..) }
+                // { _id: fn(..), get: fn(..), post: fn(..), put: fn(..),
+				// delete: fn(..) }
                 _datasource = base_url;
             }
 
@@ -241,23 +381,21 @@
         };
 
         /**
-         * Factory for this Model
-         */
+		 * Factory for this Model
+		 */
         Model.create = function (data) {
             return new Model(data);
         };
+        
+        Model.get = function(id, params, callback) {
 
-        Model.get = function(id, callback) {
-
-            return Model.getDataSource().get(id, function(data) {
-                if (data instanceof Array) {
-                    callback($.map(data, function (e, i) {
-                        return new Model(e);
-                    }));
-                }
-                else {
-                    callback(new Model(data));
-                }
+        	if(typeof(params) === 'function') {
+        		callback = params;
+        		params = {};
+        	}
+        	
+            return Model.getDataSource().get(id, params, function(data) {
+            	callback(new Model(data));
             });
         };
 
@@ -267,150 +405,95 @@
 
 
         /**
-         * Trigger a changed event on the underlying DataSource
-         */
+		 * Trigger a changed event on the underlying DataSource
+		 */
         Model.changed = function() {
             return Model.getDataSource().trigger('changed');
         };
 
         /**
-         * Queries this model's datasource
-         * Results are fetched when the returned observable is first bound
-         *
-         * @param params query parameters
-         * @param live boolean If true (default), update this query results when the datasource changes
-         * @returns ko.observable The Query results
-         */
-        Model.query = function (params, live) {
-            params = params || {};
-
-            var datasource = Model.getDataSource(),
-                _value = ko.observable([]), // current value
-                _params = ko.observable(params), // query parameters
-                _filter = ko.observable({}), // the filter
-                _hash = ko.observable(null);
-
-            // an observable that retrieves its value when first bound
+		 * Queries this model's datasource 
+		 * Results are fetched when the returned observable is first bound
+		 * 
+		 * @param params
+		 *            query parameters
+		 * @param transform
+		 *            optional transform function which receives the backend
+		 *            response and returns the observable value
+		 * @returns ko.observable The Query results
+		 */
+        Model.query = function(params, transform) {
+        	params = params || {};
+        	
+        	var datasource = Model.getDataSource(),
+        		_search = ko.observable(params.search),
+        		_hash = ko.observable(null),
+        		_results = ko.observable([]),
+        		_query = {};
+        	
+        	delete params.search;
+        	
+        	var query = $.extend({}, {
+        		page: null,
+        		size: null,
+        		sort: null
+        	}, params);
+        	
+        	$.each(query, function(i, e) {
+        		_query[i] = ko.observable(e);
+        	});
+        	
+        	var _loading = false;
+        	
+        	// an observable that retrieves its value when first bound
             // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
             var result = ko.computed({
                 read: function () {
-
-                    var params = $.extend({}, _params(), _filter());
-
-                    var newhash = ko.toJSON(params);
+                	var newhash = ko.toJSON(params);
+                	
                     if (_hash() !== newhash) {
+                    	
+                    	var url = _search() ? "/search/" + _search() : "",
+                    			params = ko.toJS(_query);
+                    	
                         result.loading(true);
-                        datasource.get(params, function (newData) {
-                            _hash(newhash);
-                            _value($.map(newData, Model.create));
-
+                        datasource.get(url, params, function (data) {
+                        	_hash(newhash);
+                        	if (typeof(transform) === 'function') {
+                        		_results($.map(transform.call(result, data), Model.create));
+                            } else {
+                            	if(data._embedded !== undefined) {
+                            		_results($.map(
+                            				data._embedded[Object.keys(data._embedded)[0]], 
+                            				Model.create));
+                            	}
+                            	
+                            	if(data.page !== undefined) {
+                            		result.totalPages(data.page.totalPages);
+                            		result.totalElements(data.page.totalElements);
+                            		result.number(data.page.number);
+                            	}
+                            }
+                        	
                             result.loading(false);
                         });
                     }
 
-                    //always return the current value
-                    return _value();
+                    // always return the current value
+                    return _results();
                 },
-                write: _value,
-                deferEvaluation: true  //do not evaluate immediately when created
+                write: _results,
+                deferEvaluation: true  // do not evaluate immediately when created
             });
 
-            // indicates an ajax request is in progress
+            result.totalElements = ko.observable(0);
+            result.totalPages = ko.observable(0);
+            result.number = ko.observable(0);
+            
             result.loading = ko.observable(false);
-
-            // update when datasource changes (default true)
-            result._live = (typeof(live) == "boolean" ? live : true);
-
-            // observable
-            // base query parameters
-            result.params = _params;
-
-            /**
-             * results filter
-             *
-             * the filter is an observable, when it changes, a new request is made
-             *  filter({ params }) resets the filter
-             *  filter.set(field, value) only changes "field"
-             */
-            result.filter = _filter;
-
-            /**
-             * Set the filter parameter
-             * @param param - object or string
-             * @param value
-             */
-            result.filter.set = function (param, value) {
-
-                if(typeof(param) == "object") {
-                    var filter = result.filter();
-                    for(var p in param) {
-                        filter[p] = param[p];
-                    }
-                }
-                else {
-                    result.filter()[param] = value;
-                }
-
-                result.filter.valueHasMutated();
-            };
-
-            /**
-             * Resets filter, leaving _* parameters unchanged
-             * @param notify Notify the change (default false)
-             */
-            result.filter.reset = function (notify) {
-
-                if(notify) {
-                    result.filter({});
-                }
-                else {
-                    var f = result.filter();
-
-                    for (var member in f) delete f[member];
-
-                }
-
-            };
-
-            /**
-             * Return an observable that auto updates when the DataSource changes
-             * @param params filter params, passed as GET variables
-             * @param transform optional transform function
-             *                      which receives the backend response and returns the observable value
-             * @param value initial observable value
-             * @returns ko.observable
-             */
-            result.observable = function (params, transform, value) {
-                var me = ko.observable(value),
-                    datasource = Model.getDataSource();
-
-                // Loading flag, triggered when the request starts
-                me.loading = ko.observable(false);
-
-                // Reload this observable
-                me.reload = function () {
-                    me.loading(true);
-
-                    datasource.get('/', $.extend({}, result.filter(), params), function (newData) {
-                        if (typeof(transform) === 'function') {
-                            me(transform(newData));
-                        }
-                        else {
-                            me(newData);
-                        }
-                        me.loading(false);
-                    });
-                };
-
-                // update this observable when the query hash changes
-                _hash.subscribe(function(newValue) {
-                    if(newValue !== null) {
-                        me.reload();
-                    }
-                });
-
-                return me;
-            };
+            result.search = _search;
+            result.params = _query;
+            result.live = true;
 
             result.reload = function () {
                 _hash(null);
@@ -418,20 +501,25 @@
 
             // Reload when datasource is updated
             datasource.on('changed', function () {
-                if (result._live) {
+                if (result.live) {
                     result.reload();
                 }
             });
 
             return result;
-        };
+        	
+        }
+        
 
         /**
-         * Query this Model and publish results to channel
-         * @param channel The channel string
-         * @param params The Query parameters
-         * @see Model.query
-         */
+		 * Query this Model and publish results to channel
+		 * 
+		 * @param channel
+		 *            The channel string
+		 * @param params
+		 *            The Query parameters
+		 * @see Model.query
+		 */
         Model.publish = function (channel, params) {
             return Model.query(params).publishOn(channel);
         };
@@ -456,9 +544,9 @@
                 return datasource.post(data, callback);
             }
         };
-
+        
         return Model;
 
     };
-
+    
 })(window, jQuery, ko);
