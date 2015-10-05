@@ -92,7 +92,7 @@
     };
 
     // Attach an url controller to this node
-	// The element will be automatically shown/hidden and its children 
+	// The element will be automatically shown/hidden and 
 	// will receive activate and deactivate events when the url hash changes
     ko.bindingHandlers.url = {
         init: function (element, valueAccessor, allBindingsAccessor) {
@@ -120,7 +120,6 @@
 						height: 'auto',
 						overflow: 'inherit' }).trigger(event);
 					
-					$element.children().trigger(event);
 				}
 
 				$window.scrollTop($element.data('scroll-top') || 0);
@@ -135,8 +134,6 @@
 						position: 'absolute',
 						height: 0,
 						overflow: 'hidden' }).trigger(event);
-					
-					$element.children().trigger(event);
 
 				}
 			});

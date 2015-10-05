@@ -92,6 +92,9 @@
         <!-- hardcoded components with defined urls -->
         <div class="container page" data-bind="url: '/', event: { activate: function() { console.log(arguments); }}">
             This is the default view
+			<div data-bind="event: { activate: function() { console.log('child'); }}">
+				
+			</div>
         </div>
 
         <div class="container page" data-bind="url: 'egg'">
