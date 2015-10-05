@@ -136,7 +136,7 @@
 						height: 0,
 						overflow: 'hidden' }).trigger(event);
 					
-					$element.trigger(event);
+					$element.children().trigger(event);
 
 				}
 			});
