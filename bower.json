@@ -24,7 +24,10 @@
   ],
   "dependencies" : {
     "jquery": "1.*",
-    "jquery-ui": "~1.10"
+    "jquery-ui": "~1.10",
+    "requirejs": "~2",
+    "requirejs-text": "~2",
+	"requirejs-i18n": "~2"
   },
   "devDependencies": {
     "bootstrap": "~3.2",

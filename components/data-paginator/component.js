@@ -1,10 +1,12 @@
 /*global define: true, ko: true */
-define(['text!./view.html'], function (template) {
+define(['text!./view.html', 'i18n!./nls/messages'], function (template, messages) {
     "use strict";
 
     var ViewModel = function (params) {
         var self = this;
 
+		self.messages = messages;
+		
         params = $.extend({}, {query: undefined}, params);
 
         // TODO header: support templates like http://jsfiddle.net/rniemeyer/VZmsy/
