@@ -17,7 +17,7 @@
 
         self.debug = 0;
 		self.root = '#/';
-		self.notFound = function() { alert('Not found!'); };
+		self.notFound = function() { };
 		
         if (typeof(params) === 'function') {
             self.init = params;
@@ -25,7 +25,7 @@
         else {
             self.init = function () {
             };
-            $.extend(this, params);
+            $.extend(self, params);
         }
 
 		Path.root(self.root);
@@ -134,7 +134,6 @@
 						position: 'absolute',
 						height: 0,
 						overflow: 'hidden' }).trigger(event);
-
 				}
 			});
 			
