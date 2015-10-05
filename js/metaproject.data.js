@@ -172,7 +172,7 @@
             	computeds = {};
 
             // prepare mapping
-            mapping = mapping || {}
+            mapping = mapping || {};
             mapping.include = mapping.include || [];
             mapping.ignore = mapping.ignore || [];
             mapping.ignore.push('_links');
@@ -289,7 +289,7 @@
 	            		});
 	            		           
 	            		// load initial data
-	            		if(e) { href(e.href) };
+	            		if(e) { href(e.href); }
 	                }
 	            });
         	}
@@ -449,7 +449,7 @@
             // From http://www.knockmeout.net/2011/06/lazy-loading-observable-in-knockoutjs.html
             var result = ko.computed({
                 read: function () {
-                	var newhash = ko.toJSON(params);
+                	var newhash = ko.toJSON(_query);
                 	
                     if (_hash() !== newhash) {
                     	
@@ -508,7 +508,7 @@
 
             return result;
         	
-        }
+        };
         
 
         /**
