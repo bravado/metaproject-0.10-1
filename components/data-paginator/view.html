@@ -5,7 +5,7 @@
     <li><a href="#" title="Previous Page" data-bind="click: page.prev, css.disable: page() == 1"><i
             class="fa fa-caret-left"></i></a></li>
 
-    <li><a>{{ page }} / {{ pages }} ({{ count }} results)</a></li>
+    <li><a>{{ page }} / {{ pages }} ({{ count }} {{ messages.results }})</a></li>
 
     <li><a href="#" title="Next Page" data-bind="click: page.next, disable: page() < pages()"><i
             class="fa fa-caret-right"></i></a></li>
