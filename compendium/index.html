@@ -90,11 +90,11 @@
 <div class="wrapper">
 
         <!-- hardcoded components with defined urls -->
-        <div class="container page" data-bind="url: '/'">
+        <div class="container page" data-bind="url: '/', event: { activate: function() { console.log(arguments); }}">
             This is the default view
         </div>
 
-        <div class="container page" data-bind="url: '/egg'">
+        <div class="container page" data-bind="url: 'egg'">
             easter egg =)
         </div>
 
@@ -167,7 +167,7 @@
 <!-- base dependencies -->
 
 <script type="text/javascript"
-        src="../bower_components/jquery/jquery.min.js"></script>
+        src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript"
         src="../bower_components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
 <script type="text/javascript"
@@ -185,6 +185,10 @@
 
 <!-- metaproject -->
 
+<!-- base dependencies -->
+<script type="text/javascript"
+        src="../js/path.js"></script>
+	
 <!-- won't use the cat/minified version for easier debugging -->
 <script type="text/javascript"
         src="../js/metaproject.js?v=20130305"></script>

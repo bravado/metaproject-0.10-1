@@ -16,7 +16,9 @@
         var self = this;
 
         self.debug = 0;
-
+		self.root = '#/';
+		self.notFound = function() { alert('Not found!'); };
+		
         if (typeof(params) === 'function') {
             self.init = params;
         }
@@ -26,10 +28,13 @@
             $.extend(this, params);
         }
 
+		Path.root(self.root);
+		Path.rescue(self.notFound);
+		
         self.run = function (element) {
             ko.applyBindings(self, element);
             self.init.call(self);
-            $(window).trigger('hashchange');
+            Path.listen();
         };
 
     };
@@ -87,49 +92,56 @@
     };
 
     // Attach an url controller to this node
-    // The node will receive activate and deactivate events when the url changes
+	// The element will be automatically shown/hidden and its children 
+	// will receive activate and deactivate events when the url hash changes
     ko.bindingHandlers.url = {
         init: function (element, valueAccessor, allBindingsAccessor) {
             var $window = $(window),
                 $element = $(element),
                 url = valueAccessor();
 
+			if(typeof(url) !== 'string') {
+				throw "url must be a string";
+			}
+			
             $element.css({ visibility: 'hidden', position: 'absolute', height: 0, overflow: 'hidden' });
+			
+			var path = Path.map('#' + url).to(function() {
+				if ($element.css('visibility') !== 'visible') {
+					
+					var event = {
+						type: 'activate',
+						url: url,
+						params: this.params };
+					
+					$element.css({
+						visibility: 'visible',
+						position: 'inherit',
+						height: 'auto',
+						overflow: 'inherit' }).trigger(event);
+					
+					$element.children().trigger(event);
+				}
 
-            $window.on('hashchange', function (e) {
-                var hash = window.location.hash.substr(1) || '/',
-                    match = new RegExp('^' + url + '$').exec(hash);
+				$window.scrollTop($element.data('scroll-top') || 0);
+			}).exit(function() {
+				if ($element.css('visibility') === 'visible') {
+					$element.data('scroll-top', $window.scrollTop());
 
-                if (match !== null) {
-                    if ($element.css('visibility') !== 'visible') {
-                        $element.css({
-                            visibility: 'visible',
-                            position: 'inherit',
-                            height: 'auto',
-                            overflow: 'inherit' }).children().trigger({
-                                type: 'activate',
-                                url: match.shift(),
-                                params: match });
-                    }
+					var event = { type: 'deactivate' };
+					
+					$element.css({
+						visibility: 'hidden',
+						position: 'absolute',
+						height: 0,
+						overflow: 'hidden' }).trigger(event);
+					
+					$element.trigger(event);
 
-                    $window.scrollTop($element.data('scroll-top') || 0);
-                }
-                else {
-                    if ($element.css('visibility') === 'visible') {
-                        $element.data('scroll-top', $window.scrollTop());
-
-                        $element.css({
-                            visibility: 'hidden',
-                            position: 'absolute',
-                            height: 0,
-                            overflow: 'hidden' }).children().trigger({ type: 'deactivate' });
-
-                    }
-                }
-            });
-
-
-            // TODO dispose callback
+				}
+			});
+			
+			$element.data('path', path);
         }
     };
 })(window);

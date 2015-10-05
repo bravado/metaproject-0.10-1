@@ -37,6 +37,7 @@ module.exports = function (grunt) {
             metaproject: {
                 src: [
                     'js/metaproject.js',
+					'js/path.js',
                     'js/metaproject.app.js',
                     'js/metaproject.data.js'
                 ],
