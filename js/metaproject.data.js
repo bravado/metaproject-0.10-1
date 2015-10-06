@@ -308,8 +308,6 @@
             		
             		return $.map(data, function(val, key) {
             			if(key != '_links' && val != me[key]) {
-            				console.log(val);
-            				console.log(me[key]);
             				return key;
             			}
             		});
@@ -466,13 +464,16 @@
                             		_results($.map(
                             				data._embedded[Object.keys(data._embedded)[0]], 
                             				Model.create));
+									if(data.page !== undefined) {
+										result.totalPages(data.page.totalPages);
+										result.totalElements(data.page.totalElements);
+										result.number(data.page.number);
+									}
                             	}
+								else {
+									_results($.map(data, Model.create));
+								}
                             	
-                            	if(data.page !== undefined) {
-                            		result.totalPages(data.page.totalPages);
-                            		result.totalElements(data.page.totalElements);
-                            		result.number(data.page.number);
-                            	}
                             }
                         	
                             result.loading(false);
