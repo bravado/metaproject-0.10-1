@@ -166,7 +166,9 @@
 	 * @constructor
 	 */
     metaproject.Model = function (defaults, mapping) {
-
+		// default defaults
+		defaults = defaults || {};
+		
         var Model = function (data) {
             var instance = this,
             	computeds = {};
@@ -177,6 +179,8 @@
             mapping.ignore = mapping.ignore || [];
             mapping.ignore.push('_links');
             
+			
+			
             // prepare data
             data = data || {};
             
