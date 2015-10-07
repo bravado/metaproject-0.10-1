@@ -104,7 +104,14 @@
                         callback(data);
                     }
                 },
-                error: self.errorHandler
+				error: function(xhr, textStatus, ex) {
+					if (xhr.status==201) { 
+						this.success(null, "Created", xhr);  
+					}
+					else {
+						self.errorHandler.apply(this, arguments);
+					}
+				}
             });
         };
 
