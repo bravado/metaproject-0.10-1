@@ -94,7 +94,7 @@
             // TODO datasource.post(path, data, callback) ?
             return $.ajax({
                 url: base_url,
-                dataType: 'json',
+                dataType: 'text',
                 contentType: 'application/json',
                 type: 'POST',
                 data: ko.toJSON(data),
@@ -531,14 +531,14 @@
 
         // For instantiated models
         Model.prototype.destroy = function(callback) {
-            var data = ko.mapping.toJS(this),
+            var data = this.toJS(),
                 datasource = Model.getDataSource();
 
             return datasource.destroy(datasource._id(data), callback);
         };
 
         Model.prototype.save = function (callback) {
-            var data = ko.mapping.toJS(this),
+            var data = this.toJS(),
                 datasource = Model.getDataSource(),
                 id = datasource._id(data);
 
@@ -550,6 +550,10 @@
             }
         };
         
+		Model.prototype.toJS = function() {
+			return ko.mapping.toJS(this);
+		};
+		
         return Model;
 
     };
