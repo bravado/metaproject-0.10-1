@@ -578,4 +578,52 @@
 
     };
     
+	// custom bindings
+	
+	// like, startsLike, endsLike
+	function likeHandler(pos) {
+		
+		function likeStr(str) {
+			if(undefined === pos) {
+				return '%' + str + '%';
+			}
+			else if('start' === pos) {
+				return str + '%';
+			}
+			else if('end' === pos) {
+				return '%' + str;
+			}
+			else {
+				throw 'invalid position';
+			}
+		}
+		
+		return {
+			init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+
+				var strValue = ko.observable(),
+					originalValue = valueAccessor(),
+					bindings = allBindings();
+
+				// bind the input to a computed observable
+				var value = ko.computed({
+					read: strValue,
+					write: function(val) {
+						originalValue(likeStr(val));
+						strValue(val);
+					}
+				});
+
+				return ko.bindingHandlers.textInput.init(element, function() { return value; }, allBindings, viewModel, bindingContext);
+			},
+			update: ko.bindingHandlers.textInput.update
+		};
+	}
+	
+	ko.bindingHandlers.like = likeHandler();
+
+	ko.bindingHandlers.startsLike = likeHandler('start');
+
+	ko.bindingHandlers.endsLike = likeHandler('end');
+
 })(window, jQuery, ko);
