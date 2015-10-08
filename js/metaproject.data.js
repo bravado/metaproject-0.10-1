@@ -438,18 +438,21 @@
         		_search = ko.observable(params.search),
         		_hash = ko.observable(null),
         		_results = ko.observable([]),
-        		_query = {};
+        		_query = { 
+					page: ko.observable(),
+					size: ko.observable(),
+					sort: ko.observable()
+				};
         	
         	delete params.search;
-        	
-        	var query = $.extend({}, {
-        		page: null,
-        		size: null,
-        		sort: null
-        	}, params);
-        	
-        	$.each(query, function(i, e) {
-        		_query[i] = ko.observable(e);
+        	        	
+        	$.each(params, function(i, e) {
+				if(undefined !== _query[i]) {
+					_query[i] = ko.observable(e);
+				}
+				else {
+					_query[i](e);
+				}
         	});
         	
         	var _loading = false;
@@ -511,6 +514,16 @@
                 _hash(null);
             };
 
+			result.filter = function(field, value) {
+				if(undefined === _query[field]) {
+					_query[field] = ko.observable(value);
+					result.reload();
+				}
+				else {
+					_query[field](value);
+				}
+			};
+			
             // Reload when datasource is updated
             datasource.on('changed', function () {
                 if (result.live) {
