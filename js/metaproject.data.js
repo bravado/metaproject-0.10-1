@@ -447,7 +447,7 @@
         	delete params.search;
         	        	
         	$.each(params, function(i, e) {
-				if(undefined !== _query[i]) {
+				if(undefined === _query[i]) {
 					_query[i] = ko.observable(e);
 				}
 				else {
