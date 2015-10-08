@@ -94,7 +94,7 @@
             // TODO datasource.post(path, data, callback) ?
             return $.ajax({
                 url: base_url,
-                dataType: 'text',
+                dataType: 'json',
                 contentType: 'application/json',
                 type: 'POST',
                 data: ko.toJSON(data),
