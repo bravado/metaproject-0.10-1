@@ -18,13 +18,13 @@
 
         $.extend(this, new metaproject.EventEmitter());
 
-        self.errorHandler = function(xhr, status, error) {
-            self.trigger('error', { message: xhr.responseText, code: xhr.status });
+        self.errorHandler = function (xhr, status, error) {
+            self.trigger('error', {message: xhr.responseText, code: xhr.status});
         };
 
         self._id = function (model_or_id) {
             if (typeof(model_or_id) === 'object') {
-                if(model_or_id.hasOwnProperty(options.key)) {
+                if (model_or_id.hasOwnProperty(options.key)) {
                     return ko.unwrap(model_or_id[options.key]);
                 }
                 else {
@@ -42,18 +42,18 @@
         // get(id, params, callback); - with params
         self.get = function (path, params, callback) {
 
-            if(path === undefined || path === null) {
+            if (path === undefined || path === null) {
                 path = '';
             }
 
-            switch(typeof(path)) {
+            switch (typeof(path)) {
                 // get(callback)
                 case 'function':
                     callback = path;
                     path = '';
                     break;
                 case 'string': // get(id, callback)
-                    if(path === '/') {
+                    if (path === '/') {
                         path = '';
                     }
                     else if (path.length > 0 && path[0] !== '/') {
@@ -99,13 +99,13 @@
                 type: 'POST',
                 data: ko.toJSON(data),
                 success: function (data) {
-                    self.trigger('changed', { action: 'post', data: data});
+                    self.trigger('changed', {action: 'post', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
                 },
-                error: function(xhr, textStatus, ex) {
-                    if (xhr.status==201) {
+                error: function (xhr, textStatus, ex) {
+                    if (xhr.status == 201) {
                         this.success(null, "Created", xhr);
                     }
                     else {
@@ -118,8 +118,8 @@
         self.put = function (id, data, callback) {
 
             // datasource.put(model, callback)
-            if(typeof(id) == "object") {
-                if(typeof(data) == "function") {
+            if (typeof(id) == "object") {
+                if (typeof(data) == "function") {
                     callback = data;
                 }
 
@@ -134,7 +134,7 @@
                 contentType: 'application/json',
                 data: ko.toJSON(data),
                 success: function (data) {
-                    self.trigger('changed', { action: 'put', data: data});
+                    self.trigger('changed', {action: 'put', data: data});
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
@@ -193,7 +193,7 @@
             mapping.include = mapping.include || [];
             mapping.ignore = mapping.ignore || [];
             mapping.ignore.push('_links');
-
+            mapping.ignore.push('_embedded');
 
 
             // prepare data
@@ -201,9 +201,9 @@
 
             $.each(defaults, function (i, e) {
                 if (typeof(e) === 'function') {
-                    switch(e) {
+                    switch (e) {
                         case Date:
-                            if(undefined !== data[i]) {
+                            if (undefined !== data[i]) {
                                 data[i] = new Date(data[i]);
                             }
                             else {
@@ -212,7 +212,7 @@
 
                             break;
                         default:
-                            computeds[i] = ko.computed({ read: e, deferEvaluation: true }, instance);
+                            computeds[i] = ko.computed({read: e, deferEvaluation: true}, instance);
                     }
 
                 }
@@ -223,8 +223,31 @@
                 }
             });
 
+            data._embedded = data._embedded || defaults._embedded;
+
+            if (data._embedded) {
+
+                var _embedded = instance._embedded = {};
+
+                $.each(data._embedded, function (i, e) {
+
+                    if (e instanceof Array) {
+                        if (defaults._links && typeof(defaults._links[i]) === 'function') {
+                            _embedded[i] = ko.observableArray($.map(e, function (data) {
+                                return new defaults._links[i](data);
+                            }));
 
 
+                        }
+                        else {
+                            _embedded[i] = ko.mapping.fromJS(e, {copy: ['_links']});
+                        }
+                    }
+
+
+                });
+
+            }
 
             /**
              * _links mapper
@@ -234,13 +257,14 @@
              * instance.relation_name('http://server/new_url') relates another entity to the current instance
              *  instance.links will be updated automatically
              */
-            if(data._links) {
+            if (data._links) {
                 instance._links = {};
-                instance._links.self = data._links.self || { href: null };
+                instance._links.self = data._links.self || {href: null};
 
-                $.each(data._links, function(i, e) {
+                $.each(data._links, function (i, e) {
 
-                    if(i !== 'self' && undefined === data[i]) {
+                    if (i !== 'self' && undefined === data[i]
+                        && (undefined === instance._embedded || undefined === instance._embedded[i])) {
                         var _value = ko.observable(null),
                             href, link;
 
@@ -249,32 +273,32 @@
 
                         // this is the url to the related entity
                         href = computeds[i] = ko.computed({
-                            read: function() {
-                                if(_value()) {
+                            read: function () {
+                                if (_value() && typeof(_value()._links) == 'object' && _value()._links.self) {
                                     return _value()._links.self.href;
                                 }
                                 else {
                                     return null;
                                 }
                             },
-                            write: function(url) {
+                            write: function (url) {
 
-                                if(url === '') {
+                                if (url === '') {
                                     _value(null);
                                     return;
                                 }
 
                                 // check if entity is already loaded
-                                if(url && (!_value() || url !== _value()._links.self.href)) {
+                                if (url && (!_value() || url !== _value()._links.self.href)) {
                                     $.ajax({
                                         url: url,
                                         dataType: 'json',
                                         type: 'GET',
                                         global: false,
-                                        success: function(data) {
+                                        success: function (data) {
                                             link(data);
                                         },
-                                        error: function() {
+                                        error: function () {
                                             link(null);
                                         }
                                     });
@@ -282,22 +306,28 @@
                             },
                             deferEvaluation: true
 
-                        }).extend({ rateLimit: 500 });
+                        }).extend({rateLimit: 500});
 
                         // entity contents
                         link = instance._links[i] = ko.computed({
                             read: _value,
-                            write: function(data) {
-                                if(data) {
+                            write: function (data) {
+                                if (data) {
 
-                                    if(defaults._links && typeof(defaults._links[i]) === 'function') {
+                                    if (defaults._links && typeof(defaults._links[i]) === 'function') {
                                         _value(new defaults._links[i](data));
                                     }
                                     else {
-                                        _value(ko.mapping.fromJS(data, { copy: [ '_links' ] }));
+                                        _value(ko.mapping.fromJS(data, {copy: ['_links']}));
                                     }
 
-                                    href(data._links.self.href);
+                                    if (data._links && data._links.self) {
+                                        href(data._links.self.href);
+                                    }
+                                    else {
+                                        href(null);
+                                    }
+
                                 }
                                 else {
                                     _value(null);
@@ -308,7 +338,14 @@
                         });
 
                         // load initial data
-                        if(e) { href(e.href); }
+                        if (data._embedded && data._embedded[i]) {
+                            link(data._embedded[i]);
+                        }
+                        else {
+                            if (e) {
+                                href(e.href);
+                            }
+                        }
                     }
                 });
             }
@@ -322,11 +359,11 @@
 
             // track changes
             instance._changes = ko.computed({
-                read: function() {
+                read: function () {
                     var me = ko.toJS(this);
 
-                    return $.map(data, function(val, key) {
-                        if(key != '_links' && val != me[key]) {
+                    return $.map(data, function (val, key) {
+                        if (key != '_links' && key != '_embedded' && val != me[key]) {
                             return key;
                         }
                     });
@@ -335,11 +372,18 @@
 
             // returns true when the model has changed
             instance._changed = ko.computed({
-                read: function() {
+                read: function () {
                     return this._changes().length > 0;
                 }
             }, instance);
 
+            instance._reset = function () {
+                $.each(data, function (i, e) {
+                    if (ko.isObservable(instance[i])) {
+                        instance[i](e);
+                    }
+                });
+            }
         };
 
 
@@ -379,7 +423,7 @@
             if (typeof(base_url) === 'string') {
                 // When using the bind() method, always set the Model option
                 if (undefined === options) {
-                    options = { model: Model };
+                    options = {model: Model};
                 }
                 else {
                     options.model = Model;
@@ -404,19 +448,19 @@
             return new Model(data);
         };
 
-        Model.get = function(id, params, callback) {
+        Model.get = function (id, params, callback) {
 
-            if(typeof(params) === 'function') {
+            if (typeof(params) === 'function') {
                 callback = params;
                 params = {};
             }
 
-            return Model.getDataSource().get(id, params, function(data) {
+            return Model.getDataSource().get(id, params, function (data) {
                 callback(new Model(data));
             });
         };
 
-        Model.on = function(event, callback) {
+        Model.on = function (event, callback) {
             return Model.getDataSource().on(event, callback);
         };
 
@@ -424,7 +468,7 @@
         /**
          * Trigger a changed event on the underlying DataSource
          */
-        Model.changed = function() {
+        Model.changed = function () {
             return Model.getDataSource().trigger('changed');
         };
 
@@ -439,7 +483,7 @@
          *            response and returns the observable value
          * @returns ko.observable The Query results
          */
-        Model.query = function(params, transform) {
+        Model.query = function (params, transform) {
             params = params || {};
 
             var datasource = Model.getDataSource(),
@@ -454,9 +498,9 @@
 
             delete params.search;
 
-            $.each(params, function(i, e) {
-                if(undefined === _query[i]) {
-                    _query[i] = ko.observable(e);
+            $.each(params, function (i, e) {
+                if (undefined === _query[i]) {
+                    _query[i] = ko.observable(e).extend({rateLimit: 500});
                 }
                 else {
                     _query[i](e);
@@ -482,15 +526,22 @@
                             if (typeof(transform) === 'function') {
                                 _results($.map(transform.call(result, data), Model.create));
                             } else {
-                                if(data._embedded !== undefined) {
-                                    _results($.map(
-                                        data._embedded[Object.keys(data._embedded)[0]],
-                                        Model.create));
-                                    if(data.page !== undefined) {
-                                        result.totalPages(data.page.totalPages);
-                                        result.totalElements(data.page.totalElements);
-                                        result.number(data.page.number);
+                                if (typeof(data.page) == "object" && undefined !== data.page.size) {
+
+                                    if (undefined !== data._embedded) {
+                                        _results($.map(
+                                            data._embedded[Object.keys(data._embedded)[0]],
+                                            Model.create));
+                                        if (data.page !== undefined) {
+                                            result.totalPages(data.page.totalPages);
+                                            result.totalElements(data.page.totalElements);
+                                            result.number(data.page.number);
+                                        }
                                     }
+                                    else {
+                                        _results([]);
+                                    }
+
                                 }
                                 else {
                                     _results($.map(data, Model.create));
@@ -522,9 +573,9 @@
                 _hash(null);
             };
 
-            result.filter = function(field, value) {
-                if(undefined === _query[field]) {
-                    _query[field] = ko.observable(value);
+            result.filter = function (field, value) {
+                if (undefined === _query[field]) {
+                    _query[field] = ko.observable(value).extend({rateLimit: 500});
                     result.reload();
                 }
                 else {
@@ -558,7 +609,7 @@
         };
 
         // For instantiated models
-        Model.prototype.destroy = function(callback) {
+        Model.prototype.destroy = function (callback) {
             var data = this.toJS(),
                 datasource = Model.getDataSource();
 
@@ -578,7 +629,7 @@
             }
         };
 
-        Model.prototype.toJS = function() {
+        Model.prototype.toJS = function () {
             return ko.mapping.toJS(this);
         };
 
@@ -592,13 +643,13 @@
     function likeHandler(pos) {
 
         function likeStr(str) {
-            if(undefined === pos) {
+            if (undefined === pos) {
                 return '%' + str + '%';
             }
-            else if('start' === pos) {
+            else if ('start' === pos) {
                 return str + '%';
             }
-            else if('end' === pos) {
+            else if ('end' === pos) {
                 return '%' + str;
             }
             else {
@@ -607,7 +658,7 @@
         }
 
         return {
-            init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 
                 var strValue = ko.observable(),
                     originalValue = valueAccessor(),
@@ -616,13 +667,15 @@
                 // bind the input to a computed observable
                 var value = ko.computed({
                     read: strValue,
-                    write: function(val) {
+                    write: function (val) {
                         originalValue(likeStr(val));
                         strValue(val);
                     }
                 });
 
-                return ko.bindingHandlers.textInput.init(element, function() { return value; }, allBindings, viewModel, bindingContext);
+                return ko.bindingHandlers.textInput.init(element, function () {
+                    return value;
+                }, allBindings, viewModel, bindingContext);
             },
             update: ko.bindingHandlers.textInput.update
         };
