@@ -94,7 +94,7 @@
             // TODO datasource.post(path, data, callback) ?
             return $.ajax({
                 url: base_url,
-                dataType: 'json',
+                dataType: 'text',
                 contentType: 'application/json',
                 type: 'POST',
                 data: ko.toJSON(data),
@@ -149,21 +149,13 @@
                 dataType: 'text',
                 type: 'DELETE',
                 success: function (data) {
-                    self.trigger('changed', { action: 'destroy', data: data});
+                    self.trigger('changed', {action: 'destroy', data: data});
 
                     if (typeof(callback) === 'function') {
                         callback(data);
                     }
                 },
-                error: function(xhr, textStatus, ex) {
-                    //console.log(arguments);
-                    if (xhr.status==200) {
-                        this.success(null, "Deleted", xhr);
-                    }
-                    else {
-                        self.errorHandler.apply(this, arguments);
-                    }
-                }
+                error: self.errorHandler
             });
         };
 
@@ -456,7 +448,7 @@
             }
 
             return Model.getDataSource().get(id, params, function (data) {
-                callback(new Model(data));
+            	callback(new Model(data));
             });
         };
 
@@ -633,6 +625,23 @@
             return ko.mapping.toJS(this);
         };
 
+        Model.prototype.toJSON = function () {
+        	return ko.mapping.toJSON(this);
+        };
+        
+        // POST this model data to an arbitrary url
+        Model.prototype.post = function (url, callback) {
+        	return $.ajax({
+    			url: url,
+    			type: 'POST',
+                contentType: 'application/json',
+    			dataType: 'json',
+    			data: this.toJSON(),
+    			success: callback,
+    			complete: this.changed
+    		});
+        };
+        
         return Model;
 
     };
