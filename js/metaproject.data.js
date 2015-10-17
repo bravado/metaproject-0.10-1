@@ -204,7 +204,7 @@
 
                             break;
                         default:
-                            computeds[i] = ko.computed({read: e, deferEvaluation: true}, instance);
+                            computeds[i] = ko.computed({read: e, write: e, deferEvaluation: true}, instance);
                     }
 
                 }
@@ -375,7 +375,7 @@
                         instance[i](e);
                     }
                 });
-            }
+            };
         };
 
 
