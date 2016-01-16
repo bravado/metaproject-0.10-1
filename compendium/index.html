@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>The Metaproject Compendium</title>
+
+    <!-- metaproject dependencies -->
+    <link rel="stylesheet" href="../css/jquery-ui-1.8.16.custom.css"/>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css"/>
+
+    <!-- Application Styles -->
+    <link rel="stylesheet" href="compendium.css"/>
+</head>
+
+<body class="light-gray with-header">
+
+<nav class="navbar navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed fa fa-bars visible-xs" data-toggle="collapse" data-target="#main-menu" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+            </button>
+            <a class="navbar-brand" href="#/">Compendium</a>
+        </div>
+        <div id="main-menu" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">Core
+                        <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#core/metaproject">Metaproject</a></li>
+                        <li><a href="#core/data">Data Objects</a></li>
+                        <li><a href="#core/mvvm">Knockout and MVVM</a></li>
+                        <li><a href="#core/bindings">Bindings</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">Bootstrap
+                        <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#bootstrap/forms">Forms</a>
+                        </li>
+
+                        <li><a href="#bootstrap/alerts">Alerts</a>
+                        </li>
+                        <li><a href="#bootstrap/buttons">Buttons</a>
+                        </li>
+                        <li><a href="#bootstrap/carousel">Carousel</a>
+                        </li>
+                        <li><a href="#bootstrap/collapse">Collapse</a>
+                        </li>
+                        <li><a href="#bootstrap/dropdown">Dropdown</a>
+                        </li>
+                        <li><a href="#bootstrap/modal">Modal</a>
+                        </li>
+                        <li><a href="#bootstrap/popovers">Popovers</a>
+                        </li>
+                        <li><a href="#bootstrap/scrollspy">Scrollspy</a>
+                        </li>
+                        <li><a href="#bootstrap/tabs">Tabs</a>
+                        </li>
+                        <li><a href="#bootstrap/tooltips">Tooltips</a>
+                        </li>
+                        <li><a href="#bootstrap/typeahead">Typeahead</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">UI
+                        Components <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#ui/datepicker">Datepicker</a></li>
+                        <li><a href="#ui/elrte">elRTE and elFinder</a>
+                        </li>
+                        <li><a href="#ui/fileupload">File Upload</a>
+                        </li>
+                        <li><a href="#ui/grid">Grid</a></li>
+                        <li><a href="#ui/charts">Charts</a></li>
+                        <li><a href="#ui/select">Select</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
+
+<div class="wrapper">
+
+        <!-- hardcoded components with defined urls -->
+        <div class="container page" data-bind="url: '/', event: { activate: function() { console.log(arguments); }}">
+            This is the default view
+			<div data-bind="event: { activate: function() { console.log('child'); }}">
+				
+			</div>
+        </div>
+
+        <div class="container page" data-bind="url: 'egg'">
+            easter egg =)
+        </div>
+
+        <!-- external components are loaded using the include binding -->
+        <div class="container page"
+             data-bind="include: 'core/metaproject.html', url : 'core/metaproject'"></div>
+
+        <div class="container page"
+             data-bind="include: 'core/data.html', url : 'core/data'"></div>
+
+        <div class="container page"
+             data-bind="include: 'core/mvvm.html', url : 'core/mvvm'"></div>
+
+        <div class="container page"
+             data-bind="include: 'core/bindings.html', url : 'core/bindings'"></div>
+
+        <!-- bootstrap -->
+        <div class="container page"
+             data-bind="include: 'bootstrap/forms.html', url: 'bootstrap/forms'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/tabs.html', url: 'bootstrap/tabs'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/alerts.html', url: 'bootstrap/alerts'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/buttons.html', url: 'bootstrap/buttons'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/carousel.html', url: 'bootstrap/carousel'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/collapse.html', url: 'bootstrap/collapse'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/dropdown.html', url: 'bootstrap/dropdown'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/modal.html', url: 'bootstrap/modal'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/popovers.html', url: 'bootstrap/popovers'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/scrollspy.html', url: 'bootstrap/scrollspy'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/tooltips.html', url: 'bootstrap/tooltips'"></div>
+
+        <div class="container page"
+             data-bind="include: 'bootstrap/typeahead.html', url: 'bootstrap/typeahead'"></div>
+
+        <!-- ui components -->
+        <div class="container page"
+             data-bind="include: 'ui/datepicker.html', url: 'ui/datepicker'"></div>
+        <div class="container page"
+             data-bind="include: 'ui/grid.html', url: 'ui/grid'"></div>
+        <div class="container page"
+             data-bind="include: 'ui/elrte.html', url: 'ui/elrte'"></div>
+        <div class="container page"
+             data-bind="include: 'ui/fileupload.html', url: 'ui/fileupload'"></div>
+        <div class="container page"
+             data-bind="include: 'ui/select.html', url: 'ui/select'"></div>
+        <div class="container page"
+             data-bind="include: 'ui/charts.html', url: 'ui/charts'"></div>
+
+</div><!-- ./wrapper -->
+
+<!-- base dependencies -->
+
+<script type="text/javascript"
+        src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript"
+        src="../bower_components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+<script type="text/javascript"
+        src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="../bower_components/modernizr/modernizr.js"></script>
+<script type="text/javascript"
+        src="../bower_components/knockout/dist/knockout.js"></script>
+<script type="text/javascript"
+        src="../bower_components/knockout-mapping/knockout.mapping.js"></script>
+<script type="text/javascript"
+        src="../bower_components/knockout.punches/knockout.punches.min.js"></script>
+<script type="text/javascript"
+        src="../bower_components/knockout-postbox/build/knockout-postbox.min.js"></script>
+
+<!-- metaproject -->
+
+<!-- base dependencies -->
+<script type="text/javascript"
+        src="../js/path.js"></script>
+	
+<!-- won't use the cat/minified version for easier debugging -->
+<script type="text/javascript"
+        src="../js/metaproject.js?v=20130305"></script>
+<script type="text/javascript"
+        src="../js/metaproject.app.js?v=20130305"></script>
+<!-- additional scripts are loaded on each .html component -->
+
+
+<!-- Application init -->
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        metaproject.debug = true;
+
+        // The application will be our main viewModel
+        var params = {
+            init: function () {
+                // runs on app initialization (check for auth, etc)
+            }
+        };
+
+        var app = new metaproject.Application(params);
+
+
+        // .run() binds the initial viewModel and triggers the first hashchange for the url controller
+        app.run();
+
+    });
+</script>
+</body>
+</html>

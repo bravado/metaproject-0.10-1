@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Select</title>
+</head>
+<body>
+<div id="ui-select">
+    <div class="page-header"><h1>Select</h1></div>
+
+    <p>The <code>&lt;select&gt;</code> tag is used to create a drop-down list.</p>
+
+
+    <form class="form-horizontal">
+
+        <fieldset>
+            <legend>Options</legend>
+            <p>The options binding controls what options should appear in a drop-down list.</p>
+            <p>The value you assign should be an array (or observable array). The <code>&lt;select&gt;</code> element will then display one item for each item in your array.</p>
+
+            <div class="control-group">
+                <label class="control-label">Single Select</label>
+
+                <div class="controls">
+                    <select data-bind="options: availableCountries, optionsCaption: 'Choose...', value: selectedCountry"></select>
+
+                    <p class="help-block">For a single-select list, you can also read and write the selected option
+                        using the <code>value</code> binding.</p>
+                </div>
+
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Multiple Select</label>
+
+                <div class="controls">
+                    <select data-bind="options: availableCountries, selectedOptions: selectedCountries" size="5"
+                            multiple="true"></select>
+
+                    <p class="help-block">For a multi-select list, the <code>selectedOptions</code> binding controls
+                        which elements in a multi-select list
+                        are currently selected.<br/>
+                        When the user selects or de-selects an item in the multi-select list, this adds or removes the
+                        corresponding
+                        value to an array on your view model. Likewise, assuming it’s an observable array on your view
+                        model, then
+                        whenever you add or remove (e.g., via push or splice) items to this array, the corresponding
+                        items in the UI
+                        become selected or deselected. It’s a 2-way binding.</p>
+                </div>
+
+            </div>
+
+            <div class="well">
+            <h3>Note: Selection is preserved when setting/changing options</h3>
+
+            <p>When the options binding changes the set of options in your <code>&lt;select&gt;</code> element, KO will leave
+                the user’s selection unchanged where possible. So, for a single-select drop-down list, the previously selected
+                option value will still be selected, and for a multi-select list, all the previously selected option values will
+                still be selected (unless, of course, you’re removed one or more of those options).</p>
+
+            <p>That’s because the options binding tries to be independent of the value binding (which controls selection for a
+                single-select list) and the selectedOptions binding (which controls selection for a multi-select list).</p>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Letting the user select from arbitrary JavaScript objects</legend>
+            <p>In the example code above, the user can choose from an array of string values. You’re not limited to
+                providing strings - your options array can contain arbitrary JavaScript objects if you wish.</p>
+
+            <div class="control-group">
+                <label class="control-label">User Selection</label>
+
+                <div class="controls">
+                    <select data-bind="options: users, optionsText: 'name', value: selectedUser, optionsCaption: 'Choose...'"></select>
+
+                    <p class="help-block">This example binds the <code>selectedUser</code> property to the selected user
+                        object.</p>
+                </div>
+
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">User ID Select</label>
+
+                <div class="controls">
+                    <select data-bind="options: users, optionsText: function(item) {
+                       return item.name + ' (age: ' + item.age + ')'
+                   }, optionsValue: 'id', value: selectedUserId, optionsCaption: 'Choose...'"></select>
+
+                    <p class="help-block">Here, we bind the currently selected user id to the
+                        <code>selectedUserId</code> property</p>
+                </div>
+            </div>
+        </fieldset>
+        <!-- TODO dependent select -->
+        <!-- TODO dependent select with ajax -->
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('#ui-select').applyBindings(new SelectViewModel());
+
+        function SelectViewModel() {
+            var self = this;
+
+            self.availableCountries = ko.observableArray(['France', 'Germany', 'Spain']);
+
+            self.selectedCountry = ko.observable(null);
+            self.selectedCountries = ko.observableArray();
+
+            self.users = [
+                { id:1, name:'John', age:23 },
+                { id:2, name:'Mary', age:28 },
+                { id:3, name:'Bob', age:29 }
+            ];
+
+            self.selectedUser = ko.observable();
+            self.selectedUserId = ko.observable();
+
+        }
+    });
+</script>
+</body>
+</html>

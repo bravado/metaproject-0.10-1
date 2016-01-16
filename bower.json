@@ -1,0 +1,42 @@
+{
+  "name": "metaproject",
+  "version": "0.10.0",
+  "homepage": "https://github.com/bravado/metaproject",
+  "authors": [
+    "Guilherme Barile"
+  ],
+  "description": "Reference component library for javascript interfaces",
+  "main": "dist/metaproject.js",
+  "keywords": [
+    "mvvm",
+    "jquery",
+    "bootstrap",
+    "javascript"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "compendium",
+    "css",
+    "js",
+    "less",
+    "Makefile"
+  ],
+  "dependencies" : {
+    "jquery": "1.*",
+    "jquery-ui": "~1.10",
+    "requirejs": "~2",
+    "requirejs-text": "~2",
+	"requirejs-i18n": "~2"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.2",
+    "font-awesome": ">=4.0.0",
+    "modernizr": "~2.7",
+    "knockout-mapping": "~2.4",
+    "knockout-postbox": "~0.4",
+    "knockout": "3.*",
+    "knockout.punches": "~0.5",
+	"elrte": "guigouz/elRTE#master"
+  }
+}

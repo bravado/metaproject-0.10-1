@@ -1,0 +1,341 @@
+<script type="text/javascript" src="../js/metaproject.data.js"></script>
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Data Objects
+        <small>metaproject.data.js</small>
+    </h1>
+    <!-- ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Blank page</li>
+    </ol -->
+</section>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#data-models" data-toggle="tab">Model</a></li>
+    <li><a href="#data-ds" data-toggle="tab">DataSource</a></li>
+    <li><a href="#data-example" data-toggle="tab">Example</a></li>
+</ul>
+
+<div class="tab-content" id="data">
+
+    <div id="data-models" class="tab-pane active">
+        <h2>Models</h2>
+
+        <p>A Model defines your data. Under the hood, it uses the
+            <code>ko.mapping</code> plugin.</p>
+
+        <p>Quoting the <a target="_blank" href="http://knockoutjs.com/documentation/plugins-mapping.html">Official Documentation</a>,</p>
+
+        <blockquote>The mapping plugin gives you a straightforward way to map that plain
+            JavaScript object into a view model with the appropriate observables. This is
+            an alternative to manually writing your own JavaScript code that constructs a
+            view model based on some data you’ve fetched from the server.
+        </blockquote>
+
+        <h3>Defining a Model</h3>
+
+        <p>Models are defined using the
+            <code>metaproject.Model(defaults, mapping)</code> function. The
+            <code>defaults</code> parameter expects an object with the initial
+            values for new instances of this entity.</p>
+
+<pre>
+var Calculator = metaproject.Model({
+    val1: 0,
+    val2: 0,
+    sum: function() {
+        return this.val1() + this.val2();
+    }
+});
+</pre>
+
+        <p>Functions are mapped to computed observables and
+            scoped to the current instance, allowing the programmer
+            to return complex properties.
+        </p>
+
+        <p>Once defined, new objects may be instantiated.</p>
+
+<pre>
+var calc = new Calculator({ val1: 2, val2: 2 });
+
+// Will alert "4"
+alert(calc.sum());
+</pre>
+
+        <h4>Model Mappings</h4>
+
+        <p>Sometimes it may be necessary to have more control over how the mapping is
+            performed. This is accomplished using <code>mapping</code> options.</p>
+
+        <p>On this
+            more complex example, we'll define a <code>Contact</code> Model, which has a
+            list of <code>Address</code> instances on the <code>addresses</code> field.
+        </p>
+
+<pre>
+var Address = metaproject.Model({
+    street: null,
+    number: null
+});
+
+var Contact = metaproject.Model({
+    firstName: null,
+    lastName: null,
+    name: function() {
+        return this.firstName() + " " + this.lastName();
+    },
+    addresses: []
+}, {
+    addresses: Address.mapper
+});
+</pre>
+
+        <p><code>Address.mapper</code> is a static mapper for this type.</p>
+
+
+        <h3>Binding to a DataSource</h3>
+
+        <p>The following methods may be used to define and interact with a DataSource.</p>
+
+        <table class="table table-bordered">
+            <tr>
+                <th><code>Model.bind(url)</code></th>
+                <td>Binds this Model to the <code>url</code> REST endpoint.
+                </td>
+            </tr>
+            <tr>
+                <th><code>Model.query(params)</code></th>
+                <td>Instantiates a Query using the provided
+                    <code>params</code>, see <i>Model Queries</i> below
+
+                </td>
+            </tr>
+            <tr>
+                <th><code>Model.publish(channel, params)</code></th>
+                <td>Queries this model and publishes results to
+                    <code>channel</code>, returns the Query.
+                </td>
+            </tr>
+        </table>
+        <h4>Example</h4>
+<pre>
+/*
+ * Model.bind, Model.query and Model.publish
+ */
+var User = metaproject.Model({
+    id: null,
+    name: null,
+    age: null
+}).bind('/users');
+
+// Queries all users (GET /users)
+var users = User.query({});
+
+// Queries users with less than 12 years old (GET /users?age=<12)
+// Publish the results to the kids channel
+var kids = User.publish('kids', { age: '<12' });
+
+// local viewmodel
+viewmodel = {
+    users: users,
+    kids: kids
+}
+
+// on another module
+
+// Listen to the "kids" channel. The true parameter
+// enables populating the field which the last known
+// value for the channel. When false it would start
+// undefined until the kids query refreshes
+otherviewmodel = {
+    kids: ko.observableArray().subscribeTo('kids', true)
+}
+
+</pre>
+
+        <h3>Model Queries</h3>
+
+        <p>A Query object is an observable array which updates itself
+            automatically when its filter changes</p>
+
+        <code>var query = Model.query(params);</code>
+
+        <p>Data is also reloaded automatically when the underlying datasource
+            emits a <code>changed</code> event (every delete, post, put), to
+            change this behavior, set <code>query._live = false;</code> after
+            instantiating the Query
+        </p>
+
+        <h4>Properties</h4>
+        <table class="table table-bordered">
+            <tr>
+                <th><code>query.loading</code></th>
+                <td>Observable, <code>true</code> if data is being loaded
+                </td>
+            </tr>
+            <tr>
+                <th><code>query.filter</code></th>
+                <td><p>Observable, object with the query parameters</p>
+
+                    <p>To set a new filter, use <code>nav.filter({ param1: 'value1', param2:
+                        'value2' });</code></p>
+
+                    <p>To set a specific field use <code>nav.filter.set('field',
+                        'value');</code></p>
+
+                </td>
+            </tr>
+        </table>
+
+        <h4>Query observables</h4>
+
+        <p>A query.observable is a dependent query that is updated then the filter
+            changes</p>
+        <h5>Usage</h5>
+        <code>var observable = query.observable(params, transform)</code>
+
+        <p>The observable <code>params</code> are merged with the query's
+            filter and its contents are refreshed whenever the filter changes</p>
+
+        <p>The optional <code>transform</code> callback, if specified, is used
+            to transform the datasource response.</p>
+        <h5>Properties</h5>
+        <code>observable.loading</code>
+
+        <p>Observable boolean, true if data is being loaded</p>
+
+        <h3>Model Instance methods</h3>
+
+        <p>When bound to a DataSource, the following methods may be used.</p>
+
+        <table class="table table-bordered">
+            <tr>
+                <th><code>save(callback)</code></th>
+                <td>POSTs or PUTs to the DataSource depending on the
+                    primary key, calls <code>callback</code> on success.
+                </td>
+            </tr>
+        </table>
+        <h4>Example</h4>
+<pre>
+/*
+ * new Model, Model.get, model.save
+ */
+var User = metaproject.Model({
+    id: null,
+    name: null,
+    age: null
+}).bind('/users');
+
+// Create a new user
+var user = new User({ name: 'John Doe', age: 33 });
+
+// Commit changes (POST /users)
+user.save();
+
+// Retrieves a user (GET /users/1)
+User.get(1, function(user) {
+
+    user.age(34);
+
+    // Updates the user (PUT /users/1)
+    user.save();
+});
+
+</pre>
+
+
+    </div>
+    <div class="tab-pane" id="data-ds">
+        <h2>Data Sources</h2>
+        <p>Abstract requests to REST endpoints</p>
+        <h3>Usage</h3>
+        <code>var datasource = new metaproject.DataSource(base_url,
+            options)</code>
+        <h4>base_url</h4>
+
+        <p>Root url which this DataSqource will use</p>
+
+        <h4>options</h4>
+        <ul>
+            <li><code>key</code> - Field to be used as the primary key, defaults to <code>id</code></li>
+        </ul>
+
+
+        <h3>Methods</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th><code>datasource.get(model or path, callback)</code></th>
+                <td>
+                    <p>GETs data from <code>base_url</code></p>
+                    <ul>
+                        <li>datasource.get('/', callback); // GET <code>base_url</code>/</li>
+
+                        <li>datasource.get('/', { namespace: 'HA::Facebook' } , callback);
+                            // GET <code>base_url</code>/?namespace=HA::Facebook
+                        </li>
+                        <li>datasource.get('/id', callback); // GET /id</li>
+                        <li>datasource.get('/id', { _fields: [ 'displayName', 'identifier']
+                            }, callback ); // GET
+                            <code>base_url</code>/id?_fields[]=displayName&_fields[]=identifier
+                        </li>
+                        <li>datasource.get(modelInstance, callback); // GET <code>base_url</code>/id
+                            (modelInstance[options.key])
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th><code>datasource.post(data, callback)</code></th>
+                <td>
+                    POSTs data to <code>base_url</code>
+                </td>
+            </tr>
+            <tr>
+                <th><code>datasource.put(id, data, callback)</code></th>
+                <td>
+                    PUTs data on <code>base_url</code>/id
+                </td>
+            </tr>
+            <tr>
+                <th><code>datasource.destroy(id or model, callback)</code></th>
+                <td>
+                    DELETEs <code>base_url</code>/id (or model[options.key])
+                </td>
+            </tr>
+            <tr>
+                <th><code>datasource.on('event', callback)</code></th>
+                <td>
+                    attachs an event handler to this datasource
+                </td>
+            </tr>
+        </table>
+        <h4>events</h4>
+        <table class="table table-bordered">
+            <tr>
+                <th><code>changed</code></th>
+                <td> Callback Parameters
+                    <code>
+                        { action: &lt;'put', 'post' or 'delete'&gt;,
+                        data: &lt;response data&gt; }
+                    </code>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="tab-pane" id="data-example" data-bind="include: 'core/data-example.html'">
+
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        // bind so the include is processed
+        $('#data').applyBindings({});
+    });
+
+</script>

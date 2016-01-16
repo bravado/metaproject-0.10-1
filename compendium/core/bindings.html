@@ -1,0 +1,759 @@
+<h1>Bindings</h1>
+
+<h2>The "visible" binding</h2>	
+		    	<h3 id='purpose'>Purpose</h3>
+
+<p>The <code>visible</code> binding causes the associated DOM element to become hidden or visible according to the value you pass to the binding.</p>
+
+<h3 id='example'>Example</h3>
+
+<pre><code>&lt;div data-bind=&quot;visible: shouldShowMessage&quot;&gt;
+    You will see this message only when &quot;shouldShowMessage&quot; holds a true value.
+&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var viewModel = {
+		shouldShowMessage: ko.observable(true) // Message initially visible
+    };
+    viewModel.shouldShowMessage(false); // ... now it&#39;s hidden
+    viewModel.shouldShowMessage(true); // ... now it&#39;s visible again
+&lt;/script&gt;</code></pre>
+
+<h3 id='parameters'>Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<ul>
+<li>
+<p>When the parameter resolves to a <strong>false-like value</strong> (e.g., the boolean value <code>false</code>, or the numeric value <code>0</code>, or <code>null</code>, or <code>undefined</code>), the binding sets <code>yourElement.style.display</code> to <code>none</code>, causing it to be hidden. This takes priority over any display style you&#8217;ve defined using CSS.</p>
+</li>
+
+<li>
+<p>When the parameter resolves to a <strong>true-like value</strong> (e.g., the boolean value <code>true</code>, or a non-<code>null</code> object or array), the binding removes the <code>yourElement.style.display</code> value, causing it to become visible.</p>
+
+<p>Note that any display style you&#8217;ve configured using CSS will then apply (so CSS rules like <code>display:table-row</code> work fine in conjunction with this binding).</p>
+</li>
+</ul>
+
+<p>If this parameter is an observable value, the binding will update the element&#8217;s visibility whenever the value changes. If the parameter isn&#8217;t observable, it will only set the element&#8217;s visibility once and will not update it again later.</p>
+</li>
+
+<li>
+<p>Additional parameters</p>
+
+<ul>
+<li>None</li>
+</ul>
+</li>
+</ul>
+
+<h3 id='note_using_functions_and_expressions_to_control_element_visibility'>Note: Using functions and expressions to control element visibility</h3>
+
+<p>You can also use a JavaScript function or arbitrary JavaScript expression as the parameter value. If you do, KO will run your function/evaluate your expression, and use the result to determine whether to hide the element.</p>
+
+<p>For example,</p>
+
+<pre><code>&lt;div data-bind=&quot;visible: myValues().length &gt; 0&quot;&gt;
+    You will see this message only when &#39;myValues&#39; has at least one member.
+&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var viewModel = {
+		myValues: ko.observableArray([]) // Initially empty, so message hidden
+    };
+    viewModel.myValues.push(&quot;some value&quot;); // Now visible
+&lt;/script&gt;</code></pre>
+
+
+<h2>The "text" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>text</code> binding causes the associated DOM element to display the text value of your parameter.</p>
+
+<p>Typically this is useful with elements like <code>&lt;span&gt;</code> or <code>&lt;em&gt;</code> that traditionally display text, but technically you can use it with any element.</p>
+
+<h3 id="example">Example</h3>
+
+<div><div id="highlighter_167022" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">Today's message is: &lt;span data-bind=</code><code class="js string">"text: myMessage"</code><code class="js plain">&gt;&lt;/span&gt;</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">myMessage: ko.observable() </code><code class="js comments">// Initially blank</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.myMessage(</code><code class="js string">"Hello, world!"</code><code class="js plain">); </code><code class="js comments">// Text appears</code></div><div class="line number8 index7 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>Knockout sets the element’s content to a text node with your parameter value. Any previous content will be overwritten.</p>
+
+<p>If this parameter is an observable value, the binding will update the element’s text whenever the value changes. If the parameter isn’t observable, it will only set the element’s text once and will not update it again later.</p>
+
+<p>If you supply something other than a number or a string (e.g., you pass an object or an array), the displayed text will be equivalent to <code>yourParameter.toString()</code></p>
+</li>
+
+</ul>
+
+<h3 id="note_1_using_functions_and_expressions_to_detemine_text_values">Note 1: Using functions and expressions to detemine text values</h3>
+
+<p>If you want to detemine text programmatically, one option is to create a <a href="computedObservables.html">computed observable</a>, and use its evaluator function as a place for your code that works out what text to display.</p>
+
+<p>For example,</p>
+
+<div><div id="highlighter_248777" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">The item is &lt;span data-bind=</code><code class="js string">"text: priceRating"</code><code class="js plain">&gt;&lt;/span&gt; today.</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">price: ko.observable(24.95)</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.priceRating = ko.computed(</code><code class="js keyword">function</code><code class="js plain">() {</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">return</code> <code class="js keyword">this</code><code class="js plain">.price() &gt; 50 ? </code><code class="js string">"expensive"</code> <code class="js plain">: </code><code class="js string">"affordable"</code><code class="js plain">;</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}, viewModel);</code></div><div class="line number10 index9 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Now, the text will switch between “expensive” and “affordable” as needed whenever <code>price</code> changes.</p>
+
+<p>Alternatively, you don’t need to create a computed observable if you’re doing something simple like this. You can pass an arbitrary JavaScript expression to the <code>text</code> binding. For example,</p>
+
+<div><div id="highlighter_502761" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">The item is &lt;span data-bind=</code><code class="js string">"text: price() &gt; 50 ? 'expensive' : 'affordable'"</code><code class="js plain">&gt;&lt;/span&gt; today.</code></div></div></td></tr></tbody></table></div></div>
+
+<p>This has exactly the same result, without requiring the <code>priceRating</code> computed observable.</p>
+
+<h3 id="note_2_about_html_encoding">Note 2: About HTML encoding</h3>
+
+<p>Since this binding sets your text value using a text node, it’s safe to set any string value without risking HTML or script injection. For example, if you wrote:</p>
+
+<div><div id="highlighter_490917" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">viewModel.myMessage(</code><code class="js string">"&lt;i&gt;Hello, world!&lt;/i&gt;"</code><code class="js plain">);</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… this would <em>not</em> render as italic text, but would render as literal text with visible angle brackets.</p>
+
+<p>If you need to set HTML content in this manner, see <a href="html-binding.html">the html binding</a>.</p>
+
+<h3 id="note_3_using_text_without_a_container_element">Note 3: Using “text” without a container element</h3>
+
+<p>Sometimes you may want to set text using Knockout without including an extra element for the <code>text</code> binding. For example, you’re not allowed to include other elements within an <code>option</code> element, so the following will not work.</p>
+
+<div><div id="highlighter_723213" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;select data-bind=</code><code class="js string">"foreach: items"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;option&gt;Item &lt;span data-bind=</code><code class="js string">"text: name"</code><code class="js plain">&gt;&lt;/span&gt;&lt;/option&gt;</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/select&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>To handle this, you can use the <em>containerless syntax</em>, which is based on comment tags.</p>
+
+<div><div id="highlighter_702520" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;select data-bind=</code><code class="js string">"foreach: items"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;option&gt;Item &lt;!--ko text: name--&gt;&lt;!--/ko--&gt;&lt;/option&gt;</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/select&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>The <code>&lt;!--ko--&gt;</code> and <code>&lt;!--/ko--&gt;</code> comments act as start/end markers, defining a “virtual element” that contains the markup inside. Knockout understands this virtual element syntax and binds as if you had a real container element.</p>
+
+<h3 id="note_4_about_an_ie_6_whitespace_quirk">Note 4: About an IE 6 whitespace quirk</h3>
+
+<p>IE 6 has a strange quirk whereby it sometimes ignores whitespace that immediately follows an empty span. This has nothing directly to do with Knockout, but in case you do want to write:</p>
+
+<div><div id="highlighter_915386" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">Welcome, &lt;span data-bind=</code><code class="js string">"text: userName"</code><code class="js plain">&gt;&lt;/span&gt; to our web site.</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… and IE 6 renders no whitespace before the words <code>to our web site</code>, you can avoid the problem by putting any text into the <code>&lt;span&gt;</code>, e.g.:</p>
+
+<div><div id="highlighter_391776" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">Welcome, &lt;span data-bind=</code><code class="js string">"text: userName"</code><code class="js plain">&gt;&amp;nbsp;&lt;/span&gt; to our web site.</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Other browsers, and newer versions of IE, don’t have this quirk.</p>
+
+<h2>The "html" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>html</code> binding causes the associated DOM element to display the HTML specified by your parameter.</p>
+
+<p>Typically this is useful when values in your view model are actually strings of HTML markup that you want to render.</p>
+
+<h3 id="example">Example</h3>
+
+<div><div id="highlighter_355654" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"html: details"</code><code class="js plain">&gt;&lt;/div&gt;</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">details: ko.observable() </code><code class="js comments">// Initially blank</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.details(</code><code class="js string">"&lt;em&gt;For further details, view the report &lt;a href='report.html'&gt;here&lt;/a&gt;.&lt;/em&gt;"</code><code class="js plain">); </code><code class="js comments">// HTML content appears </code></div><div class="line number8 index7 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>KO sets the element’s <code>innerHTML</code> property to your parameter value. Any previous content will be overwritten.</p>
+
+<p>If this parameter is an observable value, the binding will update the element’s content whenever the value changes. If the parameter isn’t observable, it will only set the element’s content once and will not update it again later.</p>
+
+<p>If you supply something other than a number or a string (e.g., you pass an object or an array), the <code>innerHTML</code> will be equivalent to <code>yourParameter.toString()</code></p>
+</li>
+
+</ul>
+
+<h3 id="note_about_html_encoding">Note: About HTML encoding</h3>
+
+<p>Since this binding sets your element’s content using <code>innerHTML</code>, you should be careful not to use it with untrusted model values, because that might open the possibility of a script injection attack. If you cannot guarantee that the content is safe to display (for example, if it is based on a different user’s input that was stored in your database), then you can use <a href="text-binding.html">the text binding</a>, which will set the element’s text value using <code>innerText</code> or <code>textContent</code> instead.</p>
+
+<h2>The "css" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>css</code> binding adds or removes one or more named CSS classes to the associated DOM element. This is useful, for example, to highlight some value in red if it becomes negative.</p>
+
+<p>(Note: If you don’t want to apply a CSS class but instead want to assign a <code>style</code> attribute value directly, see <a href="style-binding.html">the style binding</a>.)</p>
+
+<h3 id="example_with_static_classes">Example with static classes</h3>
+
+<div><div id="highlighter_548464" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"css: { profitWarning: currentProfit() &lt; 0 }"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;</code><code class="js plain">Profit Information</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/div&gt;</code></div><div class="line number4 index3 alt1">&nbsp;</div><div class="line number5 index4 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">currentProfit: ko.observable(150000) </code><code class="js comments">// Positive value, so initially we don't apply the "profitWarning" class</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.currentProfit(-50); </code><code class="js comments">// Causes the "profitWarning" class to be applied</code></div><div class="line number10 index9 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>This will apply the CSS class <code>profitWarning</code> whenever the <code>currentProfit</code> value dips below zero, and remove that class whenever it goes above zero.</p>
+
+<h3 id="example_with_dynamic_classes">Example with dynamic classes</h3>
+
+<div><div id="highlighter_11192" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"css: profitStatus"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;</code><code class="js plain">Profit Information</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/div&gt;</code></div><div class="line number4 index3 alt1">&nbsp;</div><div class="line number5 index4 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">currentProfit: ko.observable(150000)</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number9 index8 alt2">&nbsp;</div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js comments">// Evalutes to a positive value, so initially we apply the "profitPositive" class</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.profitStatus = ko.computed(</code><code class="js keyword">function</code><code class="js plain">() {</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">return</code> <code class="js keyword">this</code><code class="js plain">.currentProfit() &lt; 0 ? </code><code class="js string">"profitWarning"</code> <code class="js plain">: </code><code class="js string">"profitPositive"</code><code class="js plain">;</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}, viewModel);</code></div><div class="line number14 index13 alt1">&nbsp;</div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js comments">// Causes the "profitPositive" class to be removed and "profitWarning" class to be added</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.currentProfit(-50);</code></div><div class="line number17 index16 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>This will apply the CSS class <code>profitPositive</code> when the <code>currentProfit</code> value is positive, otherwise it will apply the <code>profitWarning</code> CSS class.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>If you are using static CSS class names, then you can pass a JavaScript object in which the property names are your CSS classes, and their values evaluate to <code>true</code> or <code>false</code> according to whether the class should currently be applied.</p>
+
+<p>You can set multiple CSS classes at once. For example, if your view model has a property called <code>isSevere</code>,</p>
+
+<div><div id="highlighter_973165" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"css: { profitWarning: currentProfit() &lt; 0, majorHighlight: isSevere }"</code><code class="js plain">&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>You can even set multiple CSS classes based on the same condition by wrapping the names in quotes like:</p>
+
+<div><div id="highlighter_662598" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"css: { profitWarning: currentProfit() &lt; 0, 'major highlight': isSevere }"</code><code class="js plain">&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Non-boolean values are interpreted loosely as boolean. For example, <code>0</code> and <code>null</code> are treated as <code>false</code>, whereas <code>21</code> and non-<code>null</code> objects are treated as <code>true</code>.</p>
+
+<p>If your parameter references an observable value, the binding will add or remove the CSS class whenever the observable value changes. If the parameter doesn’t reference an observable value, it will only add or remove the class once and will not do so again later.</p>
+
+<p>If you want to use dynamic CSS class names, then you can pass a string that corresponds to the CSS class or classes that you want to add to the element. If the parameter references an observable value, then the binding will remove any previously added classes and add the class or classes corresponding to the observable’s new value.</p>
+
+<p>As usual, you can use arbitrary JavaScript expressions or functions as parameter values. KO will evaluate them and use the resulting values to determine the appropriate CSS classes to add or remove.</p>
+</li>
+
+</ul>
+
+<h3 id="note_applying_css_classes_whose_names_arent_legal_javascript_variable_names">Note: Applying CSS classes whose names aren’t legal JavaScript variable names</h3>
+
+<p>If you want to apply the CSS class <code>my-class</code>, you <em>can’t</em> write this:</p>
+
+<div><div id="highlighter_163656" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"css: { my-class: someValue }"</code><code class="js plain">&gt;...&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… because <code>my-class</code> isn’t a legal identifier name at that point. The solution is simple: just wrap the identifier name in quotes so that it becomes a string literal, which is legal in a JavaScript object literal. For example,</p>
+
+<div><div id="highlighter_524986" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"css: { 'my-class': someValue }"</code><code class="js plain">&gt;...&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h2>The "style" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>style</code> binding adds or removes one or more style values to the associated DOM element. This is useful, for example, to highlight some value in red if it becomes negative, or to set the width of a bar to match a numerical value that changes.</p>
+
+<p>(Note: If you don’t want to apply an explicit style value but instead want to assign a CSS class, see <a href="css-binding.html">the css binding</a>.)</p>
+
+<h3 id="example">Example</h3>
+
+<div><div id="highlighter_798087" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"style: { color: currentProfit() &lt; 0 ? 'red' : 'black' }"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;</code><code class="js plain">Profit Information</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/div&gt;</code></div><div class="line number4 index3 alt1">&nbsp;</div><div class="line number5 index4 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">currentProfit: ko.observable(150000) </code><code class="js comments">// Positive value, so initially black</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.currentProfit(-50); </code><code class="js comments">// Causes the DIV's contents to go red</code></div><div class="line number10 index9 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>This will set the element’s <code>style.color</code> property to <code>red</code> whenever the <code>currentProfit</code> value dips below zero, and to <code>black</code> whenever it goes above zero.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>You should pass a JavaScript object in which the property names correspond to style names, and the values correspond to the style values you wish to apply.</p>
+
+<p>You can set multiple style values at once. For example, if your view model has a property called <code>isSevere</code>,</p>
+
+<p><code>&lt;div data-bind="style: { color: currentProfit() &lt; 0 ? 'red' : 'black', fontWeight: isSevere() ? 'bold' : '' }"&gt;...&lt;/div&gt;</code></p>
+
+<p>If your parameter references an observable value, the binding will update the styles whenever the observable value changes. If the parameter doesn’t reference an observable value, it will only set the styles once and will not update them later.</p>
+
+<p>As usual, you can use arbitrary JavaScript expressions or functions as parameter values. KO will evaluate them and use the resulting values to detemine the style values to apply.</p>
+</li>
+
+</ul>
+
+<h3 id="note_applying_styles_whose_names_arent_legal_javascript_variable_names">Note: Applying styles whose names aren’t legal JavaScript variable names</h3>
+
+<p>If you want to apply a <code>font-weight</code> or <code>text-decoration</code> style, or any other style whose name isn’t a legal JavaScript identifier (e.g., because it contains a hyphen), you must use the <em>JavaScript name</em> for that style. For example,</p>
+
+<ul>
+<li>Don’t write <code>{ font-weight: someValue }</code>; do write <code>{ fontWeight: someValue }</code></li>
+
+<li>Don’t write <code>{ text-decoration: someValue }</code>; do write <code>{ textDecoration: someValue }</code></li>
+</ul>
+
+<p>See also: <a href="http://www.comptechdoc.org/independent/web/cgi/javamanual/javastyle.html">a longer list of style names and their JavaScript equivalents</a></p>
+
+
+<h2>The "attr" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>attr</code> binding provides a generic way to set the value of any attribute for the associated DOM element. This is useful, for example, when you need to set the <code>title</code> attribute of an element, the <code>src</code> of an <code>img</code> tag, or the <code>href</code> of a link based on values in your view model, with the attribute value being updated automatically whenever the corresponding model property changes.</p>
+
+<h3 id="example">Example</h3>
+
+<div><div id="highlighter_477885" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;a data-bind=</code><code class="js string">"attr: { href: url, title: details }"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">Report</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/a&gt;</code></div><div class="line number4 index3 alt1">&nbsp;</div><div class="line number5 index4 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">url: ko.observable(</code><code class="js string">"year-end.html"</code><code class="js plain">),</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">details: ko.observable(</code><code class="js string">"Report including final year-end statistics"</code><code class="js plain">)</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number10 index9 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>This will set the element’s <code>href</code> attribute to <code>year-end.html</code> and the element’s <code>title</code> attribute to <code>Report including final year-end statistics</code>.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>You should pass a JavaScript object in which the property names correspond to attribute names, and the values correspond to the attribute values you wish to apply.</p>
+
+<p>If your parameter references an observable value, the binding will update the attribute whenever the observable value changes. If the parameter doesn’t reference an observable value, it will only set the attribute once and will not update it later.</p>
+</li>
+
+</ul>
+
+<h3 id="note_applying_attributes_whose_names_arent_legal_javascript_variable_names">Note: Applying attributes whose names aren’t legal JavaScript variable names</h3>
+
+<p>If you want to apply the attribute <code>data-something</code>, you <em>can’t</em> write this:</p>
+
+<div><div id="highlighter_174775" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"attr: { data-something: someValue }"</code><code class="js plain">&gt;...&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… because <code>data-something</code> isn’t a legal identifier name at that point. The solution is simple: just wrap the identifier name in quotes so that it becomes a string literal, which is legal in a JavaScript object literal. For example,</p>
+
+<div><div id="highlighter_666346" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"attr: { 'data-something': someValue }"</code><code class="js plain">&gt;...&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h1>Control Flow</h1>
+
+<h2>The "foreach" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>foreach</code> binding duplicates a section of markup for each entry in an array, and binds each copy of that markup to the corresponding array item. This is especially useful for rendering lists or tables.</p>
+
+<p>Assuming your array is an <a href="observableArrays.html">observable array</a>, whenever you later add, remove, or re-order array entries, the binding will efficiently update the UI to match - inserting or removing more copies of the markup, or re-ordering existing DOM elements, without affecting any other DOM elements. This is far faster than regenerating the entire <code>foreach</code> output after each array change.</p>
+
+<p>Of course, you can arbitrarily nest any number of <code>foreach</code> bindings along with other control-flow bindings such as <code>if</code> and <code>with</code>.</p>
+
+<h3 id="example_1_iterating_over_an_array">Example 1: Iterating over an array</h3>
+
+<p>This example uses <code>foreach</code> to produce a read-only table with a row for each array entry.</p>
+
+<div><div id="highlighter_575862" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;table&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;thead&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;tr&gt;&lt;th&gt;First name&lt;/th&gt;&lt;th&gt;Last name&lt;/th&gt;&lt;/tr&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/thead&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;tbody data-bind=</code><code class="js string">"foreach: people"</code><code class="js plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;tr&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;td data-bind=</code><code class="js string">"text: firstName"</code><code class="js plain">&gt;&lt;/td&gt;</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;td data-bind=</code><code class="js string">"text: lastName"</code><code class="js plain">&gt;&lt;/td&gt;</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/tr&gt;</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/tbody&gt;</code></div><div class="line number11 index10 alt2"><code class="js plain">&lt;/table&gt;</code></div><div class="line number12 index11 alt1">&nbsp;</div><div class="line number13 index12 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings({</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">people: [</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ firstName: </code><code class="js string">'Bert'</code><code class="js plain">, lastName: </code><code class="js string">'Bertington'</code> <code class="js plain">},</code></div><div class="line number17 index16 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ firstName: </code><code class="js string">'Charles'</code><code class="js plain">, lastName: </code><code class="js string">'Charlesforth'</code> <code class="js plain">},</code></div><div class="line number18 index17 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ firstName: </code><code class="js string">'Denise'</code><code class="js plain">, lastName: </code><code class="js string">'Dentiste'</code> <code class="js plain">}</code></div><div class="line number19 index18 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">]</code></div><div class="line number20 index19 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number21 index20 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h3 id="example_2_live_example_with_addremove">Example 2: Example with add/remove</h3>
+
+<h4>Source code: View</h4><div><div id="highlighter_201085" class="syntaxhighlighter nogutter  html"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="html plain">&lt;</code><code class="html keyword">h4</code><code class="html plain">&gt;People&lt;/</code><code class="html keyword">h4</code><code class="html plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="html plain">&lt;</code><code class="html keyword">ul</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"foreach: people"</code><code class="html plain">&gt;</code></div><div class="line number3 index2 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">li</code><code class="html plain">&gt;</code></div><div class="line number4 index3 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">Name at position &lt;</code><code class="html keyword">span</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"text: $index"</code><code class="html plain">&gt; &lt;/</code><code class="html keyword">span</code><code class="html plain">&gt;:</code></div><div class="line number5 index4 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">span</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"text: name"</code><code class="html plain">&gt; &lt;/</code><code class="html keyword">span</code><code class="html plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">a</code> <code class="html color1">href</code><code class="html plain">=</code><code class="html string">"#"</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"click: $parent.removePerson"</code><code class="html plain">&gt;Remove&lt;/</code><code class="html keyword">a</code><code class="html plain">&gt;</code></div><div class="line number7 index6 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;/</code><code class="html keyword">li</code><code class="html plain">&gt;</code></div><div class="line number8 index7 alt1"><code class="html plain">&lt;/</code><code class="html keyword">ul</code><code class="html plain">&gt;</code></div><div class="line number9 index8 alt2"><code class="html plain">&lt;</code><code class="html keyword">button</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"click: addPerson"</code><code class="html plain">&gt;Add&lt;/</code><code class="html keyword">button</code><code class="html plain">&gt;</code></div></div></td></tr></tbody></table></div></div><h4>Source code: View model</h4><div><div id="highlighter_361917" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js keyword">function</code> <code class="js plain">AppViewModel() {</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">self = </code><code class="js keyword">this</code><code class="js plain">;</code></div><div class="line number3 index2 alt2">&nbsp;</div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.people = ko.observableArray([</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Bert'</code> <code class="js plain">},</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Charles'</code> <code class="js plain">},</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Denise'</code> <code class="js plain">}</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">]);</code></div><div class="line number9 index8 alt2">&nbsp;</div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.addPerson = </code><code class="js keyword">function</code><code class="js plain">() {</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.people.push({ name: </code><code class="js string">"New at "</code> <code class="js plain">+ </code><code class="js keyword">new</code> <code class="js plain">Date() });</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number13 index12 alt2">&nbsp;</div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.removePerson = </code><code class="js keyword">function</code><code class="js plain">() {</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.people.remove(</code><code class="js keyword">this</code><code class="js plain">);</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}</code></div><div class="line number17 index16 alt2"><code class="js plain">}</code></div><div class="line number18 index17 alt1">&nbsp;</div><div class="line number19 index18 alt2"><code class="js plain">ko.applyBindings(</code><code class="js keyword">new</code> <code class="js plain">AppViewModel());</code></div></div></td></tr></tbody></table></div></div>
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>Pass the array that you wish to iterate over. The binding will output a section of markup for each entry.</p>
+
+<p>Alternatively, pass a JavaScript object literal with a property called <code>data</code> which is the array you wish to iterate over. The object literal may also have other properties, such as <code>afterAdd</code> or <code>includeDestroyed</code> — see below for details of these extra options and examples of their use.</p>
+
+<p>If the array you supply is observable, the <code>foreach</code> binding will respond to any future changes in the array’s contents by adding or removing corresponding sections of markup in the DOM.</p>
+</li>
+
+</ul>
+
+<h3 id="note_1_referring_to_each_array_entry_using_data">Note 1: Referring to each array entry using $data</h3>
+
+<p>As shown in the above examples, bindings within the <code>foreach</code> block can refer to properties on the array entries. For example, <a href="#example_1_iterating_over_an_array">Example 1</a> referenced the <code>firstName</code> and <code>lastName</code> properties on each array entry.</p>
+
+<p>But what if you want to refer to the array entry itself (not just one of its properties)? In that case, you can use the <a href="binding-context.html">special context property</a> <code>$data</code>. Within a <code>foreach</code> block, it means “the current item”. For example,</p>
+
+<div><div id="highlighter_392598" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"foreach: months"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">The current item is: &lt;b data-bind=</code><code class="js string">"text: $data"</code><code class="js plain">&gt;&lt;/b&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number5 index4 alt2"><code class="js plain">&lt;/ul&gt;</code></div><div class="line number6 index5 alt1">&nbsp;</div><div class="line number7 index6 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings({</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">months: [ </code><code class="js string">'Jan'</code><code class="js plain">, </code><code class="js string">'Feb'</code><code class="js plain">, </code><code class="js string">'Mar'</code><code class="js plain">, </code><code class="js string">'etc'</code> <code class="js plain">]</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number11 index10 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>If you wanted, you could use <code>$data</code> as a prefix when referencing properties on each entry. For example, you could rewrite part of <a href="#example_1_iterating_over_an_array">Example 1</a> as follows:</p>
+
+<div><div id="highlighter_873370" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;td data-bind=</code><code class="js string">"text: $data.firstName"</code><code class="js plain">&gt;&lt;/td&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… but you don’t have to, because <code>firstName</code> will be evaluated within the context of <code>$data</code> by default anyway.</p>
+
+<h3 id="note_2_using_index_parent_and_other_context_properties">Note 2: Using $index, $parent, and other context properties</h3>
+
+<p>As you can see from Example 2 above, it’s possible to use <code>$index</code> to refer to the zero-based index of the current array item. <code>$index</code> is an observable and is updated whenever the index of the item changes (e.g., if items are added to or removed from the array).</p>
+
+<p>Similarly, you can use <code>$parent</code> to refer to data from outside the <code>foreach</code>, e.g.:</p>
+
+<div><div id="highlighter_633584" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;h1 data-bind=</code><code class="js string">"text: blogPostTitle"</code><code class="js plain">&gt;&lt;/h1&gt;</code></div><div class="line number2 index1 alt1"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"foreach: likes"</code><code class="js plain">&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;b data-bind=</code><code class="js string">"text: name"</code><code class="js plain">&gt;&lt;/b&gt; likes the blog post &lt;b data-bind=</code><code class="js string">"text: $parent.blogPostTitle"</code><code class="js plain">&gt;&lt;/b&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number6 index5 alt1"><code class="js plain">&lt;/ul&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>For more information about <code>$index</code> and other context properties such as <code>$parent</code>, see documentation for <a href="binding-context.html">binding context properties</a>.</p>
+
+<h3 id="note_3_using_as_to_give_an_alias_to_foreach_items">Note 3: Using “as” to give an alias to “foreach” items</h3>
+
+<p>As described in Note 1, you can refer to each array entry using the <code>$data</code> <a href="binding-context.html">context variable</a>. In some cases though, it may be useful to give the current item a more descriptive name using the <code>as</code> option like:</p>
+
+<div><div id="highlighter_91641" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"foreach: { data: people, as: 'person' }"</code><code class="js plain">&gt;&lt;/ul&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Now anywhere inside this <code>foreach</code> loop, bindings will be able to refer to <code>person</code> to access the current array item, from the <code>people</code> array, that is being rendered. This can be especially useful in scenarios where you have nested <code>foreach</code> blocks and you need to refer to an item declared at a higher level in the hierarchy. For example:</p>
+
+<div><div id="highlighter_304811" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"foreach: { data: categories, as: 'category' }"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;ul data-bind=</code><code class="js string">"foreach: { data: items, as: 'item' }"</code><code class="js plain">&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;span data-bind=</code><code class="js string">"text: category.name"</code><code class="js plain">&gt;&lt;/span&gt;:</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;span data-bind=</code><code class="js string">"text: item"</code><code class="js plain">&gt;&lt;/span&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/ul&gt;</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number10 index9 alt1"><code class="js plain">&lt;/ul&gt;</code></div><div class="line number11 index10 alt2">&nbsp;</div><div class="line number12 index11 alt1"><code class="js plain">&lt;script&gt;</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">categories: ko.observableArray([</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Fruit'</code><code class="js plain">, items: [ </code><code class="js string">'Apple'</code><code class="js plain">, </code><code class="js string">'Orange'</code><code class="js plain">, </code><code class="js string">'Banana'</code> <code class="js plain">] },</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Vegetables'</code><code class="js plain">, items: [ </code><code class="js string">'Celery'</code><code class="js plain">, </code><code class="js string">'Corn'</code><code class="js plain">, </code><code class="js string">'Spinach'</code> <code class="js plain">] }</code></div><div class="line number17 index16 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">])</code></div><div class="line number18 index17 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number19 index18 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings(viewModel);</code></div><div class="line number20 index19 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Tip: Remember to pass a <em>string literal value</em> to <code>as</code> (e.g., <code>as: 'category'</code>, <em>not</em> <code>as: category</code>), because you are giving a name for a new variable, not reading the value of a variable that already exists.</p>
+
+<h3 id="note_4_using_foreach_without_a_container_element">Note 4: Using foreach without a container element</h3>
+
+<p>In some cases, you might want to duplicate a section of markup, but you don’t have any container element on which to put a <code>foreach</code> binding. For example, you might want to generate the following:</p>
+
+<div><div id="highlighter_654690" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li class=</code><code class="js string">"header"</code><code class="js plain">&gt;Header item&lt;/li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- The following are generated dynamically from an array --&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;Item A&lt;/li&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;Item B&lt;/li&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;Item C&lt;/li&gt;</code></div><div class="line number7 index6 alt2"><code class="js plain">&lt;/ul&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>In this example, there isn’t anywhere to put a normal <code>foreach</code> binding. You can’t put it on the <code>&lt;ul&gt;</code> (because then you’d be duplicating the header item), nor can you put a further container inside the <code>&lt;ul&gt;</code> (because only <code>&lt;li&gt;</code> elements are allowed inside <code>&lt;ul&gt;</code>s).</p>
+
+<p>To handle this, you can use the <em>containerless control flow syntax</em>, which is based on comment tags. For example,</p>
+
+<div><div id="highlighter_895043" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li class=</code><code class="js string">"header"</code><code class="js plain">&gt;Header item&lt;/li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- ko foreach: myItems --&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;Item &lt;span data-bind=</code><code class="js string">"text: $data"</code><code class="js plain">&gt;&lt;/span&gt;&lt;/li&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- /ko --&gt;</code></div><div class="line number6 index5 alt1"><code class="js plain">&lt;/ul&gt;</code></div><div class="line number7 index6 alt2">&nbsp;</div><div class="line number8 index7 alt1"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings({</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">myItems: [ </code><code class="js string">'A'</code><code class="js plain">, </code><code class="js string">'B'</code><code class="js plain">, </code><code class="js string">'C'</code> <code class="js plain">]</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number12 index11 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>The <code>&lt;!-- ko --&gt;</code> and <code>&lt;!-- /ko --&gt;</code> comments act as start/end markers, defining a “virtual element” that contains the markup inside. Knockout understands this virtual element syntax and binds as if you had a real container element.</p>
+
+<h3 id="note_5_how_array_changes_are_detected_and_handled">Note 5: How array changes are detected and handled</h3>
+
+<p>When you modify the contents of your model array (by adding, moving, or deleting its entries), the <code>foreach</code> binding uses an efficient differencing algorithm to figure out what has changed, so it can then update the DOM to match. This means it can handle arbitrary combinations of simulaneous changes.</p>
+
+<ul>
+<li>When you <strong>add</strong> array entries, <code>foreach</code> will render new copies of your template and insert them into the existing DOM</li>
+
+<li>When you <strong>delete</strong> array entries, <code>foreach</code> will simply remove the corresponding DOM elements</li>
+
+<li>When you <strong>reorder</strong> array entries (retaining the same object instances), <code>foreach</code> will typically just move the corresponding DOM elements into their new position</li>
+</ul>
+
+<p>Note that reordering detection is not guaranteed: to ensure the algorithm completes quickly, it is optimized to detect “simple” movements of small numbers of array entries. If the algorithm detects too many simultaneous reorderings combined with unrelated insertions and deletions, then for speed it can choose to regard a reordering as an “delete” plus an “add” instead of a single “move”, and in that case the corresponding DOM elements will be torn down and recreated. Most developers won’t encounter this edge case, and even if you do, the end-user experience will usually be identical.</p>
+
+<h3 id="note_6_destroyed_entries_are_hidden_by_default">Note 6: Destroyed entries are hidden by default</h3>
+
+<p>Sometimes you may want to mark an array entry as deleted, but without actually losing record of its existence. This is known as a <em>non-destructive delete</em>. For details of how to do this, see <a href="observableArrays.html#destroy_and_destroyall_note_usually_relevant_to_ruby_on_rails_developers_only">the destroy function on <code>observableArray</code></a>.</p>
+
+<p>By default, the <code>foreach</code> binding will skip over (i.e., hide) any array entries that are marked as destroyed. If you want to show destroyed entries, use the <code>includeDestroyed</code> option. For example,</p>
+
+<div><div id="highlighter_845658" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">'foreach: { data: myArray, includeDestroyed: true }'</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">...</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h3 id="note_7_postprocessing_or_animating_the_generated_dom_elements">Note 7: Post-processing or animating the generated DOM elements</h3>
+
+<p>If you need to run some further custom logic on the generated DOM elements, you can use any of the <code>afterRender</code>/<code>afterAdd</code>/<code>beforeRemove</code>/<code>beforeMove</code>/<code>afterMove</code> callbacks described below.</p>
+
+<blockquote>
+<p><strong>Note:</strong> These callbacks are <em>only</em> intended for triggering animations related to changes in a list. If your goal is actually to attach other behaviors to new DOM elements when they have been added (e.g., event handlers, or to activate third-party UI controls), then your work will be much easier if you implement that new behavior as a <a href="custom-bindings.html">custom binding</a> instead, because then you can use that behavior anywhere, independently of the <code>foreach</code> binding.</p>
+</blockquote>
+
+<p>Here’s a trivial example that uses <code>afterAdd</code> to apply the classic “yellow fade” effect to newly-added items. It requires the <a href="https://github.com/jquery/jquery-color">jQuery Color plugin</a> to enable animation of background colors.</p>
+
+<div><div id="highlighter_941629" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"foreach: { data: myItems, afterAdd: yellowFadeIn }"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li data-bind=</code><code class="js string">"text: $data"</code><code class="js plain">&gt;&lt;/li&gt;</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;/ul&gt;</code></div><div class="line number4 index3 alt1">&nbsp;</div><div class="line number5 index4 alt2"><code class="js plain">&lt;button data-bind=</code><code class="js string">"click: addItem"</code><code class="js plain">&gt;Add&lt;/button&gt;</code></div><div class="line number6 index5 alt1">&nbsp;</div><div class="line number7 index6 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings({</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">myItems: ko.observableArray([ </code><code class="js string">'A'</code><code class="js plain">, </code><code class="js string">'B'</code><code class="js plain">, </code><code class="js string">'C'</code> <code class="js plain">]),</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">yellowFadeIn: </code><code class="js keyword">function</code><code class="js plain">(element, index, data) {</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">$(element).filter(</code><code class="js string">"li"</code><code class="js plain">)</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">.animate({ backgroundColor: </code><code class="js string">'yellow'</code> <code class="js plain">}, 200)</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">.animate({ backgroundColor: </code><code class="js string">'white'</code> <code class="js plain">}, 800);</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">},</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">addItem: </code><code class="js keyword">function</code><code class="js plain">() { </code><code class="js keyword">this</code><code class="js plain">.myItems.push(</code><code class="js string">'New item'</code><code class="js plain">); }</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number17 index16 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Full details:</p>
+
+<ul>
+<li>
+<p><code>afterRender</code> — is invoked each time the <code>foreach</code> block is duplicated and inserted into the document, both when <code>foreach</code> first initializes, and when new entries are added to the associated array later. Knockout will supply the following parameters to your callback:</p>
+
+<ol>
+<li>An array of the inserted DOM elements</li>
+
+<li>The data item against which they are being bound</li>
+</ol>
+</li>
+
+<li>
+<p><code>afterAdd</code> — is like <code>afterRender</code>, except it is invoked only when new entries are added to your array (and <em>not</em> when <code>foreach</code> first iterates over your array’s initial contents). A common use for <code>afterAdd</code> is to call a method such as jQuery’s <code>$(domNode).fadeIn()</code> so that you get animated transitions whenever items are added. Knockout will supply the following parameters to your callback:</p>
+
+<ol>
+<li>A DOM node being added to the document</li>
+
+<li>The index of the added array element</li>
+
+<li>The added array element</li>
+</ol>
+</li>
+
+<li>
+<p><code>beforeRemove</code> — is invoked when an array item has been removed, but before the corresponding DOM nodes have been removed. If you specify a <code>beforeRemove</code> callback, then <em>it becomes your responsibility to remove the DOM nodes</em>. The obvious use case here is calling something like jQuery’s <code>$(domNode).fadeOut()</code> to animate the removal of the corresponding DOM nodes — in this case, Knockout cannot know how soon it is allowed to physically remove the DOM nodes (who knows how long your animation will take?), so it is up to you to remove them. Knockout will supply the following parameters to your callback:</p>
+
+<ol>
+<li>A DOM node that you should remove</li>
+
+<li>The index of the removed array element</li>
+
+<li>The removed array element</li>
+</ol>
+</li>
+
+<li>
+<p><code>beforeMove</code> — is invoked when an array item has changed position in the array, but before the corresponding DOM nodes have been moved. Note that <code>beforeMove</code> applies to all array elements whose indexes have changed, so if you insert a new item at the beginning of an array, then the callback (if specified) will fire for all other elements, since their index position has increased by one. You could use <code>beforeMove</code> to store the original screen coordinates of the affected elements so that you can animate their movements in the <code>afterMove</code> callback. Knockout will supply the following parameters to your callback:</p>
+
+<ol>
+<li>A DOM node that may be about to move</li>
+
+<li>The index of the moved array element</li>
+
+<li>The moved array element</li>
+</ol>
+</li>
+
+<li>
+<p><code>afterMove</code> — is invoked after an array item has changed position in the array, and after <code>foreach</code> has updated the DOM to match. Note that <code>afterMove</code> applies to all array elements whose indexes have changed, so if you insert a new item at the beginning of an array, then the callback (if specified) will fire for all other elements, since their index position has increased by one. Knockout will supply the following parameters to your callback:</p>
+
+<ol>
+<li>A DOM node that may have moved</li>
+
+<li>The index of the moved array element</li>
+
+<li>The moved array element</li>
+</ol>
+</li>
+</ul>
+
+<!-- TODO 
+<p>For examples of <code>afterAdd</code> and <code>beforeRemove</code> see <a href="/examples/animatedTransitions.html">animated transitions</a>.</p>
+-->
+<h2>The "if" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>if</code> binding causes a section of markup to appear in your document (and to have its <code>data-bind</code> attributes applied), only if a specified expression evaluates to <code>true</code> (or a <code>true</code>-ish value such as a non-<code>null</code> object or nonempty string).</p>
+
+<p><code>if</code> plays a similar role to <a href="visible-binding.html">the <code>visible</code> binding</a>. The difference is that, with <code>visible</code>, the contained markup always remains in the DOM and always has its <code>data-bind</code> attributes applied - the <code>visible</code> binding just uses CSS to toggle the container element’s visiblity. The <code>if</code> binding, however, physically adds or removes the contained markup in your DOM, and only applies bindings to descendants if the expression is <code>true</code>.</p>
+
+<h3 id="example_1">Example 1</h3>
+
+<p>This example shows that the <code>if</code> binding can dynamically add and remove sections of markup as observable values change.</p>
+
+<h4>Source code: View</h4><div><div id="highlighter_998980" class="syntaxhighlighter nogutter  html"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="html plain">&lt;</code><code class="html keyword">label</code><code class="html plain">&gt;&lt;</code><code class="html keyword">input</code> <code class="html color1">type</code><code class="html plain">=</code><code class="html string">"checkbox"</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"checked: displayMessage"</code> <code class="html plain">/&gt; Display message&lt;/</code><code class="html keyword">label</code><code class="html plain">&gt;</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="html plain">&lt;</code><code class="html keyword">div</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"if: displayMessage"</code><code class="html plain">&gt;Here is a message. Astonishing.&lt;/</code><code class="html keyword">div</code><code class="html plain">&gt;</code></div></div></td></tr></tbody></table></div></div><h4>Source code: View model</h4><div><div id="highlighter_918515" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">ko.applyBindings({</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">displayMessage: ko.observable(</code><code class="js keyword">false</code><code class="js plain">)</code></div><div class="line number3 index2 alt2"><code class="js plain">});</code></div></div></td></tr></tbody></table></div></div>
+<h3 id="example_2">Example 2</h3>
+
+<p>In the following example, the <code>&lt;div&gt;</code> element will be empty for “Mercury”, but populated for “Earth”. That’s because Earth has a non-null <code>capital</code> property, whereas “Mercury” has <code>null</code> for that property.</p>
+
+<div><div id="highlighter_633282" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"foreach: planets"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">Planet: &lt;b data-bind=</code><code class="js string">"text: name"</code><code class="js plain">&gt; &lt;/b&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;div data-bind=</code><code class="js string">"if: capital"</code><code class="js plain">&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">Capital: &lt;b data-bind=</code><code class="js string">"text: capital.cityName"</code><code class="js plain">&gt; &lt;/b&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/div&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number8 index7 alt1"><code class="js plain">&lt;/ul&gt;</code></div><div class="line number9 index8 alt2">&nbsp;</div><div class="line number10 index9 alt1">&nbsp;</div><div class="line number11 index10 alt2"><code class="js plain">&lt;script&gt;</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings({</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">planets: [</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Mercury'</code><code class="js plain">, capital: </code><code class="js keyword">null</code> <code class="js plain">}, </code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Earth'</code><code class="js plain">, capital: { cityName: </code><code class="js string">'Barnsley'</code> <code class="js plain">} }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">]</code></div><div class="line number17 index16 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number18 index17 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>It’s important to understand that the <code>if</code> binding really is vital to make this code work properly. Without it, there would be an error when trying to evaluate <code>capital.cityName</code> in the context of “Mercury” where <code>capital</code> is <code>null</code>. In JavaScript, you’re not allowed to evaluate subproperties of <code>null</code> or <code>undefined</code> values.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>The expression you wish to evaluate. If it evaluates to <code>true</code> (or a true-ish value), the contained markup will be present in the document, and any <code>data-bind</code> attributes on it will be applied. If your expression evaluates to <code>false</code>, the contained markup will be removed from your document without first applying any bindings to it.</p>
+
+<p>If your expression involves any observable values, the expression will be re-evaluated whenever any of them change. Correspondingly, the markup within your <code>if</code> block can be added or removed dynamically as the result of the expression changes. <code>data-bind</code> attributes will be applied to <strong>a new copy of the contained markup</strong> whenever it is re-added.</p>
+</li>
+
+</ul>
+
+<h3 id="note_using_if_without_a_container_element">Note: Using “if” without a container element</h3>
+
+<p>Sometimes you may want to control the presence/absence of a section of markup <em>without</em> having any container element that can hold an <code>if</code> binding. For example, you might want to control whether a certain <code>&lt;li&gt;</code> element appears alongside siblings that always appear:</p>
+
+<div><div id="highlighter_294524" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;This item always appears&lt;/li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;I want to make </code><code class="js keyword">this</code> <code class="js plain">item present/absent dynamically&lt;/li&gt;</code></div><div class="line number4 index3 alt1"><code class="js plain">&lt;/ul&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>In this case, you can’t put <code>if</code> on the <code>&lt;ul&gt;</code> (because then it would affect the first <code>&lt;li&gt;</code> too), and you can’t put any other container around the second <code>&lt;li&gt;</code> (because HTML doesn’t allow extra containers within <code>&lt;ul&gt;</code>s).</p>
+
+<p>To handle this, you can use the <em>containerless control flow syntax</em>, which is based on comment tags. For example,</p>
+
+<div><div id="highlighter_226955" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;This item always appears&lt;/li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- ko </code><code class="js keyword">if</code><code class="js plain">: someExpressionGoesHere --&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;I want to make </code><code class="js keyword">this</code> <code class="js plain">item present/absent dynamically&lt;/li&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- /ko --&gt;</code></div><div class="line number6 index5 alt1"><code class="js plain">&lt;/ul&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>The <code>&lt;!-- ko --&gt;</code> and <code>&lt;!-- /ko --&gt;</code> comments act as start/end markers, defining a “virtual element” that contains the markup inside. Knockout understands this virtual element syntax and binds as if you had a real container element.</p>
+
+<h2>The "ifnot" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>ifnot</code> binding is exactly the same as <a href="if-binding.html">the <code>if</code> binding</a>, except that it inverts the result of whatever expression you pass to it. For more details, see documentation for <a href="if-binding.html">the <code>if</code> binding</a>.</p>
+
+<h3 id="note_ifnot_is_the_same_as_a_negated_if">Note: “ifnot” is the same as a negated “if”</h3>
+
+<p>The following markup:</p>
+
+<div><div id="highlighter_256349" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"ifnot: someProperty"</code><code class="js plain">&gt;...&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… is equivalent to the following:</p>
+
+<div><div id="highlighter_458653" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"if: !someProperty()"</code><code class="js plain">&gt;...&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… assuming that <code>someProperty</code> is <em>observable</em> and hence you need to invoke it as a function to obtain the current value.</p>
+
+<p>The only reason to use <code>ifnot</code> instead of a negated <code>if</code> is just as a matter of taste: many developers feel that it looks tidier.</p>    
+
+
+<div class="content">
+
+<h2>The "with" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>with</code> binding creates a new <a href="#metaproject/mvvm">binding context</a>, so that descendant elements are bound in the context of a specified object.</p>
+
+<p>Of course, you can arbitrarily nest <code>with</code> bindings along with the other control-flow bindings such as <a href="if-binding.html"><code>if</code></a> and <a href="foreach-binding.html"><code>foreach</code></a>.</p>
+
+<h3 id="example_1">Example 1</h3>
+
+<p>Here is a very basic example of switching the binding context to a child object. Notice that in the <code>data-bind</code> attributes, it is <em>not</em> necessary to prefix <code>latitude</code> or <code>longitude</code> with <code>coords.</code>, because the binding context is switched to <code>coords</code>.</p>
+
+<div><div id="highlighter_759455" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;h1 data-bind=</code><code class="js string">"text: city"</code><code class="js plain">&gt; &lt;/h1&gt;</code></div><div class="line number2 index1 alt1"><code class="js plain">&lt;p data-bind=</code><code class="js string">"with: coords"</code><code class="js plain">&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">Latitude: &lt;span data-bind=</code><code class="js string">"text: latitude"</code><code class="js plain">&gt; &lt;/span&gt;,</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">Longitude: &lt;span data-bind=</code><code class="js string">"text: longitude"</code><code class="js plain">&gt; &lt;/span&gt;</code></div><div class="line number5 index4 alt2"><code class="js plain">&lt;/p&gt;</code></div><div class="line number6 index5 alt1">&nbsp;</div><div class="line number7 index6 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings({</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">city: </code><code class="js string">"London"</code><code class="js plain">,</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">coords: {</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">latitude:&nbsp; 51.5001524,</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">longitude: -0.1262362</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number15 index14 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h3 id="example_2">Example 2</h3>
+
+<p>This interactive example demonstrates that:</p>
+
+<ul>
+<li>The <code>with</code> binding will dynamically add or remove descendant elements depending on whether the associated value is <code>null</code>/<code>undefined</code> or not</li>
+
+<li>If you want to access data/functions from parent binding contexts, you can use <a href="#metaproject/mvvm">special context properties such as <code>$parent</code> and <code>root</code></a>.</li>
+</ul>
+
+<h4>Source code: View</h4><div><div id="highlighter_901370" class="syntaxhighlighter nogutter  html"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="html plain">&lt;</code><code class="html keyword">form</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"submit: getTweets"</code><code class="html plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">Twitter account:</code></div><div class="line number3 index2 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">input</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"value: twitterName"</code> <code class="html plain">/&gt;</code></div><div class="line number4 index3 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">button</code> <code class="html color1">type</code><code class="html plain">=</code><code class="html string">"submit"</code><code class="html plain">&gt;Get tweets&lt;/</code><code class="html keyword">button</code><code class="html plain">&gt;</code></div><div class="line number5 index4 alt2"><code class="html plain">&lt;/</code><code class="html keyword">form</code><code class="html plain">&gt;</code></div><div class="line number6 index5 alt1">&nbsp;</div><div class="line number7 index6 alt2"><code class="html plain">&lt;</code><code class="html keyword">div</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"with: resultData"</code><code class="html plain">&gt;</code></div><div class="line number8 index7 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">h3</code><code class="html plain">&gt;Recent tweets fetched at &lt;</code><code class="html keyword">span</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"text: retrievalDate"</code><code class="html plain">&gt; &lt;/</code><code class="html keyword">span</code><code class="html plain">&gt;&lt;/</code><code class="html keyword">h3</code><code class="html plain">&gt;</code></div><div class="line number9 index8 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">ol</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"foreach: topTweets"</code><code class="html plain">&gt;</code></div><div class="line number10 index9 alt1"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">li</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"text: text"</code><code class="html plain">&gt;&lt;/</code><code class="html keyword">li</code><code class="html plain">&gt;</code></div><div class="line number11 index10 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;/</code><code class="html keyword">ol</code><code class="html plain">&gt;</code></div><div class="line number12 index11 alt1">&nbsp;</div><div class="line number13 index12 alt2"><code class="html spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="html plain">&lt;</code><code class="html keyword">button</code> <code class="html color1">data-bind</code><code class="html plain">=</code><code class="html string">"click: $parent.clearResults"</code><code class="html plain">&gt;Clear tweets&lt;/</code><code class="html keyword">button</code><code class="html plain">&gt;</code></div><div class="line number14 index13 alt1"><code class="html plain">&lt;/</code><code class="html keyword">div</code><code class="html plain">&gt;</code></div></div></td></tr></tbody></table></div></div><h4>Source code: View model</h4><div><div id="highlighter_889688" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js keyword">function</code> <code class="js plain">AppViewModel() {</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">self = </code><code class="js keyword">this</code><code class="js plain">;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.twitterName = ko.observable(</code><code class="js string">'@StephenFry'</code><code class="js plain">);</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.resultData = ko.observable(); </code><code class="js comments">// No initial value</code></div><div class="line number5 index4 alt2">&nbsp;</div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.getTweets = </code><code class="js keyword">function</code><code class="js plain">() {</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">twitterApi.getTweetsForUser(self.twitterName(), </code><code class="js keyword">function</code><code class="js plain">(data) {</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.resultData({</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">retrievalDate: </code><code class="js keyword">new</code> <code class="js plain">Date(),</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">topTweets: data.slice(0, 5)</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">});</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}</code></div><div class="line number14 index13 alt1">&nbsp;</div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.clearResults = </code><code class="js keyword">function</code><code class="js plain">() {</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">self.resultData(undefined);</code></div><div class="line number17 index16 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}</code></div><div class="line number18 index17 alt1"><code class="js plain">}</code></div><div class="line number19 index18 alt2">&nbsp;</div><div class="line number20 index19 alt1"><code class="js plain">ko.applyBindings(</code><code class="js keyword">new</code> <code class="js plain">AppViewModel());</code></div></div></td></tr></tbody></table></div></div>
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<p>The object that you want to use as the context for binding descendant elements.</p>
+
+<p>If the expression you supply evaluates to <code>null</code> or <code>undefined</code>, descendant elements will <em>not</em> be bound at all, but will instead be removed from the document.</p>
+
+<p>If the expression you supply involves any observable values, the expression will be re-evaluated whenever any of those observables change. Then, descendant elements will be cleared out, and <strong>a new copy of the markup</strong> will be added to your document and bound in the context of the new evaluation result.</p>
+</li>
+
+</ul>
+
+<h3 id="note_1_using_with_without_a_container_element">Note 1: Using “with” without a container element</h3>
+
+<p>Just like other control flow elements such as <a href="if-binding.html"><code>if</code></a> and <a href="foreach-binding.html"><code>foreach</code></a>, you can use <code>with</code> without any container element to host it. This is useful if you need to use <code>with</code> in a place where it would not be legal to introduce a new container element just to hold the <code>with</code> binding. See the documentation for <a href="if-binding.html"><code>if</code></a> or <a href="foreach-binding.html"><code>foreach</code></a> for more details.</p>
+
+<p>Example:</p>
+
+<div><div id="highlighter_838141" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;Header element&lt;/li&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- ko </code><code class="js keyword">with</code><code class="js plain">: outboundFlight --&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">...</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- /ko --&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- ko </code><code class="js keyword">with</code><code class="js plain">: inboundFlight --&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">...</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;!-- /ko --&gt;</code></div><div class="line number9 index8 alt2"><code class="js plain">&lt;/ul&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>The <code>&lt;!-- ko --&gt;</code> and <code>&lt;!-- /ko --&gt;</code> comments act as start/end markers, defining a “virtual element” that contains the markup inside. Knockout understands this virtual element syntax and binds as if you had a real container element.</p>
+
+<h1>Rendering Templates</h1>
+<h2>The "template" binding</h2>	
+<h3 id="purpose">Purpose</h3>
+
+<p>The <code>template</code> binding populates the associated DOM element with the results of rendering a template. Templates are a simple and convenient way to build sophisticated UI structures - possibly with repeating or nested blocks - as a function of your view model data.</p>
+
+<p>There are two main ways of using templates:</p>
+
+<ul>
+<li><em>Native templating</em> is the mechanism that underpins <code>foreach</code>, <code>if</code>, <code>with</code>, and other control flow bindings. Internally, those control flow bindings capture the HTML markup contained in your element, and use it as a template to render against an arbitrary data item. This feature is built into Knockout and doesn’t require any external library.</li>
+
+<li><em>String-based templating</em> is a way to connect Knockout to a third-party template engine. Knockout will pass your model values to the external template engine and inject the resulting markup string into your document. See below for examples that use the <em>jquery.tmpl</em> and <em>Underscore</em> template engines.</li>
+</ul>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li>
+<p>Main parameter</p>
+
+<ul>
+<li>
+<p>Shorthand syntax: If you just supply a string value, KO will interpret this as the ID of a template to render. The data it supplies to the template will be your current model object.</p>
+</li>
+
+<li>
+<p>For more control, pass a JavaScript object with some combination of the following properties:</p>
+
+<ul>
+<li><code>name</code> — the ID of an element that contains the template you wish to render - see <a href="#note_5_dynamically_choosing_which_template_is_used">Note 5</a> for how to vary this programmatically.</li>
+
+<li><code>data</code> — an object to supply as the data for the template to render. If you omit this parameter, KO will look for a <code>foreach</code> parameter, or will fall back on using your current model object.</li>
+
+<li><code>if</code> — if this parameter is provided, the template will only be rendered if the specified expression evaluates to <code>true</code> (or a <code>true</code>-ish value). This can be useful for preventing a null observable from being bound against a template before it is populated.</li>
+
+<li><code>foreach</code> — instructs KO to render the template in “foreach” mode - see <a href="#note_2_using_the_foreach_option_with_a_named_template">Note 2</a> for details.</li>
+
+<li><code>as</code> — when used in conjunction with <code>foreach</code>, defines an alias for each item being rendered - see <a href="#note_3_using_as_to_give_an_alias_to_foreach_items">Note 3</a> for details.</li>
+
+<li><code>afterRender</code>, <code>afterAdd</code>, or <code>beforeRemove</code> — callback functions to be invoked against the rendered DOM elements - see <a href="#note_4_using_afterrender_afteradd_and_beforeremove">Note 4</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h3 id="note_1_rendering_a_named_template">Note 1: Rendering a named template</h3>
+
+<p>Normally, when you’re using control flow bindings (<code>foreach</code>, <code>with</code>, <code>if</code>, etc.), there’s no need to give names to your templates: they are defined implicitly and anonymously by the markup inside your DOM element. But if you want to, you can factor out templates into a separate element and then reference them by name:</p>
+
+<div><div id="highlighter_744298" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;h2&gt;Participants&lt;/h2&gt;</code></div><div class="line number2 index1 alt1"><code class="js plain">Here are the participants:</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"template: { name: 'person-template', data: buyer }"</code><code class="js plain">&gt;&lt;/div&gt;</code></div><div class="line number4 index3 alt1"><code class="js plain">&lt;div data-bind=</code><code class="js string">"template: { name: 'person-template', data: seller }"</code><code class="js plain">&gt;&lt;/div&gt;</code></div><div class="line number5 index4 alt2">&nbsp;</div><div class="line number6 index5 alt1"><code class="js plain">&lt;script type=</code><code class="js string">"text/html"</code> <code class="js plain">id=</code><code class="js string">"person-template"</code><code class="js plain">&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;h3 data-bind=</code><code class="js string">"text: name"</code><code class="js plain">&gt;&lt;/h3&gt;</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;p&gt;Credits: &lt;span data-bind=</code><code class="js string">"text: credits"</code><code class="js plain">&gt;&lt;/span&gt;&lt;/p&gt;</code></div><div class="line number9 index8 alt2"><code class="js plain">&lt;/script&gt;</code></div><div class="line number10 index9 alt1">&nbsp;</div><div class="line number11 index10 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">function</code> <code class="js plain">MyViewModel() {</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">this</code><code class="js plain">.buyer = { name: </code><code class="js string">'Franklin'</code><code class="js plain">, credits: 250 };</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">this</code><code class="js plain">.seller = { name: </code><code class="js string">'Mario'</code><code class="js plain">, credits: 5800 };</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings(</code><code class="js keyword">new</code> <code class="js plain">MyViewModel());</code></div><div class="line number17 index16 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>In this example, the <code>person-template</code> markup is used twice: once for <code>buyer</code>, and once for <code>seller</code>. Notice that the template markup is wrapped in a <code>&lt;script type="text/html"&gt;</code> — the dummy <code>type</code> attribute is necessary to ensure that the markup is not executed as JavaScript, and Knockout does not attempt to apply bindings to that markup except when it is being used as a template.</p>
+
+<p>It’s not very often that you’ll need to use named templates, but on occasion it can help to minimise duplication of markup.</p>
+
+<h3 id="note_2_using_the_foreach_option_with_a_named_template">Note 2: Using the “foreach” option with a named template</h3>
+
+<p>If you want the equivalent of a <code>foreach</code> binding, but using a named template, you can do so in the natural way:</p>
+
+<div><div id="highlighter_374995" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;h2&gt;Participants&lt;/h2&gt;</code></div><div class="line number2 index1 alt1"><code class="js plain">Here are the participants:</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"template: { name: 'person-template', foreach: people }"</code><code class="js plain">&gt;&lt;/div&gt;</code></div><div class="line number4 index3 alt1">&nbsp;</div><div class="line number5 index4 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/html"</code> <code class="js plain">id=</code><code class="js string">"person-template"</code><code class="js plain">&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;h3 data-bind=</code><code class="js string">"text: name"</code><code class="js plain">&gt;&lt;/h3&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;p&gt;Credits: &lt;span data-bind=</code><code class="js string">"text: credits"</code><code class="js plain">&gt;&lt;/span&gt;&lt;/p&gt;</code></div><div class="line number8 index7 alt1"><code class="js plain">&lt;/script&gt;</code></div><div class="line number9 index8 alt2">&nbsp;</div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;</code><code class="js keyword">function</code> <code class="js plain">MyViewModel() {</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">this</code><code class="js plain">.people = [</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Franklin'</code><code class="js plain">, credits: 250 },</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Mario'</code><code class="js plain">, credits: 5800 }</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">]</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;</code><code class="js plain">}</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;</code><code class="js plain">ko.applyBindings(</code><code class="js keyword">new</code> <code class="js plain">MyViewModel());</code></div></div></td></tr></tbody></table></div></div>
+
+<p>This gives the same result as embedding an anonymous template directly inside the element to which you use <code>foreach</code>, i.e.:</p>
+
+<div><div id="highlighter_984017" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">"foreach: people"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;h3 data-bind=</code><code class="js string">"text: name"</code><code class="js plain">&gt;&lt;/h3&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;p&gt;Credits: &lt;span data-bind=</code><code class="js string">"text: credits"</code><code class="js plain">&gt;&lt;/span&gt;&lt;/p&gt;</code></div><div class="line number4 index3 alt1"><code class="js plain">&lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<h3 id="note_3_using_as_to_give_an_alias_to_foreach_items">Note 3: Using “as” to give an alias to “foreach” items</h3>
+
+<p>When nesting <code>foreach</code> templates, it’s often useful to refer to items at higher levels in the hierarchy. One way to do this is to refer to <code>$parent</code> or other <a href="binding-context.html">binding context</a> variables in your bindings.</p>
+
+<p>A simpler and more elegant option, however, is to use <code>as</code> to declare a name for your iteration variables. For example:</p>
+
+<div><div id="highlighter_659244" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"template: { name: 'employeeTemplate',</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">foreach: employees,</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">as: 'employee' }"</code><code class="js plain">&gt;&lt;/ul&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Notice the string value <code>'employee'</code> associated with <code>as</code>. Now anywhere inside this <code>foreach</code> loop, bindings in your child templates will be able to refer to <code>employee</code> to access the employee object being rendered.</p>
+
+<p>This is mainly useful if you have multiple levels of nested <code>foreach</code> blocks, because it gives you an unambiguous way to refer to any named item declared at a higher level in the hierarchy. Here’s a complete example, showing how <code>season</code> can be referenced while rendering a <code>month</code>:</p>
+
+<div><div id="highlighter_383065" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">"template: { name: 'seasonTemplate', foreach: seasons, as: 'season' }"</code><code class="js plain">&gt;&lt;/ul&gt;</code></div><div class="line number2 index1 alt1">&nbsp;</div><div class="line number3 index2 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/html"</code> <code class="js plain">id=</code><code class="js string">"seasonTemplate"</code><code class="js plain">&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;strong data-bind=</code><code class="js string">"text: name"</code><code class="js plain">&gt;&lt;/strong&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;ul data-bind=</code><code class="js string">"template: { name: 'monthTemplate', foreach: months, as: 'month' }"</code><code class="js plain">&gt;&lt;/ul&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number8 index7 alt1"><code class="js plain">&lt;/script&gt;</code></div><div class="line number9 index8 alt2">&nbsp;</div><div class="line number10 index9 alt1"><code class="js plain">&lt;script type=</code><code class="js string">"text/html"</code> <code class="js plain">id=</code><code class="js string">"monthTemplate"</code><code class="js plain">&gt;</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;span data-bind=</code><code class="js string">"text: month"</code><code class="js plain">&gt;&lt;/span&gt;</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">is </code><code class="js keyword">in</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;span data-bind=</code><code class="js string">"text: season.name"</code><code class="js plain">&gt;&lt;/span&gt;</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number16 index15 alt1"><code class="js plain">&lt;/script&gt;</code></div><div class="line number17 index16 alt2">&nbsp;</div><div class="line number18 index17 alt1"><code class="js plain">&lt;script&gt;</code></div><div class="line number19 index18 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number20 index19 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">seasons: ko.observableArray([</code></div><div class="line number21 index20 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Spring'</code><code class="js plain">, months: [ </code><code class="js string">'March'</code><code class="js plain">, </code><code class="js string">'April'</code><code class="js plain">, </code><code class="js string">'May'</code> <code class="js plain">] },</code></div><div class="line number22 index21 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Summer'</code><code class="js plain">, months: [ </code><code class="js string">'June'</code><code class="js plain">, </code><code class="js string">'July'</code><code class="js plain">, </code><code class="js string">'August'</code> <code class="js plain">] },</code></div><div class="line number23 index22 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Autumn'</code><code class="js plain">, months: [ </code><code class="js string">'September'</code><code class="js plain">, </code><code class="js string">'October'</code><code class="js plain">, </code><code class="js string">'November'</code> <code class="js plain">] },</code></div><div class="line number24 index23 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Winter'</code><code class="js plain">, months: [ </code><code class="js string">'December'</code><code class="js plain">, </code><code class="js string">'January'</code><code class="js plain">, </code><code class="js string">'February'</code> <code class="js plain">] }</code></div><div class="line number25 index24 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">])</code></div><div class="line number26 index25 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number27 index26 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings(viewModel);</code></div><div class="line number28 index27 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Tip: Remember to pass a <em>string literal value</em> to as (e.g., <code>as: 'season'</code>, <em>not</em> <code>as: season</code>), because you are giving a name for a new variable, not reading the value of a variable that already exists.</p>
+
+<h3 id="note_4_using_afterrender_afteradd_and_beforeremove">Note 4: Using “afterRender”, “afterAdd”, and “beforeRemove”</h3>
+
+<p>Sometimes you might want to run custom post-processing logic on the DOM elements generated by your templates. For example, if you’re using a JavaScript widgets library such as jQuery UI, you might want to intercept your templates’ output so that you can run jQuery UI commands on it to transform some of the rendered elements into date pickers, sliders, or anything else.</p>
+
+<p>Generally, the best way to perform such post-processing on DOM elements is to write a <a href="custom-bindings.html">custom binding</a>, but if you really just want to access the raw DOM elements emitted by a template, you can use <code>afterRender</code>.</p>
+
+<p>Pass a function reference (either a function literal, or give the name of a function on your view model), and Knockout will invoke it immediately after rendering or re-rendering your template. If you’re using <code>foreach</code>, Knockout will invoke your <code>afterRender</code> callback for each item added to your observable array. For example,</p>
+
+<div><div id="highlighter_761033" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;div data-bind=</code><code class="js string">'template: { name: "personTemplate",</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">data: myData,</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">afterRender: myPostProcessingLogic }'</code><code class="js plain">&gt; &lt;/div&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>… and define a corresponding function on your view model (i.e., the object that contains <code>myData</code>):</p>
+
+<div><div id="highlighter_626751" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">viewModel.myPostProcessingLogic = </code><code class="js keyword">function</code><code class="js plain">(elements) {</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js comments">// "elements" is an array of DOM nodes just rendered by the template</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js comments">// You can add custom post-processing logic here</code></div><div class="line number4 index3 alt1"><code class="js plain">}</code></div></div></td></tr></tbody></table></div></div>
+
+<p>If you are using <code>foreach</code> and only want to be notified about elements that are specifically being added or are being removed, you can use <code>afterAdd</code> and <code>beforeRemove</code> instead. For details, see documentation for the <a href="foreach-binding.html"><code>foreach</code> binding</a>.</p>
+
+<h3 id="note_5_dynamically_choosing_which_template_is_used">Note 5: Dynamically choosing which template is used</h3>
+
+<p>If you have multiple named templates, you can pass an observable for the <code>name</code> option. As the observable’s value is updated, the element’s contents will be re-rendered using the appropriate template. Alternatively, you can pass a callback function to determine which template to use. If you are using the <code>foreach</code> template mode, Knockout will evaluate the function for each item in your array, passing that item’s value as the only argument. Otherwise, the function will be given the <code>data</code> option’s value or fall back to providing your whole current model object.</p>
+
+<p>For example,</p>
+
+<div><div id="highlighter_844295" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;ul data-bind=</code><code class="js string">'template: { name: displayMode,</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js string">foreach: employees }'</code><code class="js plain">&gt; &lt;/ul&gt;</code></div><div class="line number3 index2 alt2">&nbsp;</div><div class="line number4 index3 alt1"><code class="js plain">&lt;script&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">employees: ko.observableArray([</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">"Kari"</code><code class="js plain">, active: ko.observable(</code><code class="js keyword">true</code><code class="js plain">) },</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">"Brynn"</code><code class="js plain">, active: ko.observable(</code><code class="js keyword">false</code><code class="js plain">) },</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">"Nora"</code><code class="js plain">, active: ko.observable(</code><code class="js keyword">false</code><code class="js plain">) }</code></div><div class="line number10 index9 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">]),</code></div><div class="line number11 index10 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">displayMode: </code><code class="js keyword">function</code><code class="js plain">(employee) {</code></div><div class="line number12 index11 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js comments">// Initially "Kari" uses the "active" template, while the others use "inactive"</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">return</code> <code class="js plain">employee.active() ? </code><code class="js string">"active"</code> <code class="js plain">: </code><code class="js string">"inactive"</code><code class="js plain">;</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">};</code></div><div class="line number16 index15 alt1">&nbsp;</div><div class="line number17 index16 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js comments">// ... then later ...</code></div><div class="line number18 index17 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">viewModel.employees()[1].active(</code><code class="js keyword">true</code><code class="js plain">); </code><code class="js comments">// Now "Brynn" is also rendered using the "active" template.</code></div><div class="line number19 index18 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>If your function references observable values, then the binding will update whenever any of those values change. This will cause the data to be re-rendered using the appropriate template.</p>
+
+<p>If your function accepts a second parameter, then it will receive the entire <a href="binding-context.html">binding context</a>. You can then access <code>$parent</code> or any other <a href="binding-context.html">binding context</a> variable when dynamically choosing a template. For example, you could amend the preceding code snippet as follows:</p>
+
+<div><div id="highlighter_957657" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">displayMode: </code><code class="js keyword">function</code><code class="js plain">(employee, bindingContext) {</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js comments">// Now return a template name string based on properties of employee or bindingContext</code></div><div class="line number3 index2 alt2"><code class="js plain">}</code></div></div></td></tr></tbody></table></div></div>
+
+<h3 id="note_6_using_jquerytmpl_an_external_stringbased_template_engine">Note 6: Using jQuery.tmpl, an external string-based template engine</h3>
+
+<p>In the vast majority of cases, Knockout’s native templating and the <code>foreach</code>, <code>if</code>, <code>with</code> and other control flow bindings will be all you need to construct an arbitrarily sophisticated UI. But in case you wish to integrate with an external templating library, such as the <a href="http://documentcloud.github.com/underscore/#template">Underscore template engine</a> or <a href="http://api.jquery.com/jquery.tmpl/">jquery.tmpl</a>, Knockout offers a way to do it.</p>
+
+<p>By default, Knockout comes with support for <a href="http://api.jquery.com/jquery.tmpl/">jquery.tmpl</a>. To use it, you need to reference the following libraries, in this order:</p>
+
+<div><div id="highlighter_982480" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;!-- First jQuery --&gt;&nbsp;&nbsp;&nbsp;&nbsp; &lt;script src=</code><code class="js string">"<a href="http://code.jquery.com/jquery-1.7.1.min.js">http://code.jquery.com/jquery-1.7.1.min.js</a>"</code><code class="js plain">&gt;&lt;/script&gt;</code></div><div class="line number2 index1 alt1"><code class="js plain">&lt;!-- Then jQuery.tmpl --&gt; &lt;script src=</code><code class="js string">"jquery.tmpl.js"</code><code class="js plain">&gt;&lt;/script&gt;</code></div><div class="line number3 index2 alt2"><code class="js plain">&lt;!-- Then Knockout --&gt;&nbsp;&nbsp;&nbsp; &lt;script src=</code><code class="js string">"knockout-x.y.z.js"</code><code class="js plain">&gt;&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Then, you can use jQuery.tmpl syntax in your templates. For example,</p>
+
+<div><div id="highlighter_590756" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;h1&gt;People&lt;/h1&gt;</code></div><div class="line number2 index1 alt1"><code class="js plain">&lt;div data-bind=</code><code class="js string">"template: 'peopleList'"</code><code class="js plain">&gt;&lt;/div&gt;</code></div><div class="line number3 index2 alt2">&nbsp;</div><div class="line number4 index3 alt1"><code class="js plain">&lt;script type=</code><code class="js string">"text/html"</code> <code class="js plain">id=</code><code class="js string">"peopleList"</code><code class="js plain">&gt;</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{{each people}}</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;p&gt;</code></div><div class="line number7 index6 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;b&gt;${name}&lt;/b&gt; is ${age} years old</code></div><div class="line number8 index7 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/p&gt;</code></div><div class="line number9 index8 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{{/each}}</code></div><div class="line number10 index9 alt1"><code class="js plain">&lt;/script&gt;</code></div><div class="line number11 index10 alt2">&nbsp;</div><div class="line number12 index11 alt1"><code class="js plain">&lt;script type=</code><code class="js string">"text/javascript"</code><code class="js plain">&gt;</code></div><div class="line number13 index12 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js keyword">var</code> <code class="js plain">viewModel = {</code></div><div class="line number14 index13 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">people: ko.observableArray([</code></div><div class="line number15 index14 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Rod'</code><code class="js plain">, age: 123 },</code></div><div class="line number16 index15 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">{ name: </code><code class="js string">'Jane'</code><code class="js plain">, age: 125 },</code></div><div class="line number17 index16 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">])</code></div><div class="line number18 index17 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">}</code></div><div class="line number19 index18 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">ko.applyBindings(viewModel);</code></div><div class="line number20 index19 alt1"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>This works because <code>{{each ...}}</code> and <code>${ ... }</code> are jQuery.tmpl syntaxes. What’s more, it’s trivial to nest templates: because you can use data-bind attributes from inside a template, you can simply put a <code>data-bind="template: ..."</code> inside a template to render a nested one.</p>
+
+<p>Please note that, as of December 2011, jQuery.tmpl is no longer under active development. We recommend the use of Knockout’s native DOM-based templating (i.e., the <code>foreach</code>, <code>if</code>, <code>with</code>, etc. bindings) instead of jQuery.tmpl or any other string-based template engine.</p>
+
+<h3 id="note_7_using_the_underscorejs_template_engine">Note 7: Using the Underscore.js template engine</h3>
+
+<p>The <a href="http://documentcloud.github.com/underscore/#template">Underscore.js template engine</a> by default uses ERB-style delimiters (<code>&lt;%= ... %&gt;</code>). Here’s how the preceding example’s template might look with Underscore:</p>
+
+<div><div id="highlighter_369687" class="syntaxhighlighter nogutter  js"><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="js plain">&lt;script type=</code><code class="js string">"text/html"</code> <code class="js plain">id=</code><code class="js string">"peopleList"</code><code class="js plain">&gt;</code></div><div class="line number2 index1 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;% _.each(people(), </code><code class="js keyword">function</code><code class="js plain">(person) { %&gt;</code></div><div class="line number3 index2 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;li&gt;</code></div><div class="line number4 index3 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;b&gt;&lt;%= person.name %&gt;&lt;/b&gt; is &lt;%= person.age %&gt; years old</code></div><div class="line number5 index4 alt2"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;/li&gt;</code></div><div class="line number6 index5 alt1"><code class="js spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="js plain">&lt;% }) %&gt;</code></div><div class="line number7 index6 alt2"><code class="js plain">&lt;/script&gt;</code></div></div></td></tr></tbody></table></div></div>
+
+<p>Here’s <a href="http://jsfiddle.net/6pStz/">a simple implementation of integrating Underscore templates with Knockout</a>. The integration code is just 16 lines long, but it’s enough to support Knockout <code>data-bind</code> attributes (and hence nested templates) and Knockout <a href="binding-context.html">binding context</a> variables (<code>$parent</code>, <code>$root</code>, etc.).</p>
+
+<p>If you’re not a fan of the <code>&lt;%= ... %&gt;</code> delimiters, you can configure the Underscore template engine to use any other delimiter characters of your choice.</p>
+
+<h3 id="dependencies">Dependencies</h3>
+
+<ul>
+<li><strong>Native templating</strong> does not require any library other than Knockout itself</li>
+
+<li><strong>String-based templating</strong> works only once you’ve referenced a suitable template engine, such as jQuery.tmpl or the Underscore template engine.</li>
+</ul>
+
+

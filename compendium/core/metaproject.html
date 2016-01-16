@@ -1,0 +1,21 @@
+<div id="metaproject-core" data-bind="event.activate: test">
+
+    Application and Loaders, include directive
+</div>
+
+        <script type="text/javascript">
+
+
+            jQuery(function($) {
+
+                var vm = {
+                    test: function() {
+                        console.log(arguments);
+                    }
+                };
+
+                $('#metaproject-core').applyBindings(vm); //on('activate', function() {
+                    //console.log(arguments);
+                //});
+            });
+        </script>

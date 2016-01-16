@@ -1,0 +1,784 @@
+<!doctype html>
+<html>
+<head>
+
+    <!-- elRTE/elFinder -->
+    <link rel="stylesheet" href="../bower_components/elrte/css/elrte.min.css"/>
+    <link rel="stylesheet" href="../bower_components/elrte/css/elfinder.min.css"/>
+    <script type="text/javascript"
+            src="../bower_components/elrte/js/elrte.min.js"></script>
+    <script type="text/javascript"
+            src="../bower_components/elrte/js/elfinder.min.js"></script>
+    <script type="text/javascript"
+            src="../js/metaproject-ui.elrte.js"></script>
+
+    <!-- elRTE/elFinder translations (OPTIONAL) -->
+    <script src="../bower_components/elrte/js/i18n/elfinder.pt_BR.js"></script>
+    <script src="../bower_components/elrte/js/i18n/elrte.pt_BR.js"></script>
+
+
+</head>
+<body>
+<div id="ui-elrte">
+    <div class="page-header"><h1>elRTE and elFinder</h1></div>
+
+    <h2>Dependencies</h2>
+
+    <ul>
+        <li>vendor/elrte/js/elrte.min.js</li>
+        <li>vendor/elrte/js/elfinder.min.js</li>
+        <li>vendor/elrte/css/elrte.min.css</li>
+        <li>vendor/elrte/css/elfinder.min.css</li>
+    </ul>
+
+    <h2>For internationalization</h2>
+    <ul>
+        <li>vendor/elrte/js/i18n/elrte.LANG.js</li>
+        <li>vendor/elrte/js/i18n/elfinder.LANG.js</li>
+    </ul>
+
+    <p>Examples include the portuguese brazilian language.</p>
+
+    <form class="form-horizontal">
+
+        <fieldset>
+            <legend>elRTE</legend>
+
+            <p>elRTE is an open-source WYSIWYG HTML-editor. It features rich text editing, options for changing its
+                appearance, style and many more.</p>
+
+            <p>You can instantiate an editor using the <code>elrte</code> binding on a textarea, its value will be
+                automatically synchronized with the editor contents.</p>
+
+            <div class="control-group">
+                <label class="control-label">Example Editor</label>
+
+                <div class="controls">
+                    <p><code>
+                        &lt;textarea data-bind="value: content, elrte: rteOptions"&gt;&lt;/textarea&gt;
+                    </code></p>
+
+                    <textarea data-bind="value: content, elrte: rteOptions"></textarea>
+                </div>
+
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Configuration Options</label>
+
+                <div class="controls">
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Option</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>doctype</td>
+                            <td>String</td>
+                            <td>DocType of editor window (iframe). Default - <strong>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML
+                                4.01 Transitional//EN"&gt;</strong></td>
+                        </tr>
+                        <tr>
+                            <td>cssClass</td>
+                            <td>String</td>
+                            <td>CSS class for editor</td>
+                        </tr>
+                        <tr>
+                            <td>cssfiles</td>
+                            <td>Array</td>
+                            <td>Array of css files which will be included in editor (iframe)</td>
+                        </tr>
+                        <tr>
+                            <td>absoluteURLs</td>
+                            <td>Boolean</td>
+                            <td>Make image URLs absolute</td>
+                        </tr>
+                        <tr>
+                            <td>allowSource</td>
+                            <td>Boolean</td>
+                            <td>Allow edit in HTML</td>
+                        </tr>
+                        <tr>
+                            <td>lang</td>
+                            <td>String</td>
+                            <td>Interface language (requires inclusion of language file), default - English</td>
+                        </tr>
+                        <tr>
+                            <td>styleWithCSS</td>
+                            <td>Boolean</td>
+                            <td>If true - text will be formated using span-tag with style attribute, else - semantic tags like
+                                strong, em and other
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>height</td>
+                            <td>Number</td>
+                            <td>Height of editor window in pixels</td>
+                        </tr>
+                        <tr>
+                            <td>width</td>
+                            <td>Number</td>
+                            <td>Width of editor window in pixels</td>
+                        </tr>
+                        <tr>
+                            <td>fmAllow</td>
+                            <td>Boolean</td>
+                            <td>Allow use of file manager</td>
+                        </tr>
+                        <tr>
+                            <td>fmOpen</td>
+                            <td>Function(callback)</td>
+                            <td>Function which will be called to open file manager. Argument <em>callback</em> - function which
+                                editor passes to file manager on open. File manager must call this function with using URL of
+                                selected file as argument
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>toolbar</td>
+                            <td>String</td>
+                            <td>Toolbar to use</td>
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+            <div class="control-group">
+                <label class="control-label">Custom toolbar</label>
+
+                <div class="controls">
+
+                    The following toolbars are predefined:
+                    <ul>
+                        <li><strong>tiny</strong>: only buttons to change text style (bold, italic, underline, strike,
+                            subscript, superscript)
+                        </li>
+                        <li><strong>compact</strong>: the same as <em>tiny</em> + save, undo/redo, text alignment, list,
+                            link,
+                            fullscreen
+                        </li>
+                        <li><strong>normal</strong>: <em>compact</em> + copy/paste, colors, paddings, block-elemet,
+                            images
+                        </li>
+                        <li><strong>complete</strong>: <em>normal</em> + text size, style and font formating</li>
+                        <li><strong>maxi</strong>: complete + tables</li>
+                    </ul>
+
+                    <h3 id="Custom-toolbar"><a href="#Custom-toolbar" class="wiki-anchor">&para;</a></h3>
+
+                    <p>You can customize your toolbar. <em>Toolbar</em> contains <em>panels</em> and panels contains
+                        <em>buttons</em>. For list of available toolbars/panels/buttons see
+                        <em>src/elrte/js/elRTE.options.js</em> file</p>
+
+                    <p>Example:</p><pre><code class="javascript syntaxhl"><span class="CodeRay"><span
+                        class="no"> 1</span> elRTE.prototype.options.panels.web2pyPanel = [
+<span class="no"> 2</span>     <span class="s"><span class="dl">'</span><span class="k">bold</span><span
+                            class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span
+                            class="k">italic</span><span class="dl">'</span></span>, <span class="s"><span
+                            class="dl">'</span><span class="k">underline</span><span class="dl">'</span></span>, <span
+                            class="s"><span class="dl">'</span><span class="k">forecolor</span><span class="dl">'</span></span>, <span
+                            class="s"><span class="dl">'</span><span class="k">justifyleft</span><span
+                            class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span
+                            class="k">justifyright</span><span class="dl">'</span></span>,
+<span class="no"> 3</span>     <span class="s"><span class="dl">'</span><span class="k">justifycenter</span><span
+                            class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span
+                            class="k">justifyfull</span><span class="dl">'</span></span>, <span class="s"><span
+                            class="dl">'</span><span class="k">formatblock</span><span class="dl">'</span></span>, <span
+                            class="s"><span class="dl">'</span><span class="k">insertorderedlist</span><span class="dl">'</span></span>, <span
+                            class="s"><span class="dl">'</span><span class="k">insertunorderedlist</span><span
+                            class="dl">'</span></span>,
+<span class="no"> 4</span>     <span class="s"><span class="dl">'</span><span class="k">link</span><span
+                            class="dl">'</span></span>, <span class="s"><span class="dl">'</span><span
+                            class="k">image</span><span class="dl">'</span></span>, <span class="s"><span
+                            class="dl">'</span><span class="k">flash</span><span class="dl">'</span></span>
+<span class="no"> 5</span> ];
+<span class="no"> 6</span> elRTE.prototype.options.toolbars.web2pyToolbar = [<span class="s"><span
+                            class="dl">'</span><span class="k">web2pyPanel</span><span class="dl">'</span></span>, <span
+                            class="s"><span class="dl">'</span><span class="k">tables</span><span
+                            class="dl">'</span></span>];
+<span class="no"> 7</span> self.rteOptions = {
+<span class="no"> 8</span>     <span class="ke">toolbar</span>  : <span class="s"><span class="dl">'</span><span
+                            class="k">web2pyToolbar</span><span class="dl">'</span></span>,
+<span class="no"> 9</span>     <span class="c">/* ...snip... */</span>
+<span class="no"><strong>10</strong></span> }
+</span></code>
+                </pre>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>elFinder</legend>
+
+            <p>elFinder is an Open-source file manager for web, which integrates seamlessly into elRTE</p>
+
+            <p>You can instantiate a file manager using the <code>elfinder</code> binding on a div.</p>
+
+            <div class="control-group">
+                <label class="control-label">Example Filemanager</label>
+
+                <div class="controls">
+
+                    <code>
+                        &lt;div data-bind="elfinder: finderOptions"&gt;&lt;/div&gt;
+                    </code>
+
+                    <div data-bind="elfinder: finderOptions"></div>
+                </div>
+
+            </div>
+            <div class="control-group">
+                <label class="control-label">Options</label>
+                <div class="controls">
+                <p><a name="wiki-url"></a></p>
+
+                <h2>url</h2>
+
+                <p>Connector URL. This is the only required option. Can be absolute or relative</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>''</code></p>
+
+                <p><a name="wiki-lang"></a></p>
+
+                <h2>lang</h2>
+
+                <p>The interface lang to use. Can currently be one of the following: <code>ar</code>, <code>bg</code>, <code>ca</code>, <code>cs</code>, <code>de</code>, <code>en</code>, <code>es</code>, <code>fr</code>, <code>hu</code>, <code>jp</code>, <code>nl</code>, <code>pl</code>, <code>pt_BR</code>, <code>ru</code>, <code>zh_CN</code>. You will also need to include corresponding language file from <code>js/i18n</code> directory.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>'en'</code></p>
+
+                <p><a name="wiki-customData"></a></p>
+
+                <h2>customData</h2>
+
+                <p>Data to append to all requests and to upload files. These can be any extra data that must be passed to the connector script. For example, you could use these to pass authentication information.</p>
+
+                <p><strong>Data type:</strong> object<br><strong>Default value:</strong> <code>{}</code></p>
+
+                <p><a name="wiki-cssClass"></a></p>
+
+                <h2>cssClass</h2>
+
+                <p>Additional css class for filemanager node. This will be applied to the main filemanager container.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>''</code></p>
+
+                <p><a name="wiki-rememberLastDir"></a></p>
+
+                <h2>rememberLastDir</h2>
+
+                <p>Remeber last opened dir to open it after reload or in next session. This is stored in browser cookie.</p>
+
+                <p><strong>Data type:</strong> boolean<br><strong>Default value:</strong> <code>true</code></p>
+
+                <p><a name="wiki-onlyMimes"></a></p>
+
+                <h2>onlyMimes</h2>
+
+                <p>Display only certain files based on their mime type.</p>
+
+                <p><strong>Data type:</strong> array<br><strong>Default value:</strong> <code>[]</code><br><strong>Example:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">onlyMimes</span><span class="o">:</span> <span class="p">[</span><span class="s2">"image"</span><span class="p">]</span> <span class="c1">// display all images</span>
+<span class="nx">onlyMimes</span><span class="o">:</span> <span class="p">[</span><span class="s2">"image/png"</span><span class="p">,</span> <span class="s2">"application/x-shockwave-flash"</span><span class="p">]</span> <span class="c1">// display png and flash</span>
+</pre></div>
+
+                <p><a name="wiki-validName"></a></p>
+
+                <h2>validName</h2>
+
+                <p>Used to validate file names. By default, no empty names or '..' allowed.</p>
+
+                <p><strong>Data type:</strong> boolean, regexp, or function<br><strong>Default value:</strong> <code>false</code><br><strong>Example:</strong></p>
+
+                <div class="highlight"><pre><span class="c1">// disable names with spaces</span>
+<span class="nx">validName</span><span class="o">:</span> <span class="sr">/^[^\s]$/</span>
+</pre></div>
+
+                <p><a name="wiki-defaultView"></a></p>
+
+                <h2>defaultView</h2>
+
+                <p>Default view mode. Can be <code>icons</code> and <code>list</code>.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>'icons'</code>  </p>
+
+                <p><a name="wiki-sort"></a></p>
+
+                <h2>sort</h2>
+
+                <p>How to sort files in a directory view.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>'nameDirsFirst'</code><br><strong>Available options:</strong><br><code>'nameDirsFirst'</code> - sort by name, directory first<br><code>'kindDirsFirst'</code> - sort by kind, name, directory first<br><code>'sizeDirsFirst'</code> - sort by size, name, directory first<br><code>'name'</code> - sort by name<br><code>'kind'</code> - sort by kind, name<br><code>'size'</code> - sort by size, name</p>
+
+                <p><a name="wiki-sortDirect"></a></p>
+
+                <h2>sortDirect</h2>
+
+                <p>Sort order.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>'asc'</code><br><strong>Available options:</strong><br><code>'asc'</code>  - ascent sorting<br><code>'desc'</code> - descent sorting</p>
+
+                <p><a name="wiki-width"></a></p>
+
+                <h2>width</h2>
+
+                <p>The width of the elFinder main interface.</p>
+
+                <p><strong>Data type:</strong> string or number<br><strong>Default value:</strong> <code>'auto'</code><br><strong>Available options:</strong> Can be the string <code>'auto'</code> or any number measurement (in pixels).</p>
+
+                <p><a name="wiki-height"></a></p>
+
+                <h2>height</h2>
+
+                <p>The height of the elFinder main interface (in pixels).</p>
+
+                <p><strong>Data type:</strong> number<br><strong>Default value:</strong> <code>400</code></p>
+
+                <p><a name="wiki-clientFormatDate"></a></p>
+
+                <h2>clientFormatDate</h2>
+
+                <p>Format dates using client. If set to false - backend date format will be used.</p>
+
+                <p><strong>Data type:</strong> boolean<br><strong>Default value:</strong> <code>true</code></p>
+
+                <p><a name="wiki-UTCDate"></a></p>
+
+                <h2>UTCDate</h2>
+
+                <p>Show datetime in UTC timezone. Requires <code>clientFormatDate</code> set to <code>true</code>.</p>
+
+                <p><strong>Data type:</strong> boolean<br><strong>Default value:</strong> <code>false</code></p>
+
+                <p><a name="wiki-dateFormat"></a></p>
+
+                <h2>dateFormat</h2>
+
+                <p>File modification datetime format. Value from selected language is used by default.<br>
+                    Set format here to overwrite it. Format is set in PHP <a href="http://php.net/date">date</a> maner</p>
+
+                <p><strong>Data type:</strong> String<br><strong>Default value:</strong> <code>''</code><br><strong>Example:</strong> <code>dateFormat : 'M d, Y h:i A'</code> will return <code>Mar 13, 2012 05:27 PM</code></p>
+
+                <p><a name="wiki-fancyDateFormat"></a></p>
+
+                <h2>fancyDateFormat</h2>
+
+                <p>File modification datetime format for last two days (today, yesterday).<br>
+                    Same syntax as for <code>dateFormat</code>. Use <code>$1</code> for "Today" and "Yesterday" placeholder.</p>
+
+                <p><strong>Data type:</strong> String<br><strong>Default value:</strong> <code>''</code><br><strong>Example:</strong> <code>fancyDateFormat : '$1 H:m:i'</code> will return <code>Today 21:59:34</code></p>
+
+                <p><a name="wiki-commands"></a></p>
+
+                <h2>commands</h2>
+
+                <p>Active commands list. You can set any list of enabled commands here if some minimal required commands will be missed here, elFinder will add them to list automatically.</p>
+
+                <p><strong>Data type:</strong> array<br><strong>Default value:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">commands</span> <span class="o">:</span> <span class="p">[</span>
+	<span class="s1">'open'</span><span class="p">,</span> <span class="s1">'reload'</span><span class="p">,</span> <span class="s1">'home'</span><span class="p">,</span> <span class="s1">'up'</span><span class="p">,</span> <span class="s1">'back'</span><span class="p">,</span> <span class="s1">'forward'</span><span class="p">,</span> <span class="s1">'getfile'</span><span class="p">,</span> <span class="s1">'quicklook'</span><span class="p">,</span>
+	<span class="s1">'download'</span><span class="p">,</span> <span class="s1">'rm'</span><span class="p">,</span> <span class="s1">'duplicate'</span><span class="p">,</span> <span class="s1">'rename'</span><span class="p">,</span> <span class="s1">'mkdir'</span><span class="p">,</span> <span class="s1">'mkfile'</span><span class="p">,</span> <span class="s1">'upload'</span><span class="p">,</span> <span class="s1">'copy'</span><span class="p">,</span>
+	<span class="s1">'cut'</span><span class="p">,</span> <span class="s1">'paste'</span><span class="p">,</span> <span class="s1">'edit'</span><span class="p">,</span> <span class="s1">'extract'</span><span class="p">,</span> <span class="s1">'archive'</span><span class="p">,</span> <span class="s1">'search'</span><span class="p">,</span> <span class="s1">'info'</span><span class="p">,</span> <span class="s1">'view'</span><span class="p">,</span> <span class="s1">'help'</span><span class="p">,</span>
+	<span class="s1">'resize'</span><span class="p">,</span> <span class="s1">'sort'</span>
+<span class="p">]</span>
+</pre></div>
+
+                <p><strong>Example:</strong></p>
+
+                <div class="highlight"><pre><span class="c1">// say you want to disable only a couple of commands</span>
+<span class="kd">var</span> <span class="nx">myCommands</span> <span class="o">=</span> <span class="nx">elFinder</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_options</span><span class="p">.</span><span class="nx">commands</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">disabled</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'extract'</span><span class="p">,</span> <span class="s1">'archive'</span><span class="p">];</span>
+<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">disabled</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">cmd</span><span class="p">)</span> <span class="p">{</span>
+	<span class="p">(</span><span class="nx">idx</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">inArray</span><span class="p">(</span><span class="nx">cmd</span><span class="p">,</span> <span class="nx">myCommands</span><span class="p">))</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">myCommands</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">idx</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+	<span class="nx">url</span> <span class="o">:</span> <span class="s1">'php/connector.php'</span><span class="p">,</span>
+	<span class="nx">commands</span> <span class="o">:</span> <span class="nx">myCommands</span>
+<span class="p">}</span>
+</pre></div>
+
+                <p><a name="wiki-commandsOptions"></a></p>
+
+                <h2>commandsOptions</h2>
+
+                <p>Commands options used to interact with external callbacks, editors, plugins.</p>
+
+                <p><strong>Data type:</strong> object<br><strong>Default value:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">commandsOptions</span> <span class="o">:</span> <span class="p">{</span>
+	<span class="c1">// configure value for "getFileCallback" used for editor integration</span>
+	<span class="nx">getfile</span> <span class="o">:</span> <span class="p">{</span>
+		<span class="c1">// send only URL or URL+path if false</span>
+		<span class="nx">onlyURL</span>  <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+
+		<span class="c1">// allow to return multiple files info</span>
+		<span class="nx">multiple</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+		<span class="c1">// allow to return folders info</span>
+		<span class="nx">folders</span>  <span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+		<span class="c1">// action after callback (close/destroy)</span>
+		<span class="nx">oncomplete</span> <span class="o">:</span> <span class="s1">''</span>
+	<span class="p">},</span>
+
+	<span class="c1">// "upload" command options.</span>
+	<span class="nx">upload</span> <span class="o">:</span> <span class="p">{</span>
+		<span class="nx">ui</span> <span class="o">:</span> <span class="s1">'uploadbutton'</span>
+	<span class="p">},</span>
+
+	<span class="c1">// "quicklook" command options. For additional extensions</span>
+	<span class="nx">quicklook</span> <span class="o">:</span> <span class="p">{</span>
+		<span class="nx">autoplay</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+		<span class="nx">jplayer</span>  <span class="o">:</span> <span class="s1">'extensions/jplayer'</span>
+	<span class="p">},</span>
+
+	<span class="c1">// configure custom editor for file editing command</span>
+	<span class="nx">edit</span> <span class="o">:</span> <span class="p">{</span>
+		<span class="c1">// list of allowed mimetypes to edit</span>
+		<span class="c1">// if empty - any text files can be edited</span>
+		<span class="nx">mimes</span> <span class="o">:</span> <span class="p">[],</span>
+
+		<span class="c1">// edit files in wysisyg's</span>
+		<span class="nx">editors</span> <span class="o">:</span> <span class="p">[</span>
+			<span class="c1">// {</span>
+			<span class="c1">// 	/**</span>
+			<span class="c1">// 	 * files mimetypes allowed to edit in current wysisyg</span>
+			<span class="c1">// 	 * @type  Array</span>
+			<span class="c1">// 	 */</span>
+			<span class="c1">// 	mimes : ['text/html'], </span>
+			<span class="c1">// 	/**</span>
+			<span class="c1">// 	 * Called when "edit" dialog loaded.</span>
+			<span class="c1">// 	 * Place to init wysisyg.</span>
+			<span class="c1">// 	 * Can return wysisyg instance</span>
+			<span class="c1">// 	 *</span>
+			<span class="c1">// 	 * @param  DOMElement  textarea node</span>
+			<span class="c1">// 	 * @return Object</span>
+			<span class="c1">// 	 */</span>
+			<span class="c1">// 	load : function(textarea) { },</span>
+			<span class="c1">// 	/**</span>
+			<span class="c1">// 	 * Called before "edit" dialog closed.</span>
+			<span class="c1">// 	 * Place to destroy wysisyg instance.</span>
+			<span class="c1">// 	 *</span>
+			<span class="c1">// 	 * @param  DOMElement  textarea node</span>
+			<span class="c1">// 	 * @param  Object      wysisyg instance (if was returned by "load" callback)</span>
+			<span class="c1">// 	 * @return void</span>
+			<span class="c1">// 	 */</span>
+			<span class="c1">// 	close : function(textarea, instance) { },</span>
+			<span class="c1">// 	/**</span>
+			<span class="c1">// 	 * Called before file content send to backend.</span>
+			<span class="c1">// 	 * Place to update textarea content if needed.</span>
+			<span class="c1">// 	 *</span>
+			<span class="c1">// 	 * @param  DOMElement  textarea node</span>
+			<span class="c1">// 	 * @param  Object      wysisyg instance (if was returned by "load" callback)</span>
+			<span class="c1">// 	 * @return void</span>
+			<span class="c1">// 	 */</span>
+			<span class="c1">// 	save : function(textarea, editor) {}</span>
+			<span class="c1">// </span>
+			<span class="c1">// }</span>
+		<span class="p">]</span>
+	<span class="p">},</span>
+
+	<span class="c1">// help dialog tabs</span>
+	<span class="nx">help</span> <span class="o">:</span> <span class="p">{</span> <span class="nx">view</span> <span class="o">:</span> <span class="p">[</span><span class="s1">'about'</span><span class="p">,</span> <span class="s1">'shortcuts'</span><span class="p">,</span> <span class="s1">'help'</span><span class="p">]</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+                <p>For more info how to use <code>edit</code> options refer <a class="internal present" href="/Studio-42/elFinder/wiki/Using-custom-editor-to-edit-files-within-elfinder">Using custom editor to edit files within elFinder</a></p>
+
+                <p><a name="wiki-getFileCallback"></a></p>
+
+                <h2>getFileCallback</h2>
+
+                <p>Callback function for "getfile" command. Required to use elFinder with WYSIWYG editors, external callbacks.<br>
+                    For more info how to use this function refer to wiki WYSIWYG integrations examples.</p>
+
+                <p><strong>Data type:</strong> function<br><strong>Default value:</strong> <code>null</code> (command not active)</p>
+
+                <p><a name="wiki-handlers"></a></p>
+
+                <h2>handlers</h2>
+
+                <p>Event listeners to bind on elFinder init.<br>
+                    For more info refer <a class="internal present" href="/Studio-42/elFinder/wiki/Client-event-API">Client event API</a>.</p>
+
+                <p><strong>Data type:</strong> object<br><strong>Default value:</strong> <code>{}</code><br><strong>Example:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">handlers</span> <span class="o">:</span> <span class="p">{</span>
+	<span class="c1">// extract archive files on upload</span>
+	<span class="nx">upload</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">instance</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">uploadedFiles</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">added</span><span class="p">;</span>
+		<span class="kd">var</span> <span class="nx">archives</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'application/zip'</span><span class="p">,</span> <span class="s1">'application/x-gzip'</span><span class="p">,</span> <span class="s1">'application/x-tar'</span><span class="p">,</span> <span class="s1">'application/x-bzip2'</span><span class="p">];</span>
+		<span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">uploadedFiles</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">file</span> <span class="o">=</span> <span class="nx">uploadedFiles</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">inArray</span><span class="p">(</span><span class="nx">file</span><span class="p">.</span><span class="nx">mime</span><span class="p">,</span> <span class="nx">archives</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">instance</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'extract'</span><span class="p">,</span> <span class="nx">file</span><span class="p">.</span><span class="nx">hash</span><span class="p">);</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">},</span>
+
+	<span class="nx">open</span>   <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+                <p><a name="wiki-ui"></a></p>
+
+                <h2>ui</h2>
+
+                <p>UI plugins to load. Currently <code>dir</code>, <code>ui</code>, and <code>dialogs</code> loads always.</p>
+
+                <p><strong>Data type:</strong> array<br><strong>Default value:</strong> <code>['toolbar', 'places', 'tree', 'path', 'stat']</code></p>
+
+                <p><a name="wiki-uiOptions"></a></p>
+
+                <h2>uiOptions</h2>
+
+                <p>Specifies the configuration for the elFinder UI.</p>
+
+                <p><strong>Data type:</strong> object<br><strong>Default value:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">uiOptions</span> <span class="o">:</span> <span class="p">{</span>
+	<span class="c1">// toolbar configuration</span>
+	<span class="nx">toolbar</span> <span class="o">:</span> <span class="p">[</span>
+		<span class="p">[</span><span class="s1">'back'</span><span class="p">,</span> <span class="s1">'forward'</span><span class="p">],</span>
+		<span class="c1">// ['reload'],</span>
+		<span class="c1">// ['home', 'up'],</span>
+		<span class="p">[</span><span class="s1">'mkdir'</span><span class="p">,</span> <span class="s1">'mkfile'</span><span class="p">,</span> <span class="s1">'upload'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'download'</span><span class="p">,</span> <span class="s1">'getfile'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'info'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'quicklook'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'copy'</span><span class="p">,</span> <span class="s1">'cut'</span><span class="p">,</span> <span class="s1">'paste'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'rm'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'duplicate'</span><span class="p">,</span> <span class="s1">'rename'</span><span class="p">,</span> <span class="s1">'edit'</span><span class="p">,</span> <span class="s1">'resize'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'extract'</span><span class="p">,</span> <span class="s1">'archive'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'search'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'view'</span><span class="p">],</span>
+		<span class="p">[</span><span class="s1">'help'</span><span class="p">]</span>
+	<span class="p">],</span>
+
+	<span class="c1">// directories tree options</span>
+	<span class="nx">tree</span> <span class="o">:</span> <span class="p">{</span>
+		<span class="c1">// expand current root on init</span>
+		<span class="nx">openRootOnLoad</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+		<span class="c1">// auto load current dir parents</span>
+		<span class="nx">syncTree</span> <span class="o">:</span> <span class="kc">true</span>
+	<span class="p">},</span>
+
+	<span class="c1">// navbar options</span>
+	<span class="nx">navbar</span> <span class="o">:</span> <span class="p">{</span>
+		<span class="nx">minWidth</span> <span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+		<span class="nx">maxWidth</span> <span class="o">:</span> <span class="mi">500</span>
+	<span class="p">},</span>
+
+	<span class="c1">// current working directory options</span>
+	<span class="nx">cwd</span> <span class="o">:</span> <span class="p">{</span>
+		<span class="c1">// display parent directory in listing as ".."</span>
+		<span class="nx">oldSchool</span> <span class="o">:</span> <span class="kc">false</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+                <p><a name="wiki-contextmenu"></a></p>
+
+                <h2>contextmenu</h2>
+
+                <p>The configuration for the right-click context menu.
+                    Need some better documentation on this.</p>
+
+                <p><strong>Data type:</strong> object<br><strong>Default value:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">contextmenu</span> <span class="o">:</span> <span class="p">{</span>
+	<span class="c1">// navbarfolder menu</span>
+	<span class="nx">navbar</span> <span class="o">:</span> <span class="p">[</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'copy'</span><span class="p">,</span> <span class="s1">'cut'</span><span class="p">,</span> <span class="s1">'paste'</span><span class="p">,</span> <span class="s1">'duplicate'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'rm'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'info'</span><span class="p">],</span>
+
+	<span class="c1">// current directory menu</span>
+	<span class="nx">cwd</span>    <span class="o">:</span> <span class="p">[</span><span class="s1">'reload'</span><span class="p">,</span> <span class="s1">'back'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'upload'</span><span class="p">,</span> <span class="s1">'mkdir'</span><span class="p">,</span> <span class="s1">'mkfile'</span><span class="p">,</span> <span class="s1">'paste'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'info'</span><span class="p">],</span>
+
+	<span class="c1">// current directory file menu</span>
+	<span class="nx">files</span>  <span class="o">:</span> <span class="p">[</span>
+		<span class="s1">'getfile'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'quicklook'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'download'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'copy'</span><span class="p">,</span> <span class="s1">'cut'</span><span class="p">,</span> <span class="s1">'paste'</span><span class="p">,</span> <span class="s1">'duplicate'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span>
+		<span class="s1">'rm'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'edit'</span><span class="p">,</span> <span class="s1">'rename'</span><span class="p">,</span> <span class="s1">'resize'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'archive'</span><span class="p">,</span> <span class="s1">'extract'</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="s1">'info'</span>
+	<span class="p">]</span>
+<span class="p">},</span>
+</pre></div>
+
+                <p><a name="wiki-resizable"></a></p>
+
+                <h2>resizable</h2>
+
+                <p>Whether or not the elFinder interface will be resizable. This only works if jQuery UI has the <code>resizable</code> plugin loaded.</p>
+
+                <p><strong>Data type:</strong> boolean<br><strong>Default value:</strong> true</p>
+
+                <p><a name="wiki-notifyDelay"></a></p>
+
+                <h2>notifyDelay</h2>
+
+                <p>Timeout before open notifications dialogs.</p>
+
+                <p><strong>Data type:</strong> number<br><strong>Default value:</strong> <code>500</code> (0.5 second)</p>
+
+                <p><a name="wiki-dragUploadAllow"></a></p>
+
+                <h2>dragUploadAllow</h2>
+
+                <p>Allow to drag and drop to upload files.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>'auto'</code></p>
+
+                <p><a name="wiki-allowShortcuts"></a></p>
+
+                <h2>allowShortcuts</h2>
+
+                <p>Allow shortcuts</p>
+
+                <p><strong>Data type:</strong> boolean<br><strong>Default value:</strong> <code>true</code></p>
+
+                <p><a name="wiki-loadTmns"></a></p>
+
+                <h2>loadTmbs</h2>
+
+                <p>Amount of thumbnails to create per one request</p>
+
+                <p><strong>Data type:</strong> number<br><strong>Default value:</strong> <code>5</code></p>
+
+                <p><a name="wiki-showFiles"></a></p>
+
+                <h2>showFiles</h2>
+
+                <p>Lazy load. Amount of files display at once.</p>
+
+                <p><strong>Data type:</strong> number<br><strong>Default value:</strong> <code>30</code></p>
+
+                <p><a name="wiki-showThreshold"></a></p>
+
+                <h2>showThreshold</h2>
+
+                <p>Lazy load. Distance in px to cwd bottom edge to start displaying files.</p>
+
+                <p><strong>Data type:</strong> number<br><strong>Default value:</strong> <code>50</code></p>
+
+                <p><a name="wiki-requestType"></a></p>
+
+                <h2>requestType</h2>
+
+                <p>The AJAX request type. Available choices are <code>post</code> and <code>get</code>.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>'get'</code></p>
+
+                <p><a name="wiki-urlUpload"></a></p>
+
+                <h2>urlUpload</h2>
+
+                <p>Separate URL to upload file to. If not set - connector URL will be used.</p>
+
+                <p><strong>Data type:</strong> string<br><strong>Default value:</strong> <code>''</code></p>
+
+                <p><a name="wiki-iframeTimeout"></a></p>
+
+                <h2>iframeTimeout</h2>
+
+                <p>Timeout for upload using iframe.</p>
+
+                <p><strong>Data type:</strong> number<br><strong>Default value:</strong> <code>0</code> (no timeout)</p>
+
+                <p><a name="wiki-sync"></a></p>
+
+                <h2>sync</h2>
+
+                <p>Sync content by refreshing cwd every N seconds.</p>
+
+                <p><strong>todo:</strong> fix it, probably broken.</p>
+
+                <p><strong>Data type:</strong> number<br><strong>Default value:</strong> <code>0</code> (do not sync)</p>
+
+                <p><a name="wiki-cookie"></a></p>
+
+                <h2>cookie</h2>
+
+                <p>Cookie option for browsers that does not support localStorage</p>
+
+                <p><strong>Data type:</strong> object<br><strong>Default value:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">cookie</span> <span class="o">:</span> <span class="p">{</span>
+	<span class="nx">expires</span> <span class="o">:</span> <span class="mi">30</span><span class="p">,</span>
+	<span class="nx">domain</span>  <span class="o">:</span> <span class="s1">''</span><span class="p">,</span>
+	<span class="nx">path</span>    <span class="o">:</span> <span class="s1">'/'</span><span class="p">,</span>
+	<span class="nx">secure</span>  <span class="o">:</span> <span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+
+                <p><a name="wiki-debug"></a></p>
+
+                <h2>debug</h2>
+
+                <p>Debug config</p>
+
+                <p><strong>Data type:</strong> array or boolean<br><strong>Default value:</strong></p>
+
+                <div class="highlight"><pre><span class="nx">debug</span> <span class="o">:</span> <span class="p">[</span><span class="s1">'error'</span><span class="p">,</span> <span class="s1">'warning'</span><span class="p">,</span> <span class="s1">'event-destroy'</span><span class="p">]</span>
+</pre></div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        var active = false;
+
+        //$('#ui-elrte').on('activate', function() {
+
+            if(!active) {
+                $('#ui-elrte').applyBindings(new ElRTEViewModel());
+                active = true;
+            }
+        //});
+
+
+        function ElRTEViewModel() {
+            var self = this,
+                    dialog = null;
+
+            self.content = ko.observable('<h1>Example content</h1><p>Here it is</p>');
+            self.rteOptions = {
+                cssClass: 'el-rte',
+                lang: 'pt_BR',           // language (OPTIONAL)
+                height: 450,
+                toolbar: 'complete',
+                //cssfiles : ['css/elrte-inner.css'],
+
+                // if elFinder is enableds
+                fmOpen: function (callback) {
+                    if (!dialog) {
+                        // create new elFinder
+                        dialog = $('<div />').dialogelfinder({
+                            url: 'php/connector.minimal.php',
+                            commandsOptions: {
+                                getfile: {
+                                    oncomplete: 'close' // close/hide elFinder
+                                }
+                            },
+                            getFileCallback: callback // pass callback to file manager
+                        });
+                    } else {
+                        // reopen elFinder
+                        dialog.dialogelfinder('open')
+                    }
+                }
+            };
+
+            self.finderOptions = {
+                url: 'php/connector.minimal.php'  // connector URL (REQUIRED)
+                , lang: 'pt_BR'                     // language (OPTIONAL)
+            };
+
+        }
+    });
+</script>
+</body>
+</html>

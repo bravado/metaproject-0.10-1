@@ -1,0 +1,57 @@
+<!doctype html>
+<head>
+    <script type="text/javascript"
+            src="../js/metaproject-ui.fileupload.js"></script>
+</head>
+<div id="fileupload">
+    <ul data-bind="foreach: files">
+        <li>
+            <a href="#" data-bind="text: name, attr: { href: url }">File</a>, <span data-bind="text: size">123</span> bytes
+            <button class="btn btn-mini btn-danger" data-bind="click: $parent.delete">Delete</button>
+        </li>
+    </ul>
+
+    <input type="file" placeholder="Upload files..." id="file-upload" data-bind="fileupload: uploader" multiple/>
+</div>
+<script type="text/javascript">
+
+    jQuery(function($) {
+
+        function FileuploadModel() {
+            var self = this;
+            self.files = ko.observableArray();
+
+            self.uploader = {
+                url: 'php/index.php',
+                dataType: 'json', // the example backend returns a json object describing the files
+                done:function (e, data) {
+
+
+                    $.each(data.result, function (index, file) {
+                        self.files.push(file);
+                    });
+                }
+            };
+
+            self.delete = function(file) {
+                if(!confirm('Are you sure ?')) {
+                    return;
+                }
+
+                $.ajax({
+                    url: file.delete_url,
+                    type: file.delete_type,
+                    success: function(data) {
+                        self.files.remove(file);
+                    }
+                });
+            };
+
+            $.getJSON('php/index.php', function(data) {
+                self.files(data);
+            });
+        }
+
+        $('#fileupload').applyBindings(new FileuploadModel());
+    });
+</script>

@@ -1,0 +1,58 @@
+<!doctype html>
+<script type="text/javascript" src="../js/metaproject-ui.grid.js"></script>
+<div class="page-header">
+    <h1>Grid<small> metaproject-ui.grid.js</small></h1>
+</div>
+
+<section id="ui-grid">
+    <p>A Grid displays tabular data from an Array.</p>
+    <div data-bind="grid: mygrid">
+
+    </div>
+</section>
+
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        var data = ko.observableArray([
+            { name: 'John Doe', birth: '1980'},
+            { name: 'Mary Jane', birth: '1988'}
+        ]);
+
+        var vm = {
+            mygrid: new metaproject.ui.Grid(data, {
+                columns: [
+                    {
+                        label: 'Name',
+                        value: 'name'
+                    },
+                    {
+                        label: 'Birth Year',
+                        value: 'birth'
+                    },
+                    {
+                        label: 'Age',
+                        value: function (x) {
+                            return new Date().getYear() + 1900 - ko.unwrap(x.birth);
+                        }
+                    }
+                ],
+                actions: [
+                    {
+                        label: 'Say Hello',
+                        fn: function(me) {
+                            alert('Hello ' + ko.unwrap(me.name));
+                        },
+                        css: {
+                            'btn': true,
+                            'btn-mini': true,
+                            'btn-primary': true
+                        }
+                    }
+                ]
+            })
+        };
+
+        $('#ui-grid').applyBindings(vm);
+    });
+</script>

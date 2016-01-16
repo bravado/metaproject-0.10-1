@@ -1,0 +1,125 @@
+<!doctype html>
+<head>
+    <!--[if lte IE 8]>
+    <script src="../lib/excanvas.js"></script>
+    <![endif]-->
+    <script type="text/javascript"
+            src="../lib/chart.min.js"></script>
+
+
+    <script type="text/javascript"
+            src="../js/metaproject-ui.chart.js"></script>
+</head>
+<body>
+<div id="charts">
+
+    <div class="row">
+        <div class="span12">
+            <button data-bind="click: updateData" class="btn btn-info">
+                Update Data
+            </button>
+        </div>
+    </div>
+    <div class="row">
+
+        <canvas class="span4" height="240" data-chart="bar"
+                data-bind="chart: data"></canvas>
+        <canvas class="span4" height="240" data-chart="line"
+                data-bind="chart: data"></canvas>
+        <canvas class="span4" height="320" data-chart="radar"
+                data-bind="chart: data"></canvas>
+    </div>
+
+    <div class="row">
+        <div class="span12">
+            <button data-bind="click: updatePolarData"
+                    class="btn btn-info">Update Polar Data
+            </button>
+        </div>
+    </div>
+    <div class="row">
+
+        <canvas class="span4" height="320" data-chart="polar"
+                data-bind="chart: polardata"></canvas>
+        <canvas class="span4" height="320" data-chart="pie"
+                data-bind="chart: polardata"></canvas>
+        <canvas class="span4" height="320" data-chart="doughnut"
+                data-bind="chart: polardata"></canvas>
+    </div>
+
+    <script type="text/javascript">
+        jQuery(function ($) {
+            var chartVM = {
+                data: ko.observable({
+                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    datasets: [
+                        {
+                            fillColor: "rgba(220,220,220,0.5)",
+                            strokeColor: "rgba(220,220,220,1)",
+                            data: [65, 59, 90, 81, 56, 55, 40]
+                        },
+                        {
+                            fillColor: "rgba(151,187,205,0.5)",
+                            strokeColor: "rgba(151,187,205,1)",
+                            data: [28, 48, 40, 19, 96, 27, 100]
+                        }
+                    ]
+                }),
+                polardata: ko.observableArray([
+                    {
+                        value: 30,
+                        color: "#D97041"
+                    },
+                    {
+                        value: 90,
+                        color: "#C7604C"
+                    },
+                    {
+                        value: 24,
+                        color: "#21323D"
+                    },
+                    {
+                        value: 58,
+                        color: "#9D9B7F"
+                    },
+                    {
+                        value: 82,
+                        color: "#7D4F6D"
+                    },
+                    {
+                        value: 8,
+                        color: "#584A5E"
+                    }
+                ]),
+                updateData: function () {
+                    chartVM.data({
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+                        datasets: [
+                            {
+                                fillColor: "rgba(220,220,220,0.5)",
+                                strokeColor: "rgba(220,220,220,1)",
+                                data: [28, 48, 40, 19, 96, 27, 100]
+                            },
+                            {
+                                fillColor: "rgba(151,187,205,0.5)",
+                                strokeColor: "rgba(151,187,205,1)",
+                                data: [65, 59, 90, 81, 56, 55, 40]
+
+                            }
+                        ]
+                    })
+                },
+                updatePolarData: function () {
+                    chartVM.polardata.push({
+                        value: 2,
+                        color: "#000000"
+                    });
+                }
+            };
+
+            $('#charts').applyBindings(chartVM);
+        });
+
+    </script>
+</div>
+</body>

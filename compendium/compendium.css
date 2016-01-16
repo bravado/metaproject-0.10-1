@@ -1,0 +1,173 @@
+.hidden {
+    visibility: hidden;
+    overflow: hidden;
+    position: absolute;
+}
+
+
+span.ui-icon { margin: 0 4px; }
+.icon span.ui-icon { float: left; }
+.icon-right span.ui-icon { float: right; }
+
+.main-content { position: absolute; overflow: auto; width: 100%; top:0; bottom: 0; left: 0; }
+
+body { overflow: auto;}
+body.with-header { padding-top: 55px; }
+
+.with-header .main-content { top: 40px; }
+.with-footer .main-content { bottom: 40px;}
+.pane { position: absolute; width: 100%; top:0; left: 0; }
+
+/* sidebar */
+.sidebar { width: 200px; top:0; bottom: 0; left: 0; }
+.sidebar.right { left: auto; right: 0; }
+.with-sidebar { }
+
+/* background styles */
+.light-gray { background-color: #EEEEEE;}
+
+.light-gray .page-header {
+    background-color: #F5F5F5;
+}
+
+/* page styles */
+.container.page {
+    background-color: #FFFFFF;
+    border: 1px solid #eeeeee;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    margin: 0 auto 10px;
+    padding: 10px 20px;
+}
+
+.container.page .page-header {
+    background-color: #F5F5F5;
+    margin: -10px -20px 20px;
+    padding: 20px;
+}
+
+
+/* Overlays and Shadows */
+
+.with-header .ui-overlay { padding-top: 60px;}
+
+.ui-overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+    overflow: auto;background: #262b33; background: rgba(0, 0, 0, 0.6);
+}
+
+.ui-overlay .container {
+    margin-bottom: 60px;
+}
+
+/* Top affix breadcrumb */
+.breadcrumb .btn-toolbar { margin: -2px 0 0 0; }
+.breadcrumb.affix { right: 20px; left: 20px; z-index: 1; }
+.breadcrumb.affix + div { margin-top: 50px; }
+
+
+/* APP MENU */
+
+.app-menu a { color: #777777; }
+
+/* the active item, displayed on the navbar */
+.app-menu .current-module {
+    visibility: visible;
+    float: left;
+    margin: 10px 0;
+    overflow: visible;
+    font-size: 20px;
+    font-weight: 200;
+    color: #777777;
+    text-shadow: 0 1px 0 #ffffff;}
+
+/* show the main-menu when the user hovers .app-menu */
+.app-menu .main-menu { visibility: hidden; position: fixed; width: 300px; background-color: white;
+    overflow-y: auto;
+    top: 5px;
+    box-shadow: 0px 0px 24px rgba(50, 50, 50, 0.75);
+    max-height: 88%;
+}
+
+.app-menu:hover .main-menu { visibility: visible; position: fixed; width: 220px; }
+.app-menu:hover ul { margin: 0; border-bottom: 1px solid #e5e5e5; list-style: none; }
+.app-menu:hover li ul { border-bottom: none; }
+.app-menu:hover li { color: #737373; }
+.app-menu:hover li:hover { background-color: #f5f5f5; }
+.app-menu:hover li:hover a { display: block; text-decoration: none;  }
+.app-menu:hover li:hover a:hover { color: black; }
+.app-menu li.active > a { font-weight: bold; color: black; }
+
+.app-menu:hover .icon-fixed-width { font-size: 16px;}
+.app-menu li {
+    padding: 10px 20px 10px;
+}
+
+
+
+
+/* Sidenav for Docs
+-------------------------------------------------- */
+
+.sidenav {
+    padding: 0;
+    background-color: #fff;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+    -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+    box-shadow: 0 1px 4px rgba(0,0,0,.065);
+}
+.sidenav > li > a {
+    display: block;
+    width: 190px \9;
+    margin: 0 0 -1px;
+    padding: 8px 14px;
+    border: 1px solid #e5e5e5;
+}
+.sidenav > li:first-child > a {
+    -webkit-border-radius: 6px 6px 0 0;
+    -moz-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+.sidenav > li:last-child > a {
+    -webkit-border-radius: 0 0 6px 6px;
+    -moz-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+}
+.sidenav > .active > a {
+    position: relative;
+    z-index: 2;
+    padding: 9px 15px;
+    border: 0;
+    text-shadow: 0 1px 0 rgba(0,0,0,.15);
+    -webkit-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+    -moz-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+    box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+}
+/* Chevrons */
+.sidenav .icon-chevron-right {
+    float: right;
+    margin-top: 2px;
+    margin-right: -6px;
+    opacity: .25;
+}
+.sidenav > li > a:hover {
+    background-color: #f5f5f5;
+}
+.sidenav a:hover .icon-chevron-right {
+    opacity: .5;
+}
+.sidenav .active .icon-chevron-right,
+.sidenav .active a:hover .icon-chevron-right {
+    color: white;
+    opacity: 1;
+}
+.sidenav.affix {
+    top: 40px;
+}
+.sidenav.affix-bottom {
+    position: absolute;
+    top: auto;
+    bottom: 270px;
+}

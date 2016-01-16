@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+
+    <script type="text/javascript"
+            src="../js/metaproject-ui.maskinput.js"></script>
+</head>
+<body>
+<div id="datepicker">
+
+    <div class="content">
+        <div class="row">
+            <div class="span8">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>Basic Datepickers</legend>
+                        <div class="control-group">
+                            <label class="control-label" for="input01">Bound to a String value</label>
+
+                            <div class="controls">
+                                <input id="input01" type="text" class="span2" data-bind="datepicker: date1"/>
+
+                                <p class="help-block">This datepicker stores the date on a String value in
+                                    sql-compatible
+                                    format YYYY-MM-DD</p>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="input02">Bound to a Date object</label>
+
+                            <div class="controls">
+                                <input id="input02" type="text" class="span2" data-bind="datepicker: date2"/>
+
+                                <p class="help-block">This datepicker updates a Date object on the viewmodel</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Range pickers</legend>
+                        <div class="control-group">
+                            <label class="control-label" for="input03">With arrows</label>
+
+                            <div class="controls">
+                                <input type="text" id="input03"
+                                       data-bind="datepicker: range1, rangePicker: true, datepickerOptions: { arrows: true }"/>
+
+                                <p class="help-block">Setting <code>rangePicker: true</code> on your datepickerOptions enables date range selection<br/>
+                                    Range pickers return the formatted string value as you see on the input.<br/>
+                                    This can be changed overriding the onChange parameter on the options object.
+                                </p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="span4" data-bind="text: model">
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+
+    // Module initialization
+    jQuery(function ($) {
+
+        // ViewModel
+        function DatePickerModel() {
+            var self = this;
+
+            self.date1 = ko.observable('2012-05-10');
+            self.date2 = ko.observable(new Date(2012, 4, 10));
+            self.range1 = ko.observable();
+
+            self.model = ko.computed(function () {
+                var me = ko.toJS(this);
+                delete me.model;
+
+                return ko.toJSON(me);
+            }, this);
+
+        }
+
+        $('#datepicker').applyBindings(new DatePickerModel());
+    });
+</script>
+</body>
+</html>

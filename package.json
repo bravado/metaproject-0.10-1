@@ -1,0 +1,32 @@
+{
+    "name": "metaproject",
+    "description": "Reference component library for javascript interfaces.",
+    "version": "0.10.0",
+    "keywords": ["bootstrap", "css", "mvvm"],
+    "homepage": "http://bravado.github.io/metaproject/",
+    "author": "Bravado",
+    "scripts": {
+        "test": "make test"
+    },
+    "repository": {
+    "type": "git",
+    "url": "https://github.com/bravado/metaproject.git"
+    },
+    "license": {
+            "type": "MIT",
+            "url": "http://opensource.org/licenses/MIT"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.4",
+        "grunt-autoprefixer": "~0.7.2",
+        "grunt-banner": "~0.2.2",
+        "grunt-contrib-clean": "~0.5.0",
+        "grunt-contrib-concat": "~0.4.0",
+        "grunt-contrib-copy": "~0.5.0",
+        "grunt-contrib-cssmin": "~0.9.0",
+        "grunt-contrib-uglify": "~0.4.0",
+        "grunt-text-replace": "~0.3.12",
+        "load-grunt-tasks": "~0.4.0",
+        "time-grunt": "~0.3.1"
+    }
+}

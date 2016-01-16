@@ -1,0 +1,15 @@
+<ul class="{{ css }}">
+    <li data-bind="css.disabled: page() == 1"><a href="#" title="First Page" data-bind="click: page.first"><i
+            class="fa fa-fast-backward"></i></a></li>
+
+    <li data-bind="css.disabled: page() == 1"><a href="#" title="Previous Page" data-bind="click: page.prev"><i
+            class="fa fa-caret-left"></i></a></li>
+
+    <li><a>{{ page }} / {{ pages }} ({{ count }} {{ messages.results }})</a></li>
+
+    <li data-bind="css.disabled: page() == pages()"><a href="#" title="Next Page" data-bind="click: page.next"><i
+            class="fa fa-caret-right"></i></a></li>
+
+    <li data-bind="css.disabled: page() == pages()"><a href="#" title="Last Page" data-bind="click: page.last"><i
+            class="fa fa-fast-forward"></i></a></li>
+</ul>
